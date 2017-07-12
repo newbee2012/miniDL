@@ -29,4 +29,13 @@ private:\
 using namespace std;
 using namespace boost;
 
+namespace dong
+{
+enum LayerType_ {INPUT_LAYER, CONVOLUTION_LAYER, POOL_LAYER, FULL_CONNECT_LAYER, RELU_LAYER, SOFTMAX_LAYER};
+enum LR_Policy_ {FIXED, STEP, EXP, INV, MULTISTEP, POLY, SIGMOID};
+typedef LayerType_ LayerType;
+typedef LR_Policy_ LR_Policy;
+enum Mode {TRAIN, TEST};
+}
+
 #endif  // DONG_COMMON_HPP_

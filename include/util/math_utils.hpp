@@ -26,7 +26,7 @@ private:
 class RandomGenerator
 {
 public:
-
+    static int rnd_seed;
     static shared_ptr<RNG> random_generator_;
 
     static RNG& rng_stream()
@@ -46,7 +46,7 @@ public:
 
     static void rng_uniform(const int n, const float a, const float b, float* r)
     {
-        rng_t engine;
+        rng_t engine(RandomGenerator::rnd_seed);
         boost::uniform_real<float> random_distribution(a, nextafter(b));
         boost::variate_generator<dong::rng_t*, boost::uniform_real<float> > my_generator(&engine, random_distribution);
 

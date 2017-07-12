@@ -253,7 +253,7 @@
 	"common.hpp"
 	"proto/caffe.pb.h"
 
-1499868278 /home/chendejia/workspace/github/miniDL/include/common.hpp
+1499882469 /home/chendejia/workspace/github/miniDL/include/common.hpp
 	<gflags/gflags.h>
 	<glog/logging.h>
 	<math.h>
@@ -285,7 +285,7 @@
 	<boost/shared_ptr.hpp>
 	<vector>
 
-1499868278 /home/chendejia/workspace/github/miniDL/include/layer.hpp
+1499885894 /home/chendejia/workspace/github/miniDL/include/layer.hpp
 	"common.hpp"
 	"data.hpp"
 	<boost/shared_ptr.hpp>
@@ -302,7 +302,7 @@
 	<boost/shared_ptr.hpp>
 	<vector>
 
-1499868278 source:/home/chendejia/workspace/github/miniDL/src/data.cpp
+1499889303 source:/home/chendejia/workspace/github/miniDL/src/data.cpp
 	"common.hpp"
 	"data.hpp"
 	"util/gen_bmp.hpp"
@@ -317,7 +317,7 @@
 	<stdio.h>
 	<stdlib.h>
 
-1499868278 /home/chendejia/workspace/github/miniDL/include/util/math_utils.hpp
+1499889644 /home/chendejia/workspace/github/miniDL/include/util/math_utils.hpp
 	<boost/math/special_functions/next.hpp>
 	<boost/random.hpp>
 	<boost/shared_ptr.hpp>
@@ -332,7 +332,7 @@
 	<boost/shared_ptr.hpp>
 	<vector>
 
-1499868278 source:/home/chendejia/workspace/github/miniDL/src/input_layer.cpp
+1499871671 source:/home/chendejia/workspace/github/miniDL/src/input_layer.cpp
 	<iostream>
 	"input_layer.hpp"
 
@@ -342,12 +342,12 @@
 	<boost/shared_ptr.hpp>
 	<vector>
 
-1499868278 source:/home/chendejia/workspace/github/miniDL/src/layer.cpp
+1499890219 source:/home/chendejia/workspace/github/miniDL/src/layer.cpp
 	<iostream>
 	<pthread.h>
 	"layer.hpp"
 
-1499868278 source:/home/chendejia/workspace/github/miniDL/src/main.cpp
+1499890106 source:/home/chendejia/workspace/github/miniDL/src/main.cpp
 	<iostream>
 	"util/gen_bmp.hpp"
 	"input_layer.hpp"
@@ -360,6 +360,7 @@
 	<time.h>
 	<boost/shared_ptr.hpp>
 	<pthread.h>
+	"util/math_utils.hpp"
 
 1499871493 /home/chendejia/workspace/github/miniDL/include/pool_layer.hpp
 	"common.hpp"

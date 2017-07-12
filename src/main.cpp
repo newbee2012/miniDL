@@ -10,37 +10,79 @@
 #include <time.h>
 #include <boost/shared_ptr.hpp>
 #include <pthread.h>
+#include "util/math_utils.hpp"
 using namespace std;
 using namespace caffe;
 using namespace dong;
-
-float Layer::BASE_LEARNING_RATE;
-
 int sum = 0;
 
+float Layer::BASE_LEARNING_RATE;        //基准学习数率
+dong::LR_Policy Layer::LEARNING_RATE_POLICY;  //学习数率衰减策略
+float Layer::GAMMA;                     //学习速率衰减常数
+float Layer::MOMENTUM;                  //学习冲力 借助冲力逃出局部洼地
+int Layer::CURRENT_ITER_COUNT;                  //当前迭代次数
+float Layer::POWER;
+float Layer::WEIGHT_DECAY;              //权重衰减常数
+float Layer::CURRENT_LEARNING_RATE;
+int Layer::STEPSIZE;
+int RandomGenerator::rnd_seed;          //随机种子，-1表示使用time(0)做种子
 void test2(char* p, char* q, int count1, int count2, int v)
 {
-    if (count1 + count2 == 0) {
+    if (count1 + count2 == 0)
+    {
         cout << p << endl;
         sum++;
         return;
     }
 
-    if (v >= 0 && count1 > 0) {
+    if (v >= 0 && count1 > 0)
+    {
         *q = '(';
         test2(p, q + 1, count1 - 1, count2, v + 1);
     }
 
-    if (count2 > 0) {
+    if (count2 > 0)
+    {
         *q = ')';
         test2(p, q + 1, count1, count2 - 1, v - 1);
     }
 }
 
-void train(int batch_count, int per_batch_iter_count, int per_iter_train_count)
+void train(int argc, char* argv[])
 {
+    int batch_count = 1;
+    int per_batch_iter_count = 1;
+    int per_iter_train_count = 1;
+    Layer::BASE_LEARNING_RATE = 0.0001F;
+    Layer::LEARNING_RATE_POLICY = INV;
+    Layer::GAMMA = 0.0001F;
+    Layer::MOMENTUM = 0.9F;
+    Layer::POWER = 0.75F;
+    Layer::WEIGHT_DECAY = 0.0005F;
+    Layer::CURRENT_ITER_COUNT = 0;
+    Layer::STEPSIZE = 100;
+    RandomGenerator::rnd_seed = -1;
+    if (argc >= 5)
+    {
+        batch_count = atoi(argv[1]);
+        per_batch_iter_count = atoi(argv[2]);
+        per_iter_train_count = atoi(argv[3]);
+        Layer::BASE_LEARNING_RATE = atof(argv[4]);
+        Layer::CURRENT_LEARNING_RATE = Layer::getLearningRate();
+    }
+
+    if(argc == 6)
+    {
+        RandomGenerator::rnd_seed = atoi(argv[5]);
+    }
+
+    if(RandomGenerator::rnd_seed == -1)
+    {
+        RandomGenerator::rnd_seed = (int)time(0);
+    }
+
     time_t t1 = time(NULL);
-    srand((int)time(0));
+    srand(RandomGenerator::rnd_seed);
     db::DB* mydb = db::GetDB("lmdb");
     mydb->Open("/home/chendejia/workspace/github/dong/data/mnist_train_lmdb", db::READ);
     db::Cursor* cursor = mydb->NewCursor();
@@ -92,17 +134,22 @@ void train(int batch_count, int per_batch_iter_count, int per_iter_train_count)
     int batchLabels[per_iter_train_count];
 
     //训练batch_count批数据
-    for (int batch = 0; batch < batch_count; ++batch) {
+    for (int batch = 0; batch < batch_count; ++batch)
+    {
         cout << "batch: " << batch << endl;
 
         //读取一批数据
-        for (int i = 0; i < per_iter_train_count && cursor->valid(); i++, cursor->Next()) {
+        for (int i = 0; i < per_iter_train_count && cursor->valid(); i++, cursor->Next())
+        {
             const string& value = cursor->value();
             Datum datum;
             datum.ParseFromString(value);
-            for (int c = 0; c < channels; c++) {
-                for (int w = 0; w < width; w++) {
-                    for (int h = 0; h < height; h++) {
+            for (int c = 0; c < channels; c++)
+            {
+                for (int w = 0; w < width; w++)
+                {
+                    for (int h = 0; h < height; h++)
+                    {
                         batchDatas.get(i, c, w, h)->_value = (BYTE)(datum.data()[w * height + h]);
                         batchLabels[i] = datum.label();
                     }
@@ -111,13 +158,16 @@ void train(int batch_count, int per_batch_iter_count, int per_iter_train_count)
         }
 
         //每一批数据迭代per_batch_iter_count次
-        for (int iter = 0; iter < per_batch_iter_count; ++iter) {
+        for (int iter = 0; iter < per_batch_iter_count; ++iter)
+        {
             //训练这批数据
-            for (int i = 0; i < per_iter_train_count; i++) {
+            for (int i = 0; i < per_iter_train_count; i++)
+            {
                 int label = batchLabels[i];
                 Neuron* neuron = batchDatas.get(i, 0, 0, 0);
                 Neuron* inputNeuron = inputImage.get();
-                for (int j = 0; j < height * width; ++j) {
+                for (int j = 0; j < height * width; ++j)
+                {
                     inputNeuron[j]._value = neuron[j]._value;
                 }
 
@@ -140,10 +190,12 @@ void train(int batch_count, int per_batch_iter_count, int per_iter_train_count)
                 convLayer1->backward();
                 ++record_count;
                 loss_record_sum += softmaxLayer->getLoss();
+                ++Layer::CURRENT_ITER_COUNT;
+                Layer::CURRENT_LEARNING_RATE = Layer::getLearningRate();
             }
 
             float avg_loss = loss_record_sum / record_count;
-            cout << "avg loss:" << setprecision(8) << fixed << avg_loss << endl;
+            cout << "avg loss:" << setprecision(8) << fixed << avg_loss << ", lr_rate:"<< Layer::CURRENT_LEARNING_RATE << endl;
             loss_record_sum = 0.0F;
             record_count = 0;
         }
@@ -154,11 +206,11 @@ void train(int batch_count, int per_batch_iter_count, int per_iter_train_count)
     convLayer1->getTopData()->genBmp("convLayer1_top_data_%d_%d.bmp", 1);
     convLayer1->getWeightData()->genBmp("convLayer1_Weight_data_%d_%d.bmp", 1);
     cout << "---------convLayer2 weight-----------" << endl;
-    convLayer2->getWeightData()->print();
+    //convLayer2->getWeightData()->print();
     convLayer2->getTopData()->genBmp("convLayer2_top_data_%d_%d.bmp", 1);
     convLayer2->getWeightData()->genBmp("convLayer2_Weight_data_%d_%d.bmp", 1);
-    cout << "---------convLayer2 _bias-----------" << endl;
-    convLayer2->getBiasData()->print();
+    //cout << "---------convLayer2 _bias-----------" << endl;
+    //convLayer2->getBiasData()->print();
     delete cursor;
     mydb->Close();
     delete mydb;
@@ -169,19 +221,8 @@ void train(int batch_count, int per_batch_iter_count, int per_iter_train_count)
 
 int main(int argc, char* argv[])
 {
-    int batch_count = 1;
-    int per_batch_iter_count = 1;
-    int per_iter_train_count = 1;
-    Layer::BASE_LEARNING_RATE = 0.0001;
+    train(argc, argv);
 
-    if (argc == 5) {
-        batch_count = atoi(argv[1]);
-        per_batch_iter_count = atoi(argv[2]);
-        per_iter_train_count = atoi(argv[3]);
-        Layer::BASE_LEARNING_RATE = atof(argv[4]);
-    }
-
-    train(batch_count, per_batch_iter_count, per_iter_train_count);
     //threadTest();
     cout << "Hello world!" << endl;
     return 0;

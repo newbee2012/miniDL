@@ -8,12 +8,7 @@
 
 namespace dong
 {
-enum LayerType_ {INPUT_LAYER, CONVOLUTION_LAYER, POOL_LAYER, FULL_CONNECT_LAYER, RELU_LAYER, SOFTMAX_LAYER};
-enum ForwardComputeType_ {INNER_PRODUCT, MAX, RELU};
-enum Mode {TRAIN, TEST};
 
-typedef LayerType_ LayerType;
-typedef ForwardComputeType_ ForwardComputeType;
 
 class ThreadParam
 {
@@ -36,8 +31,15 @@ public:
 class Layer
 {
 public:
-
-    const char* EnumNames[6] = {"INPUT_LAYER", "CONVOLUTION_LAYER", "POOL_LAYER", "FULL_CONNECT_LAYER", "RELU_LAYER", "SOFTMAX_LAYER"};
+    static float BASE_LEARNING_RATE;        //基准学习速率
+    static LR_Policy LEARNING_RATE_POLICY;  //学习速率衰减策略
+    static float GAMMA;                     //学习速率衰减常数
+    static float MOMENTUM;                  //学习冲力 借助冲力逃出局部洼地
+    static int CURRENT_ITER_COUNT;          //当前迭代次数
+    static float POWER;
+    static float WEIGHT_DECAY;              //权重衰减常数
+    static float CURRENT_LEARNING_RATE;     //当前学习速率
+    static int STEPSIZE;                  //每STEPSIZE次迭代，更新一次学习率
 
     Layer() {};
     virtual ~Layer() {};
@@ -46,7 +48,7 @@ public:
     virtual void backward_cpu() = 0;
     virtual void backward();
     virtual LayerType getType() = 0;
-    static float BASE_LEARNING_RATE;
+    static float getLearningRate();
 
     inline virtual void setUp(const boost::shared_ptr<Data>& data)
     {
@@ -80,12 +82,11 @@ protected:
     static void backwardLimit(Data* _bottom_data, int offset_start, int offset_end);
     virtual void updateWeight();
     virtual void updateBias();
+
     boost::shared_ptr<Data> _bottom_data;
     boost::shared_ptr<Data> _top_data;
     boost::shared_ptr<Data> _weight_data;
     boost::shared_ptr<Data> _bias_data;
-
-    ForwardComputeType _forwardType;
 
     DISABLE_COPY_AND_ASSIGN(Layer);
 };

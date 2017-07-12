@@ -2,7 +2,6 @@
 #include <pthread.h>
 #include "layer.hpp"
 using namespace std;
-
 namespace dong
 {
 void Layer::forward()
@@ -127,7 +126,7 @@ void Layer::updateWeight()
 {
     for (int i = 0; i < _weight_data->count(); ++i) {
         Neuron* w_neuron = _weight_data->get(i);
-        w_neuron->_value -= (Layer::BASE_LEARNING_RATE * w_neuron->_diff);
+        w_neuron->_value -= (CURRENT_LEARNING_RATE * w_neuron->_diff);
     }
 }
 
@@ -135,7 +134,7 @@ void Layer::updateBias()
 {
     for (int i = 0; i < _bias_data->count(); ++i) {
         Neuron* bias_neuron = _bias_data->get(i);
-        bias_neuron->_value -= (Layer::BASE_LEARNING_RATE * bias_neuron->_diff);
+        bias_neuron->_value -= (CURRENT_LEARNING_RATE * bias_neuron->_diff);
     }
 }
 
@@ -145,5 +144,20 @@ void* Layer::backwardBaseThread(void* ptr)
     Data* bottom_data = p->_bottom_data;
     Layer::backwardLimit(bottom_data, p->_offset_start, p->_offset_end);
     return 0;
+}
+
+float Layer::getLearningRate()
+{
+    switch(Layer::LEARNING_RATE_POLICY)
+    {
+    case FIXED:
+        return BASE_LEARNING_RATE;
+    case STEP:
+        return BASE_LEARNING_RATE * std::pow(GAMMA , CURRENT_ITER_COUNT / STEPSIZE);
+    case INV:
+        return BASE_LEARNING_RATE * std::pow(1.0F + GAMMA * CURRENT_ITER_COUNT, -POWER);
+    }
+
+    LOG(FATAL)<<"LEARNING_RATE_POLICY ERROR : "<<Layer::LEARNING_RATE_POLICY;
 }
 }
