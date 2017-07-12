@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="dong" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="bin/Debug/dong" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="Release">
+				<Option output="bin/Release/dong" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O3" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Winline" />
+			<Add option="-Wfatal-errors" />
+			<Add option="-fexceptions" />
+			<Add option="-DUSE_LMDB" />
+			<Add directory="include" />
+		</Compiler>
+		<Linker>
+			<Add library="libprotobuf" />
+			<Add library="libglog" />
+			<Add library="liblmdb" />
+			<Add library="libgflags" />
+			<Add library="libboost_system" />
+			<Add library="libpthread" />
+		</Linker>
+		<Unit filename="include/common.hpp" />
+		<Unit filename="include/conv_layer.hpp" />
+		<Unit filename="include/data.hpp" />
+		<Unit filename="include/full_connect_layer.hpp" />
+		<Unit filename="include/input_layer.hpp" />
+		<Unit filename="include/layer.hpp" />
+		<Unit filename="include/neuron.hpp" />
+		<Unit filename="include/pool_layer.hpp" />
+		<Unit filename="include/proto/caffe.pb.h" />
+		<Unit filename="include/relu_layer.hpp" />
+		<Unit filename="include/softmax_layer.hpp" />
+		<Unit filename="include/util/db.hpp" />
+		<Unit filename="include/util/db_lmdb.hpp" />
+		<Unit filename="include/util/gen_bmp.hpp" />
+		<Unit filename="include/util/math_utils.hpp" />
+		<Unit filename="src/conv_layer.cpp" />
+		<Unit filename="src/data.cpp" />
+		<Unit filename="src/full_connect_layer.cpp" />
+		<Unit filename="src/input_layer.cpp" />
+		<Unit filename="src/layer.cpp" />
+		<Unit filename="src/main.cpp" />
+		<Unit filename="src/neuron.cpp" />
+		<Unit filename="src/pool_layer.cpp" />
+		<Unit filename="src/proto/caffe.pb.cc" />
+		<Unit filename="src/relu_layer.cpp" />
+		<Unit filename="src/softmax_layer.cpp" />
+		<Unit filename="src/util/db.cpp" />
+		<Unit filename="src/util/db_lmdb.cpp" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<lib_finder disable_auto="1" />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

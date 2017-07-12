@@ -1,0 +1,402 @@
+# depslib dependency file v1.0
+1495616755 source:/home/chendejia/workspace/github/Dong/main.cpp
+	<iostream>
+
+1495620751 source:/home/chendejia/workspace/github/Dong/src/main.cpp
+	<iostream>
+	"data_layer.hpp"
+
+1495620453 /home/chendejia/workspace/github/Dong/include/blob.hpp
+	<algorithm>
+	<string>
+	<vector>
+
+1495621409 source:/home/chendejia/workspace/github/Dong/src/data_layer.cpp
+	<iostream>
+	"blob.hpp"
+
+1495621950 /home/chendejia/workspace/github/Dong/include/data_layer.hpp
+	"common.hpp"
+	<vector>
+
+1495621733 /home/chendejia/workspace/github/Dong/include/common.hpp
+
+1495655530 source:/home/chendejia/workspace/github/dong/src/proto/caffe.pb.cc
+	"proto/caffe.pb.h"
+	<algorithm>
+	<google/protobuf/stubs/common.h>
+	<google/protobuf/stubs/once.h>
+	<google/protobuf/io/coded_stream.h>
+	<google/protobuf/wire_format_lite_inl.h>
+	<google/protobuf/descriptor.h>
+	<google/protobuf/generated_message_reflection.h>
+	<google/protobuf/reflection_ops.h>
+	<google/protobuf/wire_format.h>
+
+1498829413 source:/home/chendejia/workspace/github/dong/src/util/db.cpp
+	"util/db.hpp"
+	"util/db_lmdb.hpp"
+	"common.hpp"
+	<string>
+
+1498829413 source:/home/chendejia/workspace/github/dong/src/util/db_lmdb.cpp
+	"util/db_lmdb.hpp"
+	<sys/stat.h>
+	<string>
+
+1495708405 source:/home/chendejia/workspace/github/dong/src/data_layer.cpp
+	<iostream>
+	"data_layer.hpp"
+
+1495707705 /home/chendejia/workspace/github/dong/include/data_layer.hpp
+	"common.hpp"
+	<boost/shared_ptr.hpp>
+	<vector>
+
+1498829672 /home/chendejia/workspace/github/dong/include/common.hpp
+	<gflags/gflags.h>
+	<glog/logging.h>
+	<math.h>
+	<algorithm>
+	<float.h>
+	<boost/math/special_functions/next.hpp>
+	<boost/random.hpp>
+	<boost/shared_ptr.hpp>
+
+1499523672 source:/home/chendejia/workspace/github/dong/src/main.cpp
+	<iostream>
+	"util/gen_bmp.hpp"
+	"input_layer.hpp"
+	"conv_layer.hpp"
+	"pool_layer.hpp"
+	"full_connect_layer.hpp"
+	"relu_layer.hpp"
+	"softmax_layer.hpp"
+	"util/db.hpp"
+	<time.h>
+	<boost/shared_ptr.hpp>
+	<pthread.h>
+
+1498829413 /home/chendejia/workspace/github/dong/include/util/db.hpp
+	<string>
+	"common.hpp"
+	"proto/caffe.pb.h"
+
+1499524797 /home/chendejia/workspace/github/dong/include/proto/caffe.pb.h
+	<string>
+	<google/protobuf/stubs/common.h>
+	<google/protobuf/generated_message_util.h>
+	<google/protobuf/message.h>
+	<google/protobuf/repeated_field.h>
+	<google/protobuf/extension_set.h>
+	<google/protobuf/generated_enum_reflection.h>
+	<google/protobuf/unknown_field_set.h>
+
+1498829413 /home/chendejia/workspace/github/dong/include/util/db_lmdb.hpp
+	<string>
+	<vector>
+	"lmdb.h"
+	"util/db.hpp"
+
+1498834243 source:/home/chendejia/workspace/github/dong/src/data.cpp
+	"common.hpp"
+	"data.hpp"
+	"util/gen_bmp.hpp"
+	<boost/shared_ptr.hpp>
+	<vector>
+	<iomanip>
+	"util/math_utils.hpp"
+
+1498914589 /home/chendejia/workspace/github/dong/include/data.hpp
+	"common.hpp"
+	"neuron.hpp"
+	<boost/shared_ptr.hpp>
+	<vector>
+
+1498829413 source:/home/chendejia/workspace/github/dong/src/input_layer.cpp
+	<iostream>
+	"input_layer.hpp"
+
+1498832737 /home/chendejia/workspace/github/dong/include/input_layer.hpp
+	"common.hpp"
+	"layer.hpp"
+	<boost/shared_ptr.hpp>
+	<vector>
+
+1499524088 /home/chendejia/workspace/github/dong/include/layer.hpp
+	"common.hpp"
+	"data.hpp"
+	<boost/shared_ptr.hpp>
+	<vector>
+
+1499524194 source:/home/chendejia/workspace/github/dong/src/layer.cpp
+	<iostream>
+	<pthread.h>
+	"layer.hpp"
+
+1499282050 source:/home/chendejia/workspace/github/dong/src/conv_layer.cpp
+	<iostream>
+	"conv_layer.hpp"
+	"neuron.hpp"
+
+1498832722 /home/chendejia/workspace/github/dong/include/conv_layer.hpp
+	"common.hpp"
+	"layer.hpp"
+	<boost/shared_ptr.hpp>
+	<vector>
+
+1499282050 source:/home/chendejia/workspace/github/dong/src/pool_layer.cpp
+	<iostream>
+	"pool_layer.hpp"
+
+1498832946 /home/chendejia/workspace/github/dong/include/pool_layer.hpp
+	"common.hpp"
+	"layer.hpp"
+	<memory>
+	<boost/shared_ptr.hpp>
+	<vector>
+
+1497319682 source:/home/chendejia/workspace/github/dong/src/inner_product_layer.cpp
+	<iostream>
+	"inner_product_layer.hpp"
+
+1497341791 /home/chendejia/workspace/github/dong/include/inner_product_layer.hpp
+	"common.hpp"
+	"layer.hpp"
+	<boost/shared_ptr.hpp>
+	<vector>
+
+1498829413 /home/chendejia/workspace/github/dong/include/util/gen_bmp.hpp
+	"common.hpp"
+	<iostream>
+	<stdio.h>
+	<stdlib.h>
+
+1498831196 source:/home/chendejia/workspace/github/dong/src/relu_layer.cpp
+	<iostream>
+	<common.hpp>
+	<algorithm>
+	"relu_layer.hpp"
+
+1498832961 /home/chendejia/workspace/github/dong/include/relu_layer.hpp
+	"common.hpp"
+	"layer.hpp"
+	<boost/shared_ptr.hpp>
+	<vector>
+
+1499282050 source:/home/chendejia/workspace/github/dong/src/softmax_layer.cpp
+	<iostream>
+	<common.hpp>
+	<algorithm>
+	"softmax_layer.hpp"
+
+1498832849 /home/chendejia/workspace/github/dong/include/softmax_layer.hpp
+	"common.hpp"
+	"layer.hpp"
+	<boost/shared_ptr.hpp>
+	<vector>
+
+1499282050 source:/home/chendejia/workspace/github/dong/src/neuron.cpp
+	<iostream>
+	"neuron.hpp"
+
+1499282050 /home/chendejia/workspace/github/dong/include/neuron.hpp
+	"common.hpp"
+	<boost/shared_ptr.hpp>
+	<vector>
+
+1499282050 source:/home/chendejia/workspace/github/dong/src/full_connect_layer.cpp
+	<iostream>
+	"full_connect_layer.hpp"
+
+1498832692 /home/chendejia/workspace/github/dong/include/full_connect_layer.hpp
+	"common.hpp"
+	"layer.hpp"
+	<boost/shared_ptr.hpp>
+	<vector>
+
+1498830441 /home/chendejia/workspace/github/dong/include/util/math_utils.hpp
+	<boost/math/special_functions/next.hpp>
+	<boost/random.hpp>
+	<boost/shared_ptr.hpp>
+
+1495655530 source:/home/chendejia/workspace/github/miniDL/src/proto/caffe.pb.cc
+	"proto/caffe.pb.h"
+	<algorithm>
+	<google/protobuf/stubs/common.h>
+	<google/protobuf/stubs/once.h>
+	<google/protobuf/io/coded_stream.h>
+	<google/protobuf/wire_format_lite_inl.h>
+	<google/protobuf/descriptor.h>
+	<google/protobuf/generated_message_reflection.h>
+	<google/protobuf/reflection_ops.h>
+	<google/protobuf/wire_format.h>
+
+1499524797 /home/chendejia/workspace/github/miniDL/include/proto/caffe.pb.h
+	<string>
+	<google/protobuf/stubs/common.h>
+	<google/protobuf/generated_message_util.h>
+	<google/protobuf/message.h>
+	<google/protobuf/repeated_field.h>
+	<google/protobuf/extension_set.h>
+	<google/protobuf/generated_enum_reflection.h>
+	<google/protobuf/unknown_field_set.h>
+
+1499524797 source:/home/chendejia/workspace/github/miniDL/src/util/db.cpp
+	"util/db.hpp"
+	"util/db_lmdb.hpp"
+	"common.hpp"
+	<string>
+
+1499524797 /home/chendejia/workspace/github/miniDL/include/util/db.hpp
+	<string>
+	"common.hpp"
+	"proto/caffe.pb.h"
+
+1499868278 /home/chendejia/workspace/github/miniDL/include/common.hpp
+	<gflags/gflags.h>
+	<glog/logging.h>
+	<math.h>
+	<algorithm>
+	<float.h>
+	<boost/math/special_functions/next.hpp>
+	<boost/random.hpp>
+	<boost/shared_ptr.hpp>
+
+1499524797 /home/chendejia/workspace/github/miniDL/include/util/db_lmdb.hpp
+	<string>
+	<vector>
+	"lmdb.h"
+	"util/db.hpp"
+
+1499524797 source:/home/chendejia/workspace/github/miniDL/src/util/db_lmdb.cpp
+	"util/db_lmdb.hpp"
+	<sys/stat.h>
+	<string>
+
+1499868278 source:/home/chendejia/workspace/github/miniDL/src/conv_layer.cpp
+	<iostream>
+	"conv_layer.hpp"
+	"neuron.hpp"
+
+1499871424 /home/chendejia/workspace/github/miniDL/include/conv_layer.hpp
+	"common.hpp"
+	"layer.hpp"
+	<boost/shared_ptr.hpp>
+	<vector>
+
+1499868278 /home/chendejia/workspace/github/miniDL/include/layer.hpp
+	"common.hpp"
+	"data.hpp"
+	<boost/shared_ptr.hpp>
+	<vector>
+
+1499868278 /home/chendejia/workspace/github/miniDL/include/data.hpp
+	"common.hpp"
+	"neuron.hpp"
+	<boost/shared_ptr.hpp>
+	<vector>
+
+1499868278 /home/chendejia/workspace/github/miniDL/include/neuron.hpp
+	"common.hpp"
+	<boost/shared_ptr.hpp>
+	<vector>
+
+1499868278 source:/home/chendejia/workspace/github/miniDL/src/data.cpp
+	"common.hpp"
+	"data.hpp"
+	"util/gen_bmp.hpp"
+	<boost/shared_ptr.hpp>
+	<vector>
+	<iomanip>
+	"util/math_utils.hpp"
+
+1499868278 /home/chendejia/workspace/github/miniDL/include/util/gen_bmp.hpp
+	"common.hpp"
+	<iostream>
+	<stdio.h>
+	<stdlib.h>
+
+1499868278 /home/chendejia/workspace/github/miniDL/include/util/math_utils.hpp
+	<boost/math/special_functions/next.hpp>
+	<boost/random.hpp>
+	<boost/shared_ptr.hpp>
+
+1499868278 source:/home/chendejia/workspace/github/miniDL/src/full_connect_layer.cpp
+	<iostream>
+	"full_connect_layer.hpp"
+
+1499871453 /home/chendejia/workspace/github/miniDL/include/full_connect_layer.hpp
+	"common.hpp"
+	"layer.hpp"
+	<boost/shared_ptr.hpp>
+	<vector>
+
+1499868278 source:/home/chendejia/workspace/github/miniDL/src/input_layer.cpp
+	<iostream>
+	"input_layer.hpp"
+
+1499871654 /home/chendejia/workspace/github/miniDL/include/input_layer.hpp
+	"common.hpp"
+	"layer.hpp"
+	<boost/shared_ptr.hpp>
+	<vector>
+
+1499868278 source:/home/chendejia/workspace/github/miniDL/src/layer.cpp
+	<iostream>
+	<pthread.h>
+	"layer.hpp"
+
+1499868278 source:/home/chendejia/workspace/github/miniDL/src/main.cpp
+	<iostream>
+	"util/gen_bmp.hpp"
+	"input_layer.hpp"
+	"conv_layer.hpp"
+	"pool_layer.hpp"
+	"full_connect_layer.hpp"
+	"relu_layer.hpp"
+	"softmax_layer.hpp"
+	"util/db.hpp"
+	<time.h>
+	<boost/shared_ptr.hpp>
+	<pthread.h>
+
+1499871493 /home/chendejia/workspace/github/miniDL/include/pool_layer.hpp
+	"common.hpp"
+	"layer.hpp"
+	<memory>
+	<boost/shared_ptr.hpp>
+	<vector>
+
+1499871503 /home/chendejia/workspace/github/miniDL/include/relu_layer.hpp
+	"common.hpp"
+	"layer.hpp"
+	<boost/shared_ptr.hpp>
+	<vector>
+
+1499868278 /home/chendejia/workspace/github/miniDL/include/softmax_layer.hpp
+	"common.hpp"
+	"layer.hpp"
+	<boost/shared_ptr.hpp>
+	<vector>
+
+1499868278 source:/home/chendejia/workspace/github/miniDL/src/neuron.cpp
+	<iostream>
+	"neuron.hpp"
+
+1499868278 source:/home/chendejia/workspace/github/miniDL/src/pool_layer.cpp
+	<iostream>
+	"pool_layer.hpp"
+
+1499868278 source:/home/chendejia/workspace/github/miniDL/src/relu_layer.cpp
+	<iostream>
+	<common.hpp>
+	<algorithm>
+	"relu_layer.hpp"
+
+1499868278 source:/home/chendejia/workspace/github/miniDL/src/softmax_layer.cpp
+	<iostream>
+	<common.hpp>
+	<algorithm>
+	"softmax_layer.hpp"
+
