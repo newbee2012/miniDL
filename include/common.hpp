@@ -11,9 +11,6 @@ private:\
   classname(const classname&);\
   classname& operator=(const classname&)
 
-
-#include <gflags/gflags.h>
-#include <glog/logging.h>
 #include <math.h>
 #include <algorithm>
 #include <float.h>

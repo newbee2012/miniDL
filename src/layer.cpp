@@ -160,7 +160,5 @@ float Layer::getLearningRate()
     case INV:
         return BASE_LEARNING_RATE * std::pow(1.0F + GAMMA * CURRENT_ITER_COUNT, -POWER);
     }
-
-    LOG(FATAL) << "LEARNING_RATE_POLICY ERROR : " << Layer::LEARNING_RATE_POLICY;
 }
 }
