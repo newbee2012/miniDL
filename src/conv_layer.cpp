@@ -28,12 +28,14 @@ void ConvLayer::setUp(const boost::shared_ptr<Data>& data)
     int t_w = b_w - k_w + 1;
     _top_data.reset(new Data(_num_output, 1, t_h, t_w, Data::CONSTANT));
     _bias_data.reset(new Data(_num_output, 1, t_h, t_w, Data::CONSTANT));
+
     for (int n = 0; n < t_n; n++) {
         for (int h = 0; h < t_h; h++) {
             for (int w = 0; w < t_w; w++) {
                 Neuron* t_neuron = _top_data->get(n, 0, h, w);
                 Neuron* bias_neuron = _bias_data->get(n, 0, h, w);
                 t_neuron->_bias = bias_neuron;
+
                 for (int c = 0; c < b_n; c++) {
                     for (int offset_h = 0; offset_h < k_h; offset_h++) {
                         for (int offset_w = 0; offset_w < k_w; offset_w++) {

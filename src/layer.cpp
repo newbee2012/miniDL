@@ -78,15 +78,17 @@ void Layer::forwardBase()
 void Layer::backwardBase()
 {
 #define THREAD_COUNT 4
-    bool multithreading = true;
+    bool multithreading = false;
 
     if (multithreading) {
         pthread_t thread[THREAD_COUNT];
         ThreadParam p[THREAD_COUNT];
         int spilit_count = _bottom_data->count() / THREAD_COUNT;
+
         for (int i = 0; i < THREAD_COUNT; ++i) {
             int offset_start = i * spilit_count;
             int offset_end = offset_start + spilit_count;
+
             if (i == THREAD_COUNT - 1) {
                 offset_end = _bottom_data->count();
             }
@@ -148,16 +150,17 @@ void* Layer::backwardBaseThread(void* ptr)
 
 float Layer::getLearningRate()
 {
-    switch(Layer::LEARNING_RATE_POLICY)
-    {
+    switch (Layer::LEARNING_RATE_POLICY) {
     case FIXED:
         return BASE_LEARNING_RATE;
+
     case STEP:
-        return BASE_LEARNING_RATE * std::pow(GAMMA , CURRENT_ITER_COUNT / STEPSIZE);
+        return BASE_LEARNING_RATE * std::pow(GAMMA, CURRENT_ITER_COUNT / STEPSIZE);
+
     case INV:
         return BASE_LEARNING_RATE * std::pow(1.0F + GAMMA * CURRENT_ITER_COUNT, -POWER);
     }
 
-    LOG(FATAL)<<"LEARNING_RATE_POLICY ERROR : "<<Layer::LEARNING_RATE_POLICY;
+    LOG(FATAL) << "LEARNING_RATE_POLICY ERROR : " << Layer::LEARNING_RATE_POLICY;
 }
 }

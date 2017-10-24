@@ -17,8 +17,8 @@ void Neuron::forward()
 
 void Neuron::backward()
 {
-    float bias = (NULL == _bias) ? 0.0F : _bias->_value;
-
+    //cout<<"Neuron::backward"<<_bias->_value<<endl;
+    //float bias = (NULL == _bias) ? 0.0F : _bias->_value;
     for (int i = 0; i < _forward_neuron.size(); ++i) {
         Neuron* t_neuron = _forward_neuron[i];
         Neuron* w_neuron = _weight_neuron[i];

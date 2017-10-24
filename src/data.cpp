@@ -24,6 +24,7 @@ Data::Data(int num, int channels, int height, int width, InitType type): _num(nu
     float scale = sqrt(float(3) / n);
     float* t = new float[count()];
     RandomGenerator::rng_uniform(count(), -scale, scale, t);
+
     for (int i = 0; i < count(); ++i) {
         if (type == Data::CONSTANT) {
             _neurons[i]._value = 0.0F;
@@ -85,7 +86,7 @@ void Data::print()
                 }
             }
 
-            cout << "----------------------------------" << endl;
+            cout << "----------------------------------num,channels" << n << "," << c << endl;
         }
     }
 }

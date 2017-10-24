@@ -14,12 +14,14 @@ void FullConnectLayer::setUp(const boost::shared_ptr<Data>& data)
     int t_w = _num;
     _top_data.reset(new Data(t_n, 1, t_h, t_w, Data::CONSTANT));
     _bias_data.reset(new Data(t_n, 1, t_h, t_w, Data::CONSTANT));
+
     for (int n = 0; n < t_n; n++) {
         for (int h = 0; h < t_h; h++) {
             for (int w = 0; w < t_w; w++) {
                 Neuron* t_neuron = _top_data->get(n, 0, h, w);
                 Neuron* bias_neuron = _bias_data->get(n, 0, h, w);
                 t_neuron->_bias = bias_neuron;
+
                 for (int i = 0; i < _bottom_data->count(); i++) {
                     Neuron* b_neuron = _bottom_data->get(i);
                     Neuron* w_neuron = _weight_data->get(w, i, 0, 0);

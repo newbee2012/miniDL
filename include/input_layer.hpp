@@ -11,8 +11,8 @@ namespace dong
 class InputLayer: public Layer
 {
 public:
-    explicit InputLayer(){};
-    virtual ~InputLayer(){};
+    explicit InputLayer() {};
+    virtual ~InputLayer() {};
     inline virtual LayerType getType()
     {
         return INPUT_LAYER;

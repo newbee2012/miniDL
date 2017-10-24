@@ -18,11 +18,13 @@ void SoftmaxLayer::forward_cpu()
 {
     const int count = _bottom_data->count();
     float maxValue = 0.0F;
+
     for (int i = 0; i < count; ++i) {
         maxValue = MAX(maxValue, _bottom_data->get(i)->_value);
     }
 
     double sumExp = 0.0F;
+
     for (int i = 0; i < count; ++i) {
         float expValue = exp(_bottom_data->get(i)->_value - maxValue) ;
         _top_data->get(i)->_value = expValue;
@@ -44,12 +46,14 @@ void SoftmaxLayer::backward_cpu()
         Neuron* b_neuron = _bottom_data->get(i);
         Neuron* t_neuron = _top_data->get(i);
         b_neuron->_diff = t_neuron->_value;
+
         if (NULL != b_neuron->_bias) {
             b_neuron->_bias->_diff = b_neuron->_diff;
         }
     }
 
     _bottom_data->get(_label)->_diff -= 1;
+
     if (NULL != _bottom_data->get(_label)->_bias) {
         _bottom_data->get(_label)->_bias->_diff -= _bottom_data->get(_label)->_diff;
     }

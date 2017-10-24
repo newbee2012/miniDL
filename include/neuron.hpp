@@ -14,11 +14,8 @@ public:
     {
         _value = 0.0F;
         _diff = 0.0F;
-    }
-
-    Neuron(float value)
-    {
-        this->_value = value;
+        _forward_neuron_count = 0;
+        _backward_neuron_count = 0;
     }
 
     ~Neuron() {}
@@ -30,7 +27,7 @@ public:
 
     vector< Neuron* > _forward_neuron;
     vector< Neuron* > _weight_neuron;
-    Neuron* _bias;
+    Neuron* _bias = NULL;
     int _forward_neuron_count;
     int _backward_neuron_count;
 
