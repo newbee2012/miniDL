@@ -15,7 +15,7 @@
 #include <vector>
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/split.hpp>
-
+#include "util/net_model.hpp"
 using namespace std;
 using namespace dong;
 int sum = 0;
@@ -38,8 +38,18 @@ template<typename T> string toString(const T& t)
     return oss.str();
 }
 
+int ParseJsonFromString()
+{
+  NetModel* netMode = new NetModel();
+  netMode->load_model("../../net_model.json");
+  delete netMode;
+  return 0;
+}
+
 void test2(char* p, char* q, int count1, int count2, int v)
 {
+    Json::Reader reader;
+    Json::Value root;
     if (count1 + count2 == 0) {
         cout << p << endl;
         sum++;
@@ -144,7 +154,7 @@ void train2(int argc, char* argv[])
     inputLayer->setUp(inputData);
     //L1.ConvLayer
     boost::shared_ptr<ConvLayer> convLayer(new ConvLayer());
-    convLayer->init(100, 1, width);
+    //convLayer->init(int[3]{100, 1, width});
     convLayer->setUp(inputLayer->getTopData());
     //L2.FullConnectLayer
     boost::shared_ptr<FullConnectLayer> fullConnectLayer(new FullConnectLayer());
@@ -271,7 +281,7 @@ void train2(int argc, char* argv[])
             }
 
             float avg_loss = loss_record_sum / record_count;
-            cout << "avg loss:" << setprecision(8) << fixed << avg_loss << ", lr_rate:" << Layer::CURRENT_LEARNING_RATE << endl;
+            cout << "avg loss:" << setprecision(8) << fixed << avg_loss << ", lr_rate:" << Layer::CURRENT_LEARNING_RATE<<",label:"<<batchLabels[0] << endl;
             loss_record_sum = 0.0F;
             record_count = 0;
         }
@@ -286,9 +296,8 @@ void train2(int argc, char* argv[])
 
 int main(int argc, char* argv[])
 {
-    //mysql_test();
-    train2(argc, argv);
-    //threadTest();
+    //train2(argc, argv);
+    ParseJsonFromString();
     cout << "Hello world!" << endl;
     return 0;
 }

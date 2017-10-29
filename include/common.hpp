@@ -17,22 +17,50 @@ private:\
 #include <boost/math/special_functions/next.hpp>
 #include <boost/random.hpp>
 #include <boost/shared_ptr.hpp>
-
+#include <assert.h>
+#include "json/json.h"
 
 #define MIN(a,b) (((a)<(b))?(a):(b))
 #define MAX(a,b) (((a)>(b))?(a):(b))
 #define random(x) (rand()%x)
+
+#define ASSERT(exp, msg) \
+if(!(exp)) \
+{ \
+    cout<< "程序异常终止！" << "原因:"; \
+    msg<<std::endl; \
+    assert(exp); \
+}
+
+
 
 using namespace std;
 using namespace boost;
 
 namespace dong
 {
+const int LayerTypeSize = 6;
 enum LayerType_ {INPUT_LAYER, CONVOLUTION_LAYER, POOL_LAYER, FULL_CONNECT_LAYER, RELU_LAYER, SOFTMAX_LAYER};
+static const char* LayerTypeNames[] = {"INPUT_LAYER", "CONVOLUTION_LAYER", "POOL_LAYER", "FULL_CONNECT_LAYER", "RELU_LAYER", "SOFTMAX_LAYER"};
+
 enum LR_Policy_ {FIXED, STEP, EXP, INV, MULTISTEP, POLY, SIGMOID};
 typedef LayerType_ LayerType;
 typedef LR_Policy_ LR_Policy;
 enum Mode {TRAIN, TEST};
+
+static LayerType_ STRING_TO_LAYER_TYPE(const char* name)
+{
+    for(int i=0;i<LayerTypeSize;++i)
+    {
+        if(0==strcmp(LayerTypeNames[i],name))
+        {
+            return (LayerType_)i;
+        }
+    }
+
+    return (LayerType_)-1;
+}
+
 }
 
 #endif  // DONG_COMMON_HPP_

@@ -17,6 +17,7 @@ public:
     {
         return INPUT_LAYER;
     }
+
     virtual void setUp(const boost::shared_ptr<Data>& data);
     virtual void forward_cpu();
     virtual void backward_cpu();

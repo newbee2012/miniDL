@@ -1,5 +1,3 @@
-#ifndef DONG_DATA_HPP_
-#define DONG_DATA_HPP_
 #include "common.hpp"
 #include "data.hpp"
 #include "util/gen_bmp.hpp"
@@ -152,4 +150,3 @@ void Data::genBmp(const char* format, int index)
 
 }  // namespace dong
 
-#endif  // DONG_BLOB_HPP_

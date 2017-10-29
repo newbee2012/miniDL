@@ -34,6 +34,7 @@
 			<Add option="-fexceptions" />
 			<Add option="-DUSE_LMDB" />
 			<Add directory="include" />
+			<Add directory="/usr/include/jsoncpp" />
 		</Compiler>
 		<Linker>
 			<Add library="libprotobuf" />
@@ -43,6 +44,7 @@
 			<Add library="libboost_system" />
 			<Add library="libpthread" />
 			<Add library="libmysqlclient" />
+			<Add library="libjsoncpp" />
 		</Linker>
 		<Unit filename="include/common.hpp" />
 		<Unit filename="include/conv_layer.hpp" />
@@ -55,10 +57,9 @@
 		<Unit filename="include/proto/caffe.pb.h" />
 		<Unit filename="include/relu_layer.hpp" />
 		<Unit filename="include/softmax_layer.hpp" />
-		<Unit filename="include/util/db.hpp" />
-		<Unit filename="include/util/db_lmdb.hpp" />
 		<Unit filename="include/util/gen_bmp.hpp" />
 		<Unit filename="include/util/math_utils.hpp" />
+		<Unit filename="include/util/net_model.hpp" />
 		<Unit filename="src/conv_layer.cpp" />
 		<Unit filename="src/data.cpp" />
 		<Unit filename="src/full_connect_layer.cpp" />
@@ -67,11 +68,9 @@
 		<Unit filename="src/main.cpp" />
 		<Unit filename="src/neuron.cpp" />
 		<Unit filename="src/pool_layer.cpp" />
-		<Unit filename="src/proto/caffe.pb.cc" />
 		<Unit filename="src/relu_layer.cpp" />
 		<Unit filename="src/softmax_layer.cpp" />
-		<Unit filename="src/util/db.cpp" />
-		<Unit filename="src/util/db_lmdb.cpp" />
+		<Unit filename="src/util/net_model.cpp" />
 		<Extensions>
 			<code_completion />
 			<envvars />

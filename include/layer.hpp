@@ -43,6 +43,7 @@ public:
 
     Layer() {};
     virtual ~Layer() {};
+    virtual void init(int params[]) {};
     virtual void forward_cpu() = 0;
     virtual void forward();
     virtual void backward_cpu() = 0;

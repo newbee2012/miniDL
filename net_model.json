@@ -1,0 +1,22 @@
+{
+    "layersModel": [
+        {
+            "type": "INPUT_LAYER",
+            "name": "inputLayer",
+	    "bottomLayerName": null,
+            "initParams": null
+            
+        },
+        {
+            "type": "CONVOLUTION_LAYER1",
+            "name": "convLayer",
+	    "bottomLayerName": "inputLayer",
+            "initParams": [
+                100,
+                1,
+                301
+            ]
+        }
+    ],
+    "layersData": null
+}
