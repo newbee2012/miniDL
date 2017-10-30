@@ -44,7 +44,7 @@ void ReluLayer::backward_cpu()
     Layer::backwardBase();
 }
 
-void ReluLayer::init()
+void ReluLayer::init(int (&params)[4])
 {
 }
 }

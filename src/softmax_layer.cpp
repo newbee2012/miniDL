@@ -64,7 +64,7 @@ void SoftmaxLayer::setLabel(int label)
     _label = label;
 }
 
-void SoftmaxLayer::init()
+void SoftmaxLayer::init(int (&params)[4])
 {
 }
 

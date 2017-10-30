@@ -253,7 +253,7 @@
 	"common.hpp"
 	"proto/caffe.pb.h"
 
-1509310864 /home/chendejia/workspace/github/miniDL/include/common.hpp
+1509380603 /home/chendejia/workspace/github/miniDL/include/common.hpp
 	<math.h>
 	<algorithm>
 	<float.h>
@@ -274,18 +274,18 @@
 	<sys/stat.h>
 	<string>
 
-1509305379 source:/home/chendejia/workspace/github/miniDL/src/conv_layer.cpp
+1509380296 source:/home/chendejia/workspace/github/miniDL/src/conv_layer.cpp
 	<iostream>
 	"conv_layer.hpp"
 	"neuron.hpp"
 
-1509303727 /home/chendejia/workspace/github/miniDL/include/conv_layer.hpp
+1509380280 /home/chendejia/workspace/github/miniDL/include/conv_layer.hpp
 	"common.hpp"
 	"layer.hpp"
 	<boost/shared_ptr.hpp>
 	<vector>
 
-1509303723 /home/chendejia/workspace/github/miniDL/include/layer.hpp
+1509380682 /home/chendejia/workspace/github/miniDL/include/layer.hpp
 	"common.hpp"
 	"data.hpp"
 	<boost/shared_ptr.hpp>
@@ -322,21 +322,21 @@
 	<boost/random.hpp>
 	<boost/shared_ptr.hpp>
 
-1509283170 source:/home/chendejia/workspace/github/miniDL/src/full_connect_layer.cpp
+1509381255 source:/home/chendejia/workspace/github/miniDL/src/full_connect_layer.cpp
 	<iostream>
 	"full_connect_layer.hpp"
 
-1499871453 /home/chendejia/workspace/github/miniDL/include/full_connect_layer.hpp
+1509380704 /home/chendejia/workspace/github/miniDL/include/full_connect_layer.hpp
 	"common.hpp"
 	"layer.hpp"
 	<boost/shared_ptr.hpp>
 	<vector>
 
-1499871671 source:/home/chendejia/workspace/github/miniDL/src/input_layer.cpp
+1509381340 source:/home/chendejia/workspace/github/miniDL/src/input_layer.cpp
 	<iostream>
 	"input_layer.hpp"
 
-1509302297 /home/chendejia/workspace/github/miniDL/include/input_layer.hpp
+1509381311 /home/chendejia/workspace/github/miniDL/include/input_layer.hpp
 	"common.hpp"
 	"layer.hpp"
 	<boost/shared_ptr.hpp>
@@ -347,7 +347,7 @@
 	<pthread.h>
 	"layer.hpp"
 
-1509309384 source:/home/chendejia/workspace/github/miniDL/src/main.cpp
+1509311276 source:/home/chendejia/workspace/github/miniDL/src/main.cpp
 	<iostream>
 	"util/gen_bmp.hpp"
 	"input_layer.hpp"
@@ -449,7 +449,7 @@
 	<string>
 	<iostream>
 
-1509311200 source:/home/chendejia/workspace/github/miniDL/src/util/net_model.cpp
+1509379760 source:/home/chendejia/workspace/github/miniDL/src/util/net_model.cpp
 	"common.hpp"
 	<fstream>
 	<iostream>

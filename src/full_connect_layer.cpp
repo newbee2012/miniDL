@@ -43,9 +43,9 @@ void FullConnectLayer::backward_cpu()
     Layer::backwardBase();
 }
 
-void FullConnectLayer::init(int num)
+void FullConnectLayer::init(int (&params)[4])
 {
-    this->_num = num;
+    this->_num = params[0];
 }
 
 }

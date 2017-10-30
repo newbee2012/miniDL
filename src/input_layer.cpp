@@ -4,6 +4,12 @@ using namespace std;
 
 namespace dong
 {
+
+void InputLayer::init(int (&params)[4])
+{
+
+}
+
 void InputLayer::setUp(const boost::shared_ptr<Data>& data)
 {
     Layer::setUp(data);

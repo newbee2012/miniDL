@@ -21,6 +21,7 @@ public:
     virtual void setUp(const boost::shared_ptr<Data>& data);
     virtual void forward_cpu();
     virtual void backward_cpu();
+    virtual void init(int (&params)[4]);
 
 protected:
 

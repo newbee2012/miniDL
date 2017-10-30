@@ -24,11 +24,11 @@ private:\
 #define MAX(a,b) (((a)>(b))?(a):(b))
 #define random(x) (rand()%x)
 
-#define ASSERT(exp, msg) \
+#define ASSERT(exp, ending_action) \
 if(!(exp)) \
 { \
     cout<< "程序异常终止！" << "原因:"; \
-    msg<<std::endl; \
+    ending_action; \
     assert(exp); \
 }
 
@@ -59,6 +59,11 @@ static LayerType_ STRING_TO_LAYER_TYPE(const char* name)
     }
 
     return (LayerType_)-1;
+}
+
+static const char* LAYER_TYPE_TO_STRING(LayerType_ type)
+{
+    return LayerTypeNames[type];
 }
 
 }

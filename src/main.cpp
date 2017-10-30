@@ -158,32 +158,32 @@ void train2(int argc, char* argv[])
     convLayer->setUp(inputLayer->getTopData());
     //L2.FullConnectLayer
     boost::shared_ptr<FullConnectLayer> fullConnectLayer(new FullConnectLayer());
-    fullConnectLayer->init(100);
+    //fullConnectLayer->init(100);
     fullConnectLayer->setUp(convLayer->getTopData());
     //L3.reluLayer
     boost::shared_ptr<ReluLayer> reluLayer(new ReluLayer());
-    reluLayer->init();
+    //reluLayer->init();
     reluLayer->setUp(fullConnectLayer->getTopData());
     //L4.FullConnectLayer
     boost::shared_ptr<FullConnectLayer> fullConnectLayer2(new FullConnectLayer());
-    fullConnectLayer2->init(20);
+    //fullConnectLayer2->init(20);
     fullConnectLayer2->setUp(reluLayer->getTopData());
     //L5.FullConnectLayer
     boost::shared_ptr<ReluLayer> reluLayer2(new ReluLayer());
-    reluLayer2->init();
+    //reluLayer2->init();
     reluLayer2->setUp(fullConnectLayer2->getTopData());
     boost::shared_ptr<FullConnectLayer> fullConnectLayer3(new FullConnectLayer());
-    fullConnectLayer3->init(10);
+    //fullConnectLayer3->init(10);
     fullConnectLayer3->setUp(reluLayer->getTopData());
     boost::shared_ptr<ReluLayer> reluLayer3(new ReluLayer());
-    reluLayer3->init();
+    //reluLayer3->init();
     reluLayer3->setUp(fullConnectLayer3->getTopData());
     boost::shared_ptr<FullConnectLayer> fullConnectLayer4(new FullConnectLayer());
-    fullConnectLayer4->init(2);
+    //fullConnectLayer4->init(2);
     fullConnectLayer4->setUp(reluLayer->getTopData());
     //L9.SoftmaxLayer
     boost::shared_ptr<SoftmaxLayer> softmaxLayer(new SoftmaxLayer(dong::TRAIN));
-    softmaxLayer->init();
+    //softmaxLayer->init();
     softmaxLayer->setUp(fullConnectLayer3->getTopData());
     float loss_record_sum = 0.0F;
     int record_count = 0;

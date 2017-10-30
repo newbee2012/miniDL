@@ -6,7 +6,7 @@ using namespace std;
 namespace dong
 {
 
-void ConvLayer::init(int params[])
+void ConvLayer::init(int (&params)[4])
 {
     _num_output = params[0];
     _kernel_h = params[1];

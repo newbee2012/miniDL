@@ -18,7 +18,7 @@ public:
         return FULL_CONNECT_LAYER;
     }
     virtual void setUp(const boost::shared_ptr<Data>& bottomData);
-    virtual void init(int num);
+    virtual void init(int (&params)[4]);
     virtual void forward_cpu();
     virtual void backward_cpu();
 
