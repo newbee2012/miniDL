@@ -16,10 +16,20 @@ void NetModel::setUp()
     int shape_size = _input_shape_num*_input_shape_channels*_input_shape_height * _input_shape_width;
     ASSERT(shape_size>0, cout<<"训练数据尺寸定义错误！"<<endl);
 
-    _inputNeurons.reset(new Neuron[_input_shape_num*_input_shape_channels*_input_shape_height * _input_shape_width]);
+    _inputNeurons.reset(new Neuron[_input_shape_num *_input_shape_channels *_input_shape_height * _input_shape_width]);
     _inputData.reset(new Data(_input_shape_num, _input_shape_channels, _input_shape_height, _input_shape_width));
     _inputData->setUp(_inputNeurons);
     _inputLayer->setUp(_inputData);
+}
+
+void NetModel::fillDataForOnceTrainForward(float* datas, int size)
+{
+    int shape_size = _input_shape_num*_input_shape_channels*_input_shape_height * _input_shape_width;
+    ASSERT(size >= shape_size, "输入数据size<shape_size");
+    for (int i = 0; j < shape_size; ++i)
+    {
+        _inputNeurons[j]._value = datas[i];
+    }
 }
 
 void NetModel::train()
@@ -59,7 +69,7 @@ void NetModel::load_model(const char* filename)
 
         int layers_size = layers.size();
         ASSERT(layers_size > 0, cout<<"layers_size <=0！"<<endl);
-        _layers.reset(new Layer*[layers_size]);
+        _layers.reset(new Layer[layers_size]);
 
         for(int i = 0; i < layers_size; ++i)
         {
@@ -67,7 +77,7 @@ void NetModel::load_model(const char* filename)
             Json::Value layer = layers[i];
             string type = layer["type"].asString();
             string name = layer["name"].asString();
-            string bottom_layer_name = layer["bottomLayerName"].asString();
+            string top_layer_name = layer["topLayer"].asString();
 
             switch (STRING_TO_LAYER_TYPE(type.c_str()))
             {

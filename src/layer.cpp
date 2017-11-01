@@ -4,6 +4,14 @@
 using namespace std;
 namespace dong
 {
+
+void Layer::setTopLayer(Layer* top_layer)
+{
+    _top_layer.reset(top_layer);
+    _top_layer->setUp(this->getTopData());
+}
+
+
 void Layer::forward()
 {
     _bottom_data->clearDiff();

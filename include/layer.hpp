@@ -49,6 +49,7 @@ public:
     virtual void backward_cpu() = 0;
     virtual void backward();
     virtual LayerType getType() = 0;
+    virtual void setTopLayer(Layer*);
     static float getLearningRate();
 
     inline virtual void setUp(const boost::shared_ptr<Data>& data)
@@ -88,6 +89,7 @@ protected:
     boost::shared_ptr<Data> _top_data;
     boost::shared_ptr<Data> _weight_data;
     boost::shared_ptr<Data> _bias_data;
+    boost::shared_ptr<Layer> _top_layer;
 
     DISABLE_COPY_AND_ASSIGN(Layer);
 };

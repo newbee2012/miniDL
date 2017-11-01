@@ -10,14 +10,14 @@
         {
             "type": "INPUT_LAYER",
             "name": "inputLayer",
-	    "top": "convLayer",
+	    "topLayer": "convLayer",
             "initParams": null
             
         },
         {
             "type": "CONVOLUTION_LAYER",
             "name": "convLayer",
-	    "top": null,
+	    "topLayer": null,
             "initParams": [100,1,301]
         }
     ],
