@@ -146,7 +146,7 @@ void train2(int argc, char* argv[])
     int width = 301;
     int height = 3;
     ///////////////////////////////////////////////////////////////////////////
-    boost::shared_ptr<Neuron[]> inputImage(new Neuron[height * width]);
+    boost::shared_array<Neuron> inputImage(new Neuron[height * width]);
     boost::shared_ptr<Data> inputData(new Data(1, channels, height, width));
     inputData->setUp(inputImage);
     //L1.inputLayer

@@ -1,24 +1,26 @@
 {
-    "inputShape":
-    {
-	"num":1,
-	"channels":1,
-	"height":3,
-	"width":301,
+    "inputShape": {
+        "num": 1,
+        "channels": 1,
+        "height": 3,
+        "width": 301
     },
     "layersModel": [
         {
             "type": "INPUT_LAYER",
             "name": "inputLayer",
-	    "topLayer": "convLayer",
+            "topLayer": "convLayer",
             "initParams": null
-            
         },
         {
             "type": "CONVOLUTION_LAYER",
             "name": "convLayer",
-	    "topLayer": null,
-            "initParams": [100,1,301]
+            "topLayer": null,
+            "initParams": [
+                100,
+                1,
+                301
+            ]
         }
     ],
     "layersData": null

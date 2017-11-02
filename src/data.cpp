@@ -53,7 +53,7 @@ void Data::clearValue()
     }
 }
 
-void Data::setUp(const boost::shared_ptr<Neuron[]>& neurons)
+void Data::setUp(const boost::shared_array<Neuron>& neurons)
 {
     _neurons = neurons;
 }

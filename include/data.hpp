@@ -2,7 +2,6 @@
 #define DONG_DATA_LAYER_HPP_
 #include "common.hpp"
 #include "neuron.hpp"
-#include <boost/shared_ptr.hpp>
 #include <vector>
 
 
@@ -15,7 +14,7 @@ public:
     enum InitType {CONSTANT, RANDOM, XAVIER};
     explicit Data(int num, int channels, int height, int width, InitType type);
     explicit Data(int num, int channels, int height, int width);
-    void setUp(const boost::shared_ptr<Neuron[]>& neurons);
+    void setUp(const boost::shared_array<Neuron>& neurons);
     void print();
     void printDiff();
     void genBmp(const char* filename, int label);
@@ -63,7 +62,7 @@ public:
     }
 
 protected:
-    boost::shared_ptr<Neuron[]> _neurons;
+    boost::shared_array<Neuron> _neurons;
     int _num;
     int _channels;
     int _height;

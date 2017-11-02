@@ -6,6 +6,7 @@
 #include "util/net_model.hpp"
 #include "input_layer.hpp"
 #include "conv_layer.hpp"
+#include "layer.hpp"
 using namespace std;
 
 namespace dong
@@ -19,16 +20,16 @@ void NetModel::setUp()
     _inputNeurons.reset(new Neuron[_input_shape_num *_input_shape_channels *_input_shape_height * _input_shape_width]);
     _inputData.reset(new Data(_input_shape_num, _input_shape_channels, _input_shape_height, _input_shape_width));
     _inputData->setUp(_inputNeurons);
-    _inputLayer->setUp(_inputData);
+    //_inputLayer->setUp(_inputData);
 }
 
 void NetModel::fillDataForOnceTrainForward(float* datas, int size)
 {
     int shape_size = _input_shape_num*_input_shape_channels*_input_shape_height * _input_shape_width;
     ASSERT(size >= shape_size, "输入数据size<shape_size");
-    for (int i = 0; j < shape_size; ++i)
+    for (int i = 0; i < shape_size; ++i)
     {
-        _inputNeurons[j]._value = datas[i];
+        _inputNeurons[i]._value = datas[i];
     }
 }
 
@@ -61,6 +62,7 @@ void NetModel::load_model(const char* filename)
         _input_shape_channels = input_shape["channels"].asInt();
         _input_shape_height = input_shape["height"].asInt();
         _input_shape_width = input_shape["width"].asInt();
+        cout<<_input_shape_num<<endl;
         this->setUp();
 
         Json::Value layers = root["layersModel"];
@@ -69,8 +71,6 @@ void NetModel::load_model(const char* filename)
 
         int layers_size = layers.size();
         ASSERT(layers_size > 0, cout<<"layers_size <=0！"<<endl);
-        _layers.reset(new Layer[layers_size]);
-
         for(int i = 0; i < layers_size; ++i)
         {
             cout<<"layer["<<i<<"]:"<<endl;
@@ -81,8 +81,11 @@ void NetModel::load_model(const char* filename)
 
             switch (STRING_TO_LAYER_TYPE(type.c_str()))
             {
+            case INPUT_LAYER:
+                _layers.push_back(boost::shared_ptr<Layer>(new InputLayer()));
+                break;
             case CONVOLUTION_LAYER:
-                _layers[i] = new ConvLayer();
+                _layers.push_back(boost::shared_ptr<Layer>(new ConvLayer()));
                 break;
             default:
                 ASSERT(false, cout<<"不合法的LayerType-->"<<type.c_str()<<endl);
@@ -99,12 +102,14 @@ void NetModel::load_model(const char* filename)
                 cout<<params[i]<<",";
             }
 
+            cout<<endl;
+
             _layers[i]->init(params);
             //_layers[i] = new InputLayer();
 
             cout<<"type:"<<type<<endl;
             cout<<"name:"<<name<<endl;
-            cout<<"bottomLayerName:"<<bottom_layer_name<<endl;
+            cout<<"top_layer_name:"<<top_layer_name<<endl;
 
 
 

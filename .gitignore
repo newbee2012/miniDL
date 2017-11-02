@@ -9,3 +9,4 @@ build
 data/
 bin/
 *.mdb
+*~

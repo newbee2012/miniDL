@@ -17,6 +17,7 @@ private:\
 #include <boost/math/special_functions/next.hpp>
 #include <boost/random.hpp>
 #include <boost/shared_ptr.hpp>
+#include <boost/shared_array.hpp>
 #include <assert.h>
 #include "json/json.h"
 
