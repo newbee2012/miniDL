@@ -11,7 +11,7 @@ namespace dong
 class FullConnectLayer: public Layer
 {
 public:
-    explicit FullConnectLayer() {};
+    explicit FullConnectLayer(const string &name):Layer(name) {};
     virtual ~FullConnectLayer() {};
     inline virtual LayerType getType()
     {

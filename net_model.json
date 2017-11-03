@@ -1,27 +1,27 @@
 {
+    "hyperParameters":{
+	"batchCount":1,
+	"perIterTrainCount":1
+    },
     "inputShape": {
         "num": 1,
         "channels": 1,
         "height": 3,
         "width": 301
     },
-    "layersModel": [
-        {
+    "layersModel":{
+        "inputLayer":{
             "type": "INPUT_LAYER",
             "name": "inputLayer",
             "topLayer": "convLayer",
             "initParams": null
         },
-        {
+        "convLayer":{
             "type": "CONVOLUTION_LAYER",
             "name": "convLayer",
             "topLayer": null,
-            "initParams": [
-                100,
-                1,
-                301
-            ]
+            "initParams": [2,1,301]
         }
-    ],
+    },
     "layersData": null
 }

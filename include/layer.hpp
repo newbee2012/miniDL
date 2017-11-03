@@ -41,7 +41,7 @@ public:
     static float CURRENT_LEARNING_RATE;     //当前学习速率
     static int STEPSIZE;                  //每STEPSIZE次迭代，更新一次学习率
 
-    Layer() {};
+    Layer(const string &name) {this->name = name;}
     virtual ~Layer() {};
     virtual void init(int (&params)[4]) = 0;
     virtual void forward_cpu() = 0;
@@ -49,7 +49,9 @@ public:
     virtual void backward_cpu() = 0;
     virtual void backward();
     virtual LayerType getType() = 0;
+    virtual boost::shared_ptr<Layer>& getTopLayer();
     virtual void setTopLayer(Layer*);
+    virtual const string& getName(){return this->name;}
     static float getLearningRate();
 
     inline virtual void setUp(const boost::shared_ptr<Data>& data)
@@ -57,22 +59,22 @@ public:
         this->_bottom_data = data;
     }
 
-    inline virtual boost::shared_ptr<Data> getBottomData()
+    inline virtual boost::shared_ptr<Data>& getBottomData()
     {
         return _bottom_data;
     }
 
-    inline virtual boost::shared_ptr<Data> getTopData()
+    inline virtual boost::shared_ptr<Data>& getTopData()
     {
         return _top_data;
     }
 
-    inline virtual boost::shared_ptr<Data> getWeightData()
+    inline virtual boost::shared_ptr<Data>& getWeightData()
     {
         return _weight_data;
     }
 
-    inline virtual boost::shared_ptr<Data> getBiasData()
+    inline virtual boost::shared_ptr<Data>& getBiasData()
     {
         return _bias_data;
     }
@@ -90,6 +92,7 @@ protected:
     boost::shared_ptr<Data> _weight_data;
     boost::shared_ptr<Data> _bias_data;
     boost::shared_ptr<Layer> _top_layer;
+    string name;
 
     DISABLE_COPY_AND_ASSIGN(Layer);
 };

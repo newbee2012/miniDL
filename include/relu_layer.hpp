@@ -11,7 +11,7 @@ namespace dong
 class ReluLayer: public Layer
 {
 public:
-    explicit ReluLayer() {};
+    explicit ReluLayer(const string &name):Layer(name) {};
     virtual ~ReluLayer() {};
     inline virtual LayerType getType()
     {

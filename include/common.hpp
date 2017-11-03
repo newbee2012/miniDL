@@ -18,6 +18,8 @@ private:\
 #include <boost/random.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/shared_array.hpp>
+#include <iostream>
+#include <string>
 #include <assert.h>
 #include "json/json.h"
 
@@ -65,6 +67,13 @@ static LayerType_ STRING_TO_LAYER_TYPE(const char* name)
 static const char* LAYER_TYPE_TO_STRING(LayerType_ type)
 {
     return LayerTypeNames[type];
+}
+
+template<typename T> static string toString(const T& t)
+{
+    ostringstream oss;  //创建一个格式化输出流
+    oss << t;           //把值传递如流中
+    return oss.str();
 }
 
 }

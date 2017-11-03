@@ -12,7 +12,7 @@ namespace dong
 class PoolLayer: public Layer
 {
 public:
-    PoolLayer() {};
+    PoolLayer(const string &name):Layer(name) {};
     virtual ~PoolLayer() {};
     inline virtual LayerType getType()
     {

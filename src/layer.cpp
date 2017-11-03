@@ -5,6 +5,12 @@ using namespace std;
 namespace dong
 {
 
+boost::shared_ptr<Layer>& Layer::getTopLayer()
+{
+    return this->_top_layer;
+}
+
+
 void Layer::setTopLayer(Layer* top_layer)
 {
     _top_layer.reset(top_layer);
@@ -37,8 +43,8 @@ void Layer::forward()
     }
 
     this->forward_cpu();
-    /*
-            cout<<"--------------------"<< EnumNames[getType()]<<" forward-----------------------"<<endl;
+
+            cout<<"--------------------"<< LayerTypeNames[getType()]<<" forward-----------------------"<<endl;
             cout<<"bottom data forward"<<endl;
             _bottom_data->print();
             cout<<"top data forward"<<endl;
@@ -48,14 +54,14 @@ void Layer::forward()
             {
                 _weight_data->print();
             }
-    */
+
 }
 
 void Layer::backward()
 {
     this->backward_cpu();
     /*
-            cout<<"--------------------"<< EnumNames[getType()]<<" backward-----------------------"<<endl;
+            cout<<"--------------------"<< LayerTypeNames[getType()]<<" backward-----------------------"<<endl;
             cout<<"bottom diff backward"<<endl;
             _bottom_data->printDiff();
             cout<<"weight diff backward"<<endl;

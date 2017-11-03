@@ -52,25 +52,29 @@
 		<Unit filename="include/full_connect_layer.hpp" />
 		<Unit filename="include/input_layer.hpp" />
 		<Unit filename="include/layer.hpp" />
+		<Unit filename="include/net_model.hpp" />
+		<Unit filename="include/net_model_mysql.hpp" />
 		<Unit filename="include/neuron.hpp" />
 		<Unit filename="include/pool_layer.hpp" />
 		<Unit filename="include/proto/caffe.pb.h" />
 		<Unit filename="include/relu_layer.hpp" />
 		<Unit filename="include/softmax_layer.hpp" />
+		<Unit filename="include/util/db_lmdb.hpp" />
 		<Unit filename="include/util/gen_bmp.hpp" />
 		<Unit filename="include/util/math_utils.hpp" />
-		<Unit filename="include/util/net_model.hpp" />
 		<Unit filename="src/conv_layer.cpp" />
 		<Unit filename="src/data.cpp" />
 		<Unit filename="src/full_connect_layer.cpp" />
 		<Unit filename="src/input_layer.cpp" />
 		<Unit filename="src/layer.cpp" />
 		<Unit filename="src/main.cpp" />
+		<Unit filename="src/net_model _mysql.cpp" />
+		<Unit filename="src/net_model.cpp" />
 		<Unit filename="src/neuron.cpp" />
 		<Unit filename="src/pool_layer.cpp" />
+		<Unit filename="src/proto/caffe.pb.cc" />
 		<Unit filename="src/relu_layer.cpp" />
 		<Unit filename="src/softmax_layer.cpp" />
-		<Unit filename="src/util/net_model.cpp" />
 		<Extensions>
 			<code_completion />
 			<envvars />

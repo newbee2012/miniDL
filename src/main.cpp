@@ -15,7 +15,8 @@
 #include <vector>
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/split.hpp>
-#include "util/net_model.hpp"
+#include "net_model_mysql.hpp"
+#include "net_model.hpp"
 using namespace std;
 using namespace dong;
 int sum = 0;
@@ -31,37 +32,25 @@ float Layer::CURRENT_LEARNING_RATE;
 int Layer::STEPSIZE;
 int RandomGenerator::rnd_seed;          //随机种子，-1表示使用time(0)做种子
 
-template<typename T> string toString(const T& t)
-{
-    ostringstream oss;  //创建一个格式化输出流
-    oss << t;           //把值传递如流中
-    return oss.str();
-}
-
-int ParseJsonFromString()
-{
-  NetModel* netMode = new NetModel();
-  netMode->load_model("../../net_model.json");
-  delete netMode;
-  return 0;
-}
-
 void test2(char* p, char* q, int count1, int count2, int v)
 {
     Json::Reader reader;
     Json::Value root;
-    if (count1 + count2 == 0) {
+    if (count1 + count2 == 0)
+    {
         cout << p << endl;
         sum++;
         return;
     }
 
-    if (v >= 0 && count1 > 0) {
+    if (v >= 0 && count1 > 0)
+    {
         *q = '(';
         test2(p, q + 1, count1 - 1, count2, v + 1);
     }
 
-    if (count2 > 0) {
+    if (count2 > 0)
+    {
         *q = ')';
         test2(p, q + 1, count1, count2 - 1, v - 1);
     }
@@ -84,16 +73,19 @@ void mysql_test()
     result = mysql_store_result( &mysql );
     MYSQL_ROW row = mysql_fetch_row( result );
 
-    while ( NULL != row ) {
+    while ( NULL != row )
+    {
         cout << row[0] << "," << row[1] << "," << row[2] << "," << row[3] << endl;
         vector<string> rs;
         boost::split( rs, row[3], boost::is_any_of( "|" ), boost::token_compress_on );
 
-        for (int i = 0, size = rs.size(); i < size; i++) {
+        for (int i = 0, size = rs.size(); i < size; i++)
+        {
             vector<string> group_var;
             boost::split(group_var, rs[i], boost::is_any_of( "," ), boost::token_compress_on );
 
-            for (int i = 0, size = group_var.size(); i < size; i++) {
+            for (int i = 0, size = group_var.size(); i < size; i++)
+            {
                 vector<string> var;
                 boost::split(var, group_var[i], boost::is_any_of( ":" ), boost::token_compress_on );
                 double v = atof(var[1].c_str());
@@ -111,6 +103,7 @@ void mysql_test()
 
 void train2(int argc, char* argv[])
 {
+    /*
     int batch_count = 1;
     int per_batch_iter_count = 1;
     int per_iter_train_count = 1;
@@ -292,12 +285,43 @@ void train2(int argc, char* argv[])
     time_t t2 = time(NULL);
     cout << "训练速度:" << batch_count* per_batch_iter_count* per_iter_train_count /
          (t2 - t1 + 1) << " pic / s" << endl;
+         */
 }
 
 int main(int argc, char* argv[])
 {
-    //train2(argc, argv);
-    ParseJsonFromString();
+    int batch_count = 1;
+    int per_iter_train_count = 1;
+    Layer::BASE_LEARNING_RATE = 0.0001F;
+    Layer::LEARNING_RATE_POLICY = INV;
+    Layer::GAMMA = 0.0001F;
+    Layer::MOMENTUM = 0.9F;
+    Layer::POWER = 0.75F;
+    Layer::WEIGHT_DECAY = 0.0005F;
+    Layer::CURRENT_ITER_COUNT = 0;
+    Layer::STEPSIZE = 100;
+    RandomGenerator::rnd_seed = -1;
+
+    if (argc >= 4) {
+        batch_count = atoi(argv[1]);
+        per_iter_train_count = atoi(argv[2]);
+        Layer::BASE_LEARNING_RATE = atof(argv[3]);
+        Layer::CURRENT_LEARNING_RATE = Layer::getLearningRate();
+    }
+
+    if (argc == 5) {
+        RandomGenerator::rnd_seed = atoi(argv[4]);
+    }
+
+    if (RandomGenerator::rnd_seed == -1) {
+        RandomGenerator::rnd_seed = (int)time(0);
+    }
+    srand(RandomGenerator::rnd_seed);
+
+    NetModel* netMode = new NetModelMysql();
+    netMode->load_model("/home/chendejia/workspace/github/miniDL/net_model.json");
+    netMode->train();
+    delete netMode;
     cout << "Hello world!" << endl;
     return 0;
 }
