@@ -25,7 +25,7 @@ void NetModelMysql::train()
     Data batchDatas(_per_iter_train_count, 1, height, width, Data::CONSTANT);
     int batchLabels[_per_iter_train_count];
     /////////////////////////////////////////////////////
-    const char* host = "localhost";
+    const char* host = "127.0.0.1";
     const char* user = "root";
     const char* pass = "123456";
     const char* db   = "test";
@@ -60,29 +60,26 @@ void NetModelMysql::train()
                 cout<<"value:";
                 vector<string> rs;
                 boost::split( rs, row[0], boost::is_any_of( "|" ), boost::token_compress_on );
-
+                int count = 0;
                 for (int j = 0; j < rs.size(); j++)
                 {
                     vector<string> group_var;
                     boost::split(group_var, rs[j], boost::is_any_of( "," ), boost::token_compress_on );
-
                     for (int k = 0; k < group_var.size(); k++)
                     {
                         vector<string> var;
                         boost::split(var, group_var[k], boost::is_any_of( ":" ), boost::token_compress_on );
                         float v = atof(var[1].c_str());
-                        batchDatas.get(n, 0, h, k)->_value = v;
-                        cout<<v<<",";
+                        batchDatas.get(n, 0, h, count)->_value = v;
+                        count++;
                     }
                 }
 
-                cout<<endl;
                 row = mysql_fetch_row( result );
             }
-
-            cout<<"---------------------------------------"<<endl;
         }
 
+        batchDatas.print();
         //训练这批数据
         for (int i = 0; i < _per_iter_train_count; i++)
         {

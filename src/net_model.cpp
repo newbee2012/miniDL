@@ -43,10 +43,8 @@ void NetModel::fillDataForOnceTrainForward(Neuron* datas, int size)
     ASSERT(size >= shape_size, "输入数据size<shape_size");
     for (int i = 0; i < shape_size; ++i)
     {
-        _inputNeurons[i]._value = (*(datas++))._value;
-        cout<<(*(datas++))._value<<",";
+        _inputNeurons[i]._value = datas[i]._value;
     }
-    cout<<endl;
 }
 
 void NetModel::save_model(const char* filename)

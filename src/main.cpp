@@ -290,6 +290,15 @@ void train2(int argc, char* argv[])
 
 int main(int argc, char* argv[])
 {
+    Neuron* c = new Neuron[5];
+    c[0]._value = 1;
+    c[1]._value = 2;
+    c[2]._value = 3;
+    c[3]._value = 4;
+    c[4]._value = 5;
+
+    cout<<(*c++)._value<<endl;
+    cout<<(*c++)._value<<endl;
     int batch_count = 1;
     int per_iter_train_count = 1;
     Layer::BASE_LEARNING_RATE = 0.0001F;

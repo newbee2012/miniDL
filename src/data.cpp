@@ -84,7 +84,6 @@ void Data::print()
                 }
             }
 
-            cout << "----------------------------------num,channels" << n << "," << c << endl;
         }
     }
 }
