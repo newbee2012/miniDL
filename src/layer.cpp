@@ -44,6 +44,7 @@ void Layer::forward()
 
     this->forward_cpu();
 
+    /*
             cout<<"--------------------"<< LayerTypeNames[getType()]<<" forward-----------------------"<<endl;
             cout<<"bottom data forward"<<endl;
             _bottom_data->print();
@@ -54,7 +55,7 @@ void Layer::forward()
             {
                 _weight_data->print();
             }
-
+*/
 }
 
 void Layer::backward()

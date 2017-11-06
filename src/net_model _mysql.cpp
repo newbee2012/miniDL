@@ -22,8 +22,7 @@ void NetModelMysql::train()
     ///////////////////////////////////////////////////////////////////////////
     float loss_record_sum = 0.0F;
     int record_count = 0;
-    Data batchDatas(_per_iter_train_count, 1, height, width, Data::CONSTANT);
-    int batchLabels[_per_iter_train_count];
+
     /////////////////////////////////////////////////////
     const char* host = "127.0.0.1";
     const char* user = "root";
@@ -34,7 +33,9 @@ void NetModelMysql::train()
     mysql_real_connect(&mysql, host, user, pass, db, 0, NULL, 0);
     mysql_set_character_set(&mysql, "utf8");
     MYSQL_RES* result = NULL;
-
+    Data batchDatas(_per_batch_train_count, 1, height, width, Data::CONSTANT);
+    int batchLabels[_per_batch_train_count];
+    cout <<setprecision(6)<< fixed;
     //训练batch_count批数据
     for (int batch = 0; batch < _batch_count; ++batch)
     {
@@ -43,8 +44,8 @@ void NetModelMysql::train()
         //查询数据库
         const string sql_templete =
             "select user_data, label, user_id, cur_month from train_variable_label order by user_id,cur_month limit ";
-        string sql = sql_templete + toString(batch * _per_iter_train_count * height) + "," + toString(
-                         _per_iter_train_count * height);
+        string sql = sql_templete + toString(batch * _per_batch_train_count * height) + "," + toString(
+                         _per_batch_train_count * height);
         mysql_query( &mysql, sql.c_str() );
         result = mysql_store_result( &mysql );
         MYSQL_ROW row = mysql_fetch_row( result );
@@ -56,8 +57,7 @@ void NetModelMysql::train()
 
             for (int h = 0; h < batchDatas.height() && NULL != row; h++)
             {
-                cout<<"label:"<< batchLabels[n]<<",user_id:"<<row[2]<<",cur_month:"<<row[3]<< endl;
-                cout<<"value:";
+                //cout<<"label:"<< batchLabels[n]<<",user_id:"<<row[2]<<",cur_month:"<<row[3]<< endl;
                 vector<string> rs;
                 boost::split( rs, row[0], boost::is_any_of( "|" ), boost::token_compress_on );
                 int count = 0;
@@ -79,9 +79,10 @@ void NetModelMysql::train()
             }
         }
 
-        batchDatas.print();
+        //batchDatas.print();
+
         //训练这批数据
-        for (int i = 0; i < _per_iter_train_count; i++)
+        for (int i = 0; i < _per_batch_train_count; i++)
         {
             int label = batchLabels[i];
             Neuron* neuron = batchDatas.get(i, 0, 0, 0);
@@ -94,8 +95,9 @@ void NetModelMysql::train()
         }
         cout<<endl;
 
+
         float avg_loss = loss_record_sum / record_count;
-        cout << "avg loss:" << setprecision(8) << fixed << avg_loss << ", lr_rate:" << Layer::CURRENT_LEARNING_RATE<<",label:"<<batchLabels[0] << endl;
+        cout << "avg loss:" << setprecision(6) << fixed << avg_loss << ", lr_rate:" << Layer::CURRENT_LEARNING_RATE<<",label:"<<batchLabels[0] << endl;
         loss_record_sum = 0.0F;
         record_count = 0;
     }
@@ -103,7 +105,7 @@ void NetModelMysql::train()
     mysql_free_result( result );
     mysql_close( &mysql );
     time_t t2 = time(NULL);
-    cout << "训练速度:" << _batch_count* _per_iter_train_count /
+    cout << "训练速度:" << _batch_count* _per_batch_train_count /
          (t2 - t1 + 1) << " pic / s" << endl;
 }
 

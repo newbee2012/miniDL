@@ -12,7 +12,7 @@ class SoftmaxLayer: public Layer
 {
 public:
 
-    explicit SoftmaxLayer(Mode mode):Layer(name), _mode(mode), _loss(0.0F), _label(-1) {}
+    explicit SoftmaxLayer(Mode mode):_mode(mode), _loss(0.0F), _label(-1) {}
     virtual ~SoftmaxLayer() {}
     virtual LayerType getType()
     {

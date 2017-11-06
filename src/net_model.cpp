@@ -6,6 +6,7 @@
 #include "net_model.hpp"
 #include "input_layer.hpp"
 #include "conv_layer.hpp"
+#include "full_connect_layer.hpp"
 #include "layer.hpp"
 using namespace std;
 
@@ -14,16 +15,14 @@ namespace dong
 
 void NetModel::forward()
 {
-    cout<<"NetModel forward..."<<endl;
+    //cout<<"NetModel forward..."<<endl;
     boost::shared_ptr<Layer> layer = _inputLayer;
-    do
+    while(layer->getTopLayer().get())
     {
-        cout<<"forward "<<layer->getName()<<endl;
-        layer->forward();
         layer = layer->getTopLayer();
-
+        //cout<<"forward "<<LAYER_TYPE_TO_STRING(layer->getType())<<endl;
+        layer->forward();
     }
-    while(layer.get());
 }
 
 void NetModel::setUpInputLayer()
@@ -70,8 +69,10 @@ void NetModel::load_model(const char* filename)
     Json::Value jo_hyperParameters = root["hyperParameters"];
     ASSERT(!jo_hyperParameters.isNull(), cout<<"节点hyperParameters不存在！"<<endl);
 
-    _per_iter_train_count = jo_hyperParameters["perIterTrainCount"].asInt();
+    _per_batch_train_count = jo_hyperParameters["perBatchTrainCount"].asInt();
+    ASSERT(_per_batch_train_count>0, cout<<"perBatchTrainCount必须大于0！"<<endl);
     _batch_count = jo_hyperParameters["batchCount"].asInt();
+    ASSERT(_batch_count>0, cout<<"batchCount必须大于0！"<<endl);
 
     Json::Value jo_input_shape = root["inputShape"];
     ASSERT(!jo_input_shape.isNull(), cout<<"节点inputShape不存在！"<<endl);
@@ -95,14 +96,12 @@ void NetModel::load_model(const char* filename)
     while(!jo_layer.isNull())
     {
         string type = jo_layer["type"].asString();
-        const string name = jo_layer["name"].asString();
-        const string top_layer_name = jo_layer["topLayer"].asString();
+        const string top_layer = jo_layer["topLayer"].asString();
         Json::Value init_params = jo_layer["initParams"];
         int params_size = init_params.size();
         int params[4] = {0};
         cout<<"type:"<<type<<endl;
-        cout<<"name:"<<name<<endl;
-        cout<<"top_layer_name:"<<top_layer_name<<endl;
+        cout<<"top_layer:"<<top_layer<<endl;
         cout<<"params:";
         for(int j = 0; j < params_size; ++j)
         {
@@ -115,12 +114,15 @@ void NetModel::load_model(const char* filename)
         switch (STRING_TO_LAYER_TYPE(type.c_str()))
         {
         case INPUT_LAYER:
-            layer = new InputLayer(name);
+            layer = new InputLayer();
             _inputLayer.reset(layer);
             this->setUpInputLayer();
             break;
         case CONVOLUTION_LAYER:
-            layer = new ConvLayer(name);
+            layer = new ConvLayer();
+            break;
+        case FULL_CONNECT_LAYER:
+            layer = new FullConnectLayer();
             break;
         default:
             ASSERT(false, cout<<"不合法的LayerType-->"<<type.c_str()<<endl);
@@ -134,8 +136,7 @@ void NetModel::load_model(const char* filename)
         }
 
         bottom_layer = layer;
-        //_layers.push_back(boost::shared_ptr<Layer> (layer));
-        jo_layer = jo_layers[top_layer_name];
+        jo_layer = jo_layers[top_layer];
 
         cout<<endl;
     }

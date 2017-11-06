@@ -11,7 +11,7 @@ namespace dong
 class ConvLayer: public Layer
 {
 public:
-    explicit ConvLayer(const string &name):Layer(name) {}
+    explicit ConvLayer() {}
     virtual ~ConvLayer() {};
     inline virtual LayerType getType()
     {

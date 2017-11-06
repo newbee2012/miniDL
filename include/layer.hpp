@@ -41,7 +41,7 @@ public:
     static float CURRENT_LEARNING_RATE;     //当前学习速率
     static int STEPSIZE;                  //每STEPSIZE次迭代，更新一次学习率
 
-    Layer(const string &name) {this->name = name;}
+    Layer() {}
     virtual ~Layer() {};
     virtual void init(int (&params)[4]) = 0;
     virtual void forward_cpu() = 0;
@@ -51,7 +51,6 @@ public:
     virtual LayerType getType() = 0;
     virtual boost::shared_ptr<Layer>& getTopLayer();
     virtual void setTopLayer(Layer*);
-    virtual const string& getName(){return this->name;}
     static float getLearningRate();
 
     inline virtual void setUp(const boost::shared_ptr<Data>& data)
@@ -92,7 +91,6 @@ protected:
     boost::shared_ptr<Data> _weight_data;
     boost::shared_ptr<Data> _bias_data;
     boost::shared_ptr<Layer> _top_layer;
-    string name;
 
     DISABLE_COPY_AND_ASSIGN(Layer);
 };
