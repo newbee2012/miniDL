@@ -66,6 +66,7 @@ void SoftmaxLayer::setLabel(int label)
 
 void SoftmaxLayer::init(int (&params)[4])
 {
+    _mode = (Mode)params[0];
 }
 
 }

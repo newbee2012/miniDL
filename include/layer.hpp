@@ -50,8 +50,9 @@ public:
     virtual void backward();
     virtual LayerType getType() = 0;
     virtual boost::shared_ptr<Layer>& getTopLayer();
-    virtual void setTopLayer(Layer*);
+    virtual void setTopLayer(boost::shared_ptr<Layer>& layer);
     static float getLearningRate();
+    virtual void setLabel(int label){};
 
     inline virtual void setUp(const boost::shared_ptr<Data>& data)
     {

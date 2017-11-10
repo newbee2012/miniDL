@@ -4,9 +4,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "net_model.hpp"
+#include "softmax_layer.hpp"
+#include "pool_layer.hpp"
 #include "input_layer.hpp"
 #include "conv_layer.hpp"
 #include "full_connect_layer.hpp"
+#include "relu_layer.hpp"
+
 #include "layer.hpp"
 using namespace std;
 
@@ -16,12 +20,17 @@ namespace dong
 void NetModel::forward()
 {
     //cout<<"NetModel forward..."<<endl;
-    boost::shared_ptr<Layer> layer = _inputLayer;
+    boost::shared_ptr<Layer> layer = _input_layer;
     while(layer->getTopLayer().get())
     {
         layer = layer->getTopLayer();
         //cout<<"forward "<<LAYER_TYPE_TO_STRING(layer->getType())<<endl;
         layer->forward();
+        if(layer->getType() == LOSS_LAYER)
+        {
+            LossLayer* lossLayer = (LossLayer*)layer.get();
+            cout<<"Loss:"<<lossLayer->getLoss()<<endl;
+        }
     }
 }
 
@@ -30,20 +39,57 @@ void NetModel::setUpInputLayer()
     int shape_size = _input_shape_num*_input_shape_channels*_input_shape_height * _input_shape_width;
     ASSERT(shape_size>0, cout<<"训练数据尺寸定义错误！"<<endl);
 
-    _inputNeurons.reset(new Neuron[_input_shape_num *_input_shape_channels *_input_shape_height * _input_shape_width]);
-    _inputData.reset(new Data(_input_shape_num, _input_shape_channels, _input_shape_height, _input_shape_width));
-    _inputData->setUp(_inputNeurons);
-    _inputLayer->setUp(_inputData);
+    _input_neurons.reset(new Neuron[_input_shape_num *_input_shape_channels *_input_shape_height * _input_shape_width]);
+    _input_data.reset(new Data(_input_shape_num, _input_shape_channels, _input_shape_height, _input_shape_width));
+    _input_data->setUp(_input_neurons);
+    _input_layer->setUp(_input_data);
 }
 
-void NetModel::fillDataForOnceTrainForward(Neuron* datas, int size)
+void NetModel::fillDataForOnceTrainForward(Neuron* datas, int size, int label)
 {
     int shape_size = _input_shape_num*_input_shape_channels*_input_shape_height * _input_shape_width;
     ASSERT(size >= shape_size, "输入数据size<shape_size");
     for (int i = 0; i < shape_size; ++i)
     {
-        _inputNeurons[i]._value = datas[i]._value;
+        _input_neurons[i]._value = datas[i]._value;
     }
+
+    if(_loss_layer.get() != NULL)
+    {
+       cout<<"setLabel:"<<label<<endl;
+       _loss_layer->setLabel(label);
+    }
+
+}
+
+Layer* NetModel::generateLayerByClassName(const char* className)
+{
+    if(0==strcmp(className,"InputLayer"))
+    {
+        return new InputLayer();
+    }
+    else if(0==strcmp(className,"ConvLayer"))
+    {
+        return new ConvLayer();
+    }
+    else if(0==strcmp(className,"FullConnectLayer"))
+    {
+        return new FullConnectLayer();
+    }
+    else if(0==strcmp(className,"ReluLayer"))
+    {
+        return new ReluLayer();
+    }
+    else if(0==strcmp(className,"PoolLayer"))
+    {
+        return new PoolLayer();
+    }
+    else if(0==strcmp(className,"SoftmaxLayer"))
+    {
+        return new SoftmaxLayer();
+    }
+
+    return NULL;
 }
 
 void NetModel::save_model(const char* filename)
@@ -91,16 +137,16 @@ void NetModel::load_model(const char* filename)
     Json::Value jo_layer = jo_layers["inputLayer"];
     ASSERT(!jo_layer.isNull(), cout<<"inputLayer不存在！"<<endl);
 
-    Layer* bottom_layer = NULL;
+    boost::shared_ptr<Layer> bottom_layer;
 
     while(!jo_layer.isNull())
     {
-        string type = jo_layer["type"].asString();
         const string top_layer = jo_layer["topLayer"].asString();
+        const string impl_class = jo_layer["implClass"].asString();
         Json::Value init_params = jo_layer["initParams"];
         int params_size = init_params.size();
         int params[4] = {0};
-        cout<<"type:"<<type<<endl;
+        cout<<"name:"<<jo_layer<<endl;
         cout<<"top_layer:"<<top_layer<<endl;
         cout<<"params:";
         for(int j = 0; j < params_size; ++j)
@@ -110,26 +156,19 @@ void NetModel::load_model(const char* filename)
         }
 
         cout<<endl;
-        Layer* layer = NULL;
-        switch (STRING_TO_LAYER_TYPE(type.c_str()))
+
+        boost::shared_ptr<Layer> layer(generateLayerByClassName(impl_class.c_str()));
+        layer->init(params);
+        if(layer->getType() == INPUT_LAYER)
         {
-        case INPUT_LAYER:
-            layer = new InputLayer();
-            _inputLayer.reset(layer);
+            _input_layer = layer;
             this->setUpInputLayer();
-            break;
-        case CONVOLUTION_LAYER:
-            layer = new ConvLayer();
-            break;
-        case FULL_CONNECT_LAYER:
-            layer = new FullConnectLayer();
-            break;
-        default:
-            ASSERT(false, cout<<"不合法的LayerType-->"<<type.c_str()<<endl);
-            break;
+        }else if(layer->getType() == LOSS_LAYER)
+        {
+            _loss_layer = layer;
         }
 
-        layer->init(params);
+
         if(NULL != bottom_layer)
         {
             bottom_layer->setTopLayer(layer);

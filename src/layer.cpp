@@ -11,9 +11,9 @@ boost::shared_ptr<Layer>& Layer::getTopLayer()
 }
 
 
-void Layer::setTopLayer(Layer* top_layer)
+void Layer::setTopLayer(boost::shared_ptr<Layer>& layer)
 {
-    _top_layer.reset(top_layer);
+    _top_layer = layer;
     _top_layer->setUp(this->getTopData());
 }
 
@@ -29,7 +29,7 @@ void Layer::forward()
         switch (getType()) {
         case POOL_LAYER:
         case RELU_LAYER:
-        case SOFTMAX_LAYER:
+        case LOSS_LAYER:
             _weight_data->clearValue();
             break;
 

@@ -1,7 +1,7 @@
 {
     "hyperParameters":{
 	"batchCount":3,
-	"perBatchTrainCount":100
+	"perBatchTrainCount":1
     },
     "inputShape": {
         "num": 1,
@@ -11,24 +11,29 @@
     },
     "layersModel":{
         "inputLayer":{
-            "type": "INPUT_LAYER",
-            "topLayer": "fullConnectLayer",
+	    "implClass":"InputLayer",
+            "topLayer": "convLayer",
             "initParams": null
         },
         "convLayer":{
-            "type": "CONVOLUTION_LAYER",
+	    "implClass":"ConvLayer",
             "topLayer": "fullConnectLayer",
-            "initParams": [50,2,2]
+            "initParams": [5,2,2]
         },
 	"fullConnectLayer":{
-            "type": "FULL_CONNECT_LAYER",
+	    "implClass":"FullConnectLayer",
             "topLayer": "fullConnectLayer2",
-            "initParams": [500]
+            "initParams": [10]
         },
 	"fullConnectLayer2":{
-            "type": "FULL_CONNECT_LAYER",
+            "implClass":"FullConnectLayer",
+            "topLayer": "lossLayer",
+            "initParams": [2]
+        },
+	"lossLayer":{
+            "implClass":"SoftmaxLayer",
             "topLayer": null,
-            "initParams": [10]
+            "initParams": [0]
         }
     },
     "layersData": null

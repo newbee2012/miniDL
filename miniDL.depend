@@ -253,7 +253,7 @@
 	"common.hpp"
 	"proto/caffe.pb.h"
 
-1509734801 /home/chendejia/workspace/github/miniDL/include/common.hpp
+1510203874 /home/chendejia/workspace/github/miniDL/include/common.hpp
 	<math.h>
 	<algorithm>
 	<float.h>
@@ -277,34 +277,34 @@
 	<sys/stat.h>
 	<string>
 
-1509380296 source:/home/chendejia/workspace/github/miniDL/src/conv_layer.cpp
+1510303936 source:/home/chendejia/workspace/github/miniDL/src/conv_layer.cpp
 	<iostream>
 	"conv_layer.hpp"
 	"neuron.hpp"
 
-1509983256 /home/chendejia/workspace/github/miniDL/include/conv_layer.hpp
+1510021372 /home/chendejia/workspace/github/miniDL/include/conv_layer.hpp
 	"common.hpp"
 	"layer.hpp"
 	<boost/shared_ptr.hpp>
 	<vector>
 
-1509983296 /home/chendejia/workspace/github/miniDL/include/layer.hpp
+1510302291 /home/chendejia/workspace/github/miniDL/include/layer.hpp
 	"common.hpp"
 	"data.hpp"
 	<boost/shared_ptr.hpp>
 	<vector>
 
-1509632444 /home/chendejia/workspace/github/miniDL/include/data.hpp
+1509960818 /home/chendejia/workspace/github/miniDL/include/data.hpp
 	"common.hpp"
 	"neuron.hpp"
 	<vector>
 
-1509283170 /home/chendejia/workspace/github/miniDL/include/neuron.hpp
+1508815109 /home/chendejia/workspace/github/miniDL/include/neuron.hpp
 	"common.hpp"
 	<boost/shared_ptr.hpp>
 	<vector>
 
-1509979864 source:/home/chendejia/workspace/github/miniDL/src/data.cpp
+1509962678 source:/home/chendejia/workspace/github/miniDL/src/data.cpp
 	"common.hpp"
 	"data.hpp"
 	"util/gen_bmp.hpp"
@@ -313,43 +313,43 @@
 	<iomanip>
 	"util/math_utils.hpp"
 
-1499868278 /home/chendejia/workspace/github/miniDL/include/util/gen_bmp.hpp
+1499917752 /home/chendejia/workspace/github/miniDL/include/util/gen_bmp.hpp
 	"common.hpp"
 	<iostream>
 	<stdio.h>
 	<stdlib.h>
 
-1499889644 /home/chendejia/workspace/github/miniDL/include/util/math_utils.hpp
+1499917752 /home/chendejia/workspace/github/miniDL/include/util/math_utils.hpp
 	<boost/math/special_functions/next.hpp>
 	<boost/random.hpp>
 	<boost/shared_ptr.hpp>
 
-1509381255 source:/home/chendejia/workspace/github/miniDL/src/full_connect_layer.cpp
+1509437031 source:/home/chendejia/workspace/github/miniDL/src/full_connect_layer.cpp
 	<iostream>
 	"full_connect_layer.hpp"
 
-1509983248 /home/chendejia/workspace/github/miniDL/include/full_connect_layer.hpp
+1510021372 /home/chendejia/workspace/github/miniDL/include/full_connect_layer.hpp
 	"common.hpp"
 	"layer.hpp"
 	<boost/shared_ptr.hpp>
 	<vector>
 
-1509381340 source:/home/chendejia/workspace/github/miniDL/src/input_layer.cpp
+1509437031 source:/home/chendejia/workspace/github/miniDL/src/input_layer.cpp
 	<iostream>
 	"input_layer.hpp"
 
-1509983239 /home/chendejia/workspace/github/miniDL/include/input_layer.hpp
+1510021372 /home/chendejia/workspace/github/miniDL/include/input_layer.hpp
 	"common.hpp"
 	"layer.hpp"
 	<boost/shared_ptr.hpp>
 	<vector>
 
-1509982662 source:/home/chendejia/workspace/github/miniDL/src/layer.cpp
+1510302367 source:/home/chendejia/workspace/github/miniDL/src/layer.cpp
 	<iostream>
 	<pthread.h>
 	"layer.hpp"
 
-1509979864 source:/home/chendejia/workspace/github/miniDL/src/main.cpp
+1510300908 source:/home/chendejia/workspace/github/miniDL/src/main.cpp
 	<iostream>
 	"util/gen_bmp.hpp"
 	"input_layer.hpp"
@@ -370,40 +370,40 @@
 	"net_model_mysql.hpp"
 	"net_model.hpp"
 
-1509983270 /home/chendejia/workspace/github/miniDL/include/pool_layer.hpp
+1510203592 /home/chendejia/workspace/github/miniDL/include/pool_layer.hpp
 	"common.hpp"
 	"layer.hpp"
 	<memory>
 	<boost/shared_ptr.hpp>
 	<vector>
 
-1509983276 /home/chendejia/workspace/github/miniDL/include/relu_layer.hpp
+1510021372 /home/chendejia/workspace/github/miniDL/include/relu_layer.hpp
 	"common.hpp"
 	"layer.hpp"
 	<boost/shared_ptr.hpp>
 	<vector>
 
-1509983322 /home/chendejia/workspace/github/miniDL/include/softmax_layer.hpp
+1510303758 /home/chendejia/workspace/github/miniDL/include/softmax_layer.hpp
 	"common.hpp"
 	"layer.hpp"
 	<boost/shared_ptr.hpp>
 	<vector>
 
-1509283170 source:/home/chendejia/workspace/github/miniDL/src/neuron.cpp
+1508815109 source:/home/chendejia/workspace/github/miniDL/src/neuron.cpp
 	<iostream>
 	"neuron.hpp"
 
-1509283170 source:/home/chendejia/workspace/github/miniDL/src/pool_layer.cpp
+1510203562 source:/home/chendejia/workspace/github/miniDL/src/pool_layer.cpp
 	<iostream>
 	"pool_layer.hpp"
 
-1509381399 source:/home/chendejia/workspace/github/miniDL/src/relu_layer.cpp
+1509437031 source:/home/chendejia/workspace/github/miniDL/src/relu_layer.cpp
 	<iostream>
 	<common.hpp>
 	<algorithm>
 	"relu_layer.hpp"
 
-1509381464 source:/home/chendejia/workspace/github/miniDL/src/softmax_layer.cpp
+1510203936 source:/home/chendejia/workspace/github/miniDL/src/softmax_layer.cpp
 	<iostream>
 	<common.hpp>
 	<algorithm>
@@ -471,10 +471,10 @@
 	"layer.hpp"
 	"input_layer.hpp"
 
-1509734374 /home/chendejia/workspace/github/miniDL/include/net_model_mysql.hpp
+1509957605 /home/chendejia/workspace/github/miniDL/include/net_model_mysql.hpp
 	"net_model.hpp"
 
-1509983873 /home/chendejia/workspace/github/miniDL/include/net_model.hpp
+1510302413 /home/chendejia/workspace/github/miniDL/include/net_model.hpp
 	"common.hpp"
 	<iostream>
 	<stdio.h>
@@ -482,7 +482,7 @@
 	"layer.hpp"
 	"input_layer.hpp"
 
-1509983904 source:/home/chendejia/workspace/github/miniDL/src/net_model _mysql.cpp
+1510205248 source:/home/chendejia/workspace/github/miniDL/src/net_model _mysql.cpp
 	"common.hpp"
 	<fstream>
 	<iostream>
@@ -494,15 +494,18 @@
 	<boost/algorithm/string/classification.hpp>
 	<boost/algorithm/string/split.hpp>
 
-1509984278 source:/home/chendejia/workspace/github/miniDL/src/net_model.cpp
+1510303809 source:/home/chendejia/workspace/github/miniDL/src/net_model.cpp
 	"common.hpp"
 	<fstream>
 	<iostream>
 	<stdio.h>
 	<stdlib.h>
 	"net_model.hpp"
+	"softmax_layer.hpp"
+	"pool_layer.hpp"
 	"input_layer.hpp"
 	"conv_layer.hpp"
 	"full_connect_layer.hpp"
+	"relu_layer.hpp"
 	"layer.hpp"
 

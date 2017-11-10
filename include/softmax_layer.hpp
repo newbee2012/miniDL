@@ -8,15 +8,21 @@
 
 namespace dong
 {
-class SoftmaxLayer: public Layer
+class LossLayer: public Layer
+{
+public:
+    virtual float getLoss() = 0;
+};
+
+class SoftmaxLayer: public LossLayer
 {
 public:
 
-    explicit SoftmaxLayer(Mode mode):_mode(mode), _loss(0.0F), _label(-1) {}
+    explicit SoftmaxLayer():_mode(TRAIN), _loss(0.0F), _label(0) {}
     virtual ~SoftmaxLayer() {}
     virtual LayerType getType()
     {
-        return SOFTMAX_LAYER;
+        return LOSS_LAYER;
     }
 
     virtual void init(int (&params)[4]);

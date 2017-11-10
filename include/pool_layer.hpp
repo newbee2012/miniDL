@@ -18,7 +18,7 @@ public:
     {
         return POOL_LAYER;
     }
-    virtual void init(int kernel_h, int _kernel_w, int _stride_h, int _stride_w);
+    virtual void init(int (&params)[4]);
     virtual void setUp(const boost::shared_ptr<Data>& data);
     virtual void forward_cpu();
     virtual void backward_cpu();

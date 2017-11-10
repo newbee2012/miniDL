@@ -86,18 +86,16 @@ void NetModelMysql::train()
         {
             int label = batchLabels[i];
             Neuron* neuron = batchDatas.get(i, 0, 0, 0);
-            this->fillDataForOnceTrainForward(neuron, batchDatas.offset(1, 0, 0, 0));
+            this->fillDataForOnceTrainForward(neuron, batchDatas.offset(1, 0, 0, 0), label);
             this->forward();
             ++record_count;
             //loss_record_sum += softmaxLayer->getLoss();
             ++Layer::CURRENT_ITER_COUNT;
             Layer::CURRENT_LEARNING_RATE = Layer::getLearningRate();
         }
-        cout<<endl;
-
 
         float avg_loss = loss_record_sum / record_count;
-        cout << "avg loss:" << setprecision(6) << fixed << avg_loss << ", lr_rate:" << Layer::CURRENT_LEARNING_RATE<<",label:"<<batchLabels[0] << endl;
+        cout << "avg loss:" << setprecision(6) << fixed << avg_loss << ", lr_rate:" << Layer::CURRENT_LEARNING_RATE<<",label:"<<batchLabels[0] << endl<<endl;
         loss_record_sum = 0.0F;
         record_count = 0;
     }

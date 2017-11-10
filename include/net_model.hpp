@@ -23,13 +23,14 @@ public:
 
 
 protected:
-    virtual void fillDataForOnceTrainForward(Neuron* datas, int size);
+    virtual void fillDataForOnceTrainForward(Neuron* datas, int size, int label);
     virtual void setUpInputLayer();
     virtual void forward();
-    boost::shared_array<Neuron> _inputNeurons;
-    boost::shared_ptr<Data> _inputData;
-    boost::shared_ptr<Layer> _inputLayer;
-    vector< boost::shared_ptr<Layer> > _layers;
+    virtual Layer* generateLayerByClassName(const char* className);
+    boost::shared_array<Neuron> _input_neurons;
+    boost::shared_ptr<Data> _input_data;
+    boost::shared_ptr<Layer> _input_layer;
+    boost::shared_ptr<Layer> _loss_layer;
 
     int _input_shape_num;
     int _input_shape_channels;

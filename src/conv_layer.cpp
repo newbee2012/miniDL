@@ -11,7 +11,6 @@ void ConvLayer::init(int (&params)[4])
     _num_output = params[0];
     _kernel_h = params[1];
     _kernel_w = params[2];
-    cout<<"xxxxxxxxxxx"<<_num_output<<","<<_kernel_h<<","<<_kernel_w<<endl;
 }
 
 void ConvLayer::setUp(const boost::shared_ptr<Data>& data)

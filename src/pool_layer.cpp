@@ -72,12 +72,12 @@ void PoolLayer::backward_cpu()
     Layer::backwardBase();
 }
 
-void PoolLayer::init(int kernel_h, int kernel_w, int stride_h, int stride_w)
+void PoolLayer::init(int (&params)[4])
 {
-    this->_kernel_h = kernel_h;
-    this->_kernel_w = kernel_w;
-    this->_stride_h = stride_h;
-    this->_stride_w = stride_w;
+    this->_kernel_h = params[0];
+    this->_kernel_w = params[1];
+    this->_stride_h = params[2];
+    this->_stride_w = params[3];
 }
 
 }
