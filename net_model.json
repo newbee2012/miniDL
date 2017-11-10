@@ -1,7 +1,7 @@
 {
     "hyperParameters":{
 	"batchCount":3,
-	"perBatchTrainCount":1
+	"perBatchTrainCount":100
     },
     "inputShape": {
         "num": 1,

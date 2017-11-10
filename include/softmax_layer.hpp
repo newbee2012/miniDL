@@ -18,7 +18,7 @@ class SoftmaxLayer: public LossLayer
 {
 public:
 
-    explicit SoftmaxLayer():_mode(TRAIN), _loss(0.0F), _label(0) {}
+    explicit SoftmaxLayer():_mode(TRAIN), _loss(0.0F), _label(-1) {}
     virtual ~SoftmaxLayer() {}
     virtual LayerType getType()
     {

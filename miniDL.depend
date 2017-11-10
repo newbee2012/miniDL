@@ -349,7 +349,7 @@
 	<pthread.h>
 	"layer.hpp"
 
-1510300908 source:/home/chendejia/workspace/github/miniDL/src/main.cpp
+1510308167 source:/home/chendejia/workspace/github/miniDL/src/main.cpp
 	<iostream>
 	"util/gen_bmp.hpp"
 	"input_layer.hpp"
@@ -383,7 +383,7 @@
 	<boost/shared_ptr.hpp>
 	<vector>
 
-1510303758 /home/chendejia/workspace/github/miniDL/include/softmax_layer.hpp
+1510308419 /home/chendejia/workspace/github/miniDL/include/softmax_layer.hpp
 	"common.hpp"
 	"layer.hpp"
 	<boost/shared_ptr.hpp>
@@ -494,7 +494,7 @@
 	<boost/algorithm/string/classification.hpp>
 	<boost/algorithm/string/split.hpp>
 
-1510303809 source:/home/chendejia/workspace/github/miniDL/src/net_model.cpp
+1510308127 source:/home/chendejia/workspace/github/miniDL/src/net_model.cpp
 	"common.hpp"
 	<fstream>
 	<iostream>

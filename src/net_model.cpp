@@ -56,7 +56,7 @@ void NetModel::fillDataForOnceTrainForward(Neuron* datas, int size, int label)
 
     if(_loss_layer.get() != NULL)
     {
-       cout<<"setLabel:"<<label<<endl;
+       //cout<<"setLabel:"<<label<<endl;
        _loss_layer->setLabel(label);
     }
 
@@ -127,8 +127,6 @@ void NetModel::load_model(const char* filename)
     _input_shape_channels = jo_input_shape["channels"].asInt();
     _input_shape_height = jo_input_shape["height"].asInt();
     _input_shape_width = jo_input_shape["width"].asInt();
-    cout<<_input_shape_num<<endl;
-
     Json::Value jo_layers = root["layersModel"];
     cout<<"model json:"<<endl<<jo_layers<<endl;
     ASSERT(!jo_layers.isNull(), cout<<"节点layersModel不存在！"<<endl);
@@ -146,7 +144,7 @@ void NetModel::load_model(const char* filename)
         Json::Value init_params = jo_layer["initParams"];
         int params_size = init_params.size();
         int params[4] = {0};
-        cout<<"name:"<<jo_layer<<endl;
+        cout<<"impl_class:"<<impl_class<<endl;
         cout<<"top_layer:"<<top_layer<<endl;
         cout<<"params:";
         for(int j = 0; j < params_size; ++j)
