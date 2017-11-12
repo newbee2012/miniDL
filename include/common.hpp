@@ -49,6 +49,7 @@ typedef LayerType_ LayerType;
 typedef LR_Policy_ LR_Policy;
 enum Mode {TRAIN, TEST};
 
+
 static LayerType_ STRING_TO_LAYER_TYPE(const char* name)
 {
     for(int i=0;i<LayerTypeSize;++i)

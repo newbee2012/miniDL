@@ -1,6 +1,6 @@
 {
     "hyperParameters":{
-	"batchCount":3,
+	"batchCount":100,
 	"perBatchTrainCount":100
     },
     "inputShape": {
@@ -18,12 +18,12 @@
         "convLayer":{
 	    "implClass":"ConvLayer",
             "topLayer": "fullConnectLayer",
-            "initParams": [5,2,2]
+            "initParams": [20,1,301]
         },
 	"fullConnectLayer":{
 	    "implClass":"FullConnectLayer",
             "topLayer": "fullConnectLayer2",
-            "initParams": [10]
+            "initParams": [100]
         },
 	"fullConnectLayer2":{
             "implClass":"FullConnectLayer",

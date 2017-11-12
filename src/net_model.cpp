@@ -34,6 +34,17 @@ void NetModel::forward()
     }
 }
 
+void NetModel::backward()
+{
+    boost::shared_ptr<Layer> layer = _loss_layer;
+    while(layer.get())
+    {
+        //cout<<"forward "<<LAYER_TYPE_TO_STRING(layer->getType())<<endl;
+        layer->backward();
+        layer = layer->getBottomLayer();
+    }
+}
+
 void NetModel::setUpInputLayer()
 {
     int shape_size = _input_shape_num*_input_shape_channels*_input_shape_height * _input_shape_width;
@@ -170,6 +181,7 @@ void NetModel::load_model(const char* filename)
         if(NULL != bottom_layer)
         {
             bottom_layer->setTopLayer(layer);
+            layer->setBottomLayer(bottom_layer);
         }
 
         bottom_layer = layer;

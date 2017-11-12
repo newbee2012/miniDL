@@ -292,14 +292,14 @@ int main(int argc, char* argv[])
 {
     int batch_count = 1;
     int per_iter_train_count = 1;
-    Layer::BASE_LEARNING_RATE = 0.0001F;
+    /*Layer::BASE_LEARNING_RATE = 0.0001F;
     Layer::LEARNING_RATE_POLICY = INV;
     Layer::GAMMA = 0.0001F;
     Layer::MOMENTUM = 0.9F;
     Layer::POWER = 0.75F;
     Layer::WEIGHT_DECAY = 0.0005F;
     Layer::CURRENT_ITER_COUNT = 0;
-    Layer::STEPSIZE = 100;
+    Layer::STEPSIZE = 100;*/
     RandomGenerator::rnd_seed = -1;
 
     if (argc >= 4) {

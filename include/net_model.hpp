@@ -26,6 +26,7 @@ protected:
     virtual void fillDataForOnceTrainForward(Neuron* datas, int size, int label);
     virtual void setUpInputLayer();
     virtual void forward();
+    virtual void backward();
     virtual Layer* generateLayerByClassName(const char* className);
     boost::shared_array<Neuron> _input_neurons;
     boost::shared_ptr<Data> _input_data;

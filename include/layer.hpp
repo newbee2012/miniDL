@@ -51,6 +51,8 @@ public:
     virtual LayerType getType() = 0;
     virtual boost::shared_ptr<Layer>& getTopLayer();
     virtual void setTopLayer(boost::shared_ptr<Layer>& layer);
+    virtual boost::shared_ptr<Layer>& getBottomLayer();
+    virtual void setBottomLayer(boost::shared_ptr<Layer>& layer);
     static float getLearningRate();
     virtual void setLabel(int label){};
 
@@ -92,6 +94,7 @@ protected:
     boost::shared_ptr<Data> _weight_data;
     boost::shared_ptr<Data> _bias_data;
     boost::shared_ptr<Layer> _top_layer;
+    boost::shared_ptr<Layer> _bottom_layer;
 
     DISABLE_COPY_AND_ASSIGN(Layer);
 };

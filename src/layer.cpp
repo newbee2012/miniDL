@@ -17,6 +17,17 @@ void Layer::setTopLayer(boost::shared_ptr<Layer>& layer)
     _top_layer->setUp(this->getTopData());
 }
 
+boost::shared_ptr<Layer>& Layer::getBottomLayer()
+{
+    return this->_bottom_layer;
+}
+
+
+void Layer::setBottomLayer(boost::shared_ptr<Layer>& layer)
+{
+    _bottom_layer = layer;
+}
+
 
 void Layer::forward()
 {
