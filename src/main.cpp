@@ -21,6 +21,7 @@ using namespace std;
 using namespace dong;
 int sum = 0;
 
+
 float Layer::BASE_LEARNING_RATE;        //基准学习数率
 dong::LR_Policy Layer::LEARNING_RATE_POLICY;  //学习数率衰减策略
 float Layer::GAMMA;                     //学习速率衰减常数
@@ -30,6 +31,7 @@ float Layer::POWER;
 float Layer::WEIGHT_DECAY;              //权重衰减常数
 float Layer::CURRENT_LEARNING_RATE;
 int Layer::STEPSIZE;
+
 int RandomGenerator::rnd_seed;          //随机种子，-1表示使用time(0)做种子
 
 void test2(char* p, char* q, int count1, int count2, int v)
@@ -321,10 +323,12 @@ int main(int argc, char* argv[])
     NetModel* netMode = new NetModelMysql();
     const char* fileName = "/home/chendejia/workspace/github/miniDL/net_model.json";
     cout<<"load model file: "<<fileName<<endl;
+
     netMode->load_model(fileName);
-    cout<<"------------train start--------------"<<endl;
-    netMode->train();
-    delete netMode;
+    netMode->save_model(fileName);
+    //cout<<"------------train start--------------"<<endl;
+    //netMode->train();
+    //delete netMode;
 
     cout << "Hello world!" << endl;
 

@@ -67,8 +67,8 @@ void NetModel::fillDataForOnceTrainForward(Neuron* datas, int size, int label)
 
     if(_loss_layer.get() != NULL)
     {
-       //cout<<"setLabel:"<<label<<endl;
-       _loss_layer->setLabel(label);
+        //cout<<"setLabel:"<<label<<endl;
+        _loss_layer->setLabel(label);
     }
 
 }
@@ -105,11 +105,50 @@ Layer* NetModel::generateLayerByClassName(const char* className)
 
 void NetModel::save_model(const char* filename)
 {
+    cout<<"loading model...."<<endl;
+    // 解析json用Json::Reader
+    Json::Reader reader;
+    // Json::Value是一种很重要的类型，可以代表任意类型。如int, string, object, array...
+    Json::Value root;
 
+    std::ifstream is;
+    is.open (filename, std::ios::binary );
+    if (!reader.parse(is, root))
+    {
+        ASSERT(false, cout<<"Json 解析失败！"<<endl);
+    }
+
+    //查找输入层
+    Json::Value jo_layer = jo_layers["inputLayer"];
+    boost::shared_ptr<Layer> layer = _input_layer;
+    ASSERT(!jo_layer.isNull(), cout<<"inputLayer不存在！"<<endl);
+    while(!jo_layer.isNull())
+    {
+        if(layer->getType() == CONVOLUTION_LAYER)
+        {
+            boost::shared_ptr<Data> weightData = layer->getWeightData();
+            weightData->
+        }
+    }
+
+    root["layersData"] = "aaaaaaaaaaaa";
+
+    std::ofstream ofs;
+    ofs.open(filename);
+    ofs << root.toStyledString();
+    ofs.close();
 }
 
 void NetModel::load_model(const char* filename)
 {
+    Layer::BASE_LEARNING_RATE = 0.0001F;
+    Layer::LEARNING_RATE_POLICY = INV;
+    Layer::GAMMA = 0.0001F;
+    Layer::MOMENTUM = 0.9F;
+    Layer::POWER = 0.75F;
+    Layer::WEIGHT_DECAY = 0.0005F;
+    Layer::CURRENT_ITER_COUNT = 0;
+    Layer::STEPSIZE = 100;
     cout<<"loading model...."<<endl;
     // 解析json用Json::Reader
     Json::Reader reader;
@@ -172,7 +211,8 @@ void NetModel::load_model(const char* filename)
         {
             _input_layer = layer;
             this->setUpInputLayer();
-        }else if(layer->getType() == LOSS_LAYER)
+        }
+        else if(layer->getType() == LOSS_LAYER)
         {
             _loss_layer = layer;
         }

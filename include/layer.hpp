@@ -9,7 +9,6 @@
 namespace dong
 {
 
-
 class ThreadParam
 {
 public:

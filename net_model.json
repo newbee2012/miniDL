@@ -1,40 +1,40 @@
 {
-    "hyperParameters":{
-	"batchCount":100,
-	"perBatchTrainCount":100
-    },
-    "inputShape": {
-        "num": 1,
-        "channels": 1,
-        "height": 3,
-        "width": 301
-    },
-    "layersModel":{
-        "inputLayer":{
-	    "implClass":"InputLayer",
-            "topLayer": "convLayer",
-            "initParams": null
-        },
-        "convLayer":{
-	    "implClass":"ConvLayer",
-            "topLayer": "fullConnectLayer",
-            "initParams": [20,1,301]
-        },
-	"fullConnectLayer":{
-	    "implClass":"FullConnectLayer",
-            "topLayer": "fullConnectLayer2",
-            "initParams": [100]
-        },
-	"fullConnectLayer2":{
-            "implClass":"FullConnectLayer",
-            "topLayer": "lossLayer",
-            "initParams": [2]
-        },
-	"lossLayer":{
-            "implClass":"SoftmaxLayer",
-            "topLayer": null,
-            "initParams": [0]
-        }
-    },
-    "layersData": null
+   "hyperParameters" : {
+      "batchCount" : 100,
+      "perBatchTrainCount" : 100
+   },
+   "inputShape" : {
+      "channels" : 1,
+      "height" : 3,
+      "num" : 1,
+      "width" : 301
+   },
+   "layersData" : "aaaaaaaaaaaa",
+   "layersModel" : {
+      "convLayer" : {
+         "implClass" : "ConvLayer",
+         "initParams" : [ 20, 1, 301 ],
+         "topLayer" : "fullConnectLayer",
+      },
+      "fullConnectLayer" : {
+         "implClass" : "FullConnectLayer",
+         "initParams" : [ 100 ],
+         "topLayer" : "fullConnectLayer2"
+      },
+      "fullConnectLayer2" : {
+         "implClass" : "FullConnectLayer",
+         "initParams" : [ 2 ],
+         "topLayer" : "lossLayer"
+      },
+      "inputLayer" : {
+         "implClass" : "InputLayer",
+         "initParams" : null,
+         "topLayer" : "convLayer"
+      },
+      "lossLayer" : {
+         "implClass" : "SoftmaxLayer",
+         "initParams" : [ 0 ],
+         "topLayer" : null
+      }
+   }
 }
