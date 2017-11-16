@@ -10,7 +10,6 @@
 #include "conv_layer.hpp"
 #include "full_connect_layer.hpp"
 #include "relu_layer.hpp"
-
 #include "layer.hpp"
 using namespace std;
 
@@ -26,11 +25,11 @@ void NetModel::forward()
         layer = layer->getTopLayer();
         //cout<<"forward "<<LAYER_TYPE_TO_STRING(layer->getType())<<endl;
         layer->forward();
-        if(layer->getType() == LOSS_LAYER)
-        {
-            LossLayer* lossLayer = (LossLayer*)layer.get();
-            cout<<"Loss:"<<lossLayer->getLoss()<<endl;
-        }
+        //if(layer->getType() == LOSS_LAYER)
+        //{
+        //    LossLayer* lossLayer = (LossLayer*)layer.get();
+        //    cout<<"Loss:"<<lossLayer->getLoss()<<endl;
+        //}
     }
 }
 
@@ -103,87 +102,163 @@ Layer* NetModel::generateLayerByClassName(const char* className)
     return NULL;
 }
 
-void NetModel::save_model(const char* filename)
+void NetModel::save_model()
 {
-    cout<<"loading model...."<<endl;
+    cout<<"saving model...."<<endl;
     // 解析json用Json::Reader
     Json::Reader reader;
     // Json::Value是一种很重要的类型，可以代表任意类型。如int, string, object, array...
     Json::Value root;
 
     std::ifstream is;
-    is.open (filename, std::ios::binary );
+    is.open (this->model_define_file_path.c_str(), std::ios::binary );
     if (!reader.parse(is, root))
     {
         ASSERT(false, cout<<"Json 解析失败！"<<endl);
     }
 
     //查找输入层
+    Json::Value jo_layers = root["layersModel"];
     Json::Value jo_layer = jo_layers["inputLayer"];
     boost::shared_ptr<Layer> layer = _input_layer;
     ASSERT(!jo_layer.isNull(), cout<<"inputLayer不存在！"<<endl);
+
+    string layerName = jo_layer["topLayer"].asString();
+    jo_layer = jo_layers[layerName];
+    layer = layer->getTopLayer();
+
+    Json::Value dataRoot;
+
     while(!jo_layer.isNull())
     {
-        if(layer->getType() == CONVOLUTION_LAYER)
+        Json::Value weightArray;
+        Json::Value biasArray;
+        if(layer->getType() == CONVOLUTION_LAYER || layer->getType() == FULL_CONNECT_LAYER)
         {
             boost::shared_ptr<Data> weightData = layer->getWeightData();
-            weightData->
+            for(int i = 0; i< weightData ->count();++i)
+            {
+                Neuron* neuron = weightData->get(i);
+                weightArray[i] = neuron->_value;
+            }
+
+            dataRoot[layerName]["weight"] = weightArray;
+
+            boost::shared_ptr<Data> biasData = layer->getBiasData();
+            for(int i = 0; i< biasData ->count();++i)
+            {
+                Neuron* neuron = biasData->get(i);
+                biasArray[i] = neuron->_value;
+            }
+
+            dataRoot[layerName]["bias"] = biasArray;
         }
+
+        layerName = jo_layer["topLayer"].asString();
+        jo_layer = jo_layers[layerName];
+        layer = layer->getTopLayer();
     }
 
-    root["layersData"] = "aaaaaaaaaaaa";
 
+
+    Json::StyledWriter writer;
+    std::string strWrite = writer.write(dataRoot);
     std::ofstream ofs;
-    ofs.open(filename);
-    ofs << root.toStyledString();
+    cout<<this->model_data_file_path_in<<endl;
+    ofs.open(this->model_data_file_path_out.c_str());
+    ofs << strWrite;
     ofs.close();
 }
 
-void NetModel::load_model(const char* filename)
+void NetModel::load_model()
 {
-    Layer::BASE_LEARNING_RATE = 0.0001F;
+    Layer::BASE_LEARNING_RATE = 0.0002F;
     Layer::LEARNING_RATE_POLICY = INV;
     Layer::GAMMA = 0.0001F;
     Layer::MOMENTUM = 0.9F;
     Layer::POWER = 0.75F;
     Layer::WEIGHT_DECAY = 0.0005F;
-    Layer::CURRENT_ITER_COUNT = 0;
     Layer::STEPSIZE = 100;
+    Layer::CURRENT_ITER_COUNT = 0;
     cout<<"loading model...."<<endl;
-    // 解析json用Json::Reader
-    Json::Reader reader;
-    // Json::Value是一种很重要的类型，可以代表任意类型。如int, string, object, array...
-    Json::Value root;
 
+    Json::Reader reader;
+
+    Json::Value modelDefineRoot;
+    Json::Value modelDataRoot;
     std::ifstream is;
-    is.open (filename, std::ios::binary );
-    if (!reader.parse(is, root))
+    is.open (this->model_define_file_path.c_str(), std::ios::binary );
+    if (!reader.parse(is, modelDefineRoot))
     {
-        ASSERT(false, cout<<"Json 解析失败！"<<endl);
+        ASSERT(false, cout<<this->model_define_file_path<< " 解析失败！"<<endl);
     }
 
-    Json::Value jo_hyperParameters = root["hyperParameters"];
+    is.close();
+
+    string modelDataFilePathIn = modelDefineRoot["modelDataFilePathIn"].asString();
+    string modelDataFilePathOut = modelDefineRoot["modelDataFilePathOut"].asString();
+    this->model_data_file_path_in = modelDataFilePathIn;
+    this->model_data_file_path_out = modelDataFilePathOut;
+
+    is.open (model_data_file_path_in.c_str(), std::ios::binary );
+    if (!reader.parse(is, modelDataRoot))
+    {
+        ASSERT(false, cout<<this->model_data_file_path_in<< " 解析失败！"<<endl);
+    }
+    else
+    {
+        cout<<this->model_data_file_path_in<<endl;
+        cout<<this->model_data_file_path_out<<endl;
+    }
+
+    is.close();
+    //读取超参数
+    Json::Value jo_hyperParameters = modelDefineRoot["hyperParameters"];
     ASSERT(!jo_hyperParameters.isNull(), cout<<"节点hyperParameters不存在！"<<endl);
 
     _per_batch_train_count = jo_hyperParameters["perBatchTrainCount"].asInt();
-    ASSERT(_per_batch_train_count>0, cout<<"perBatchTrainCount必须大于0！"<<endl);
+    ASSERT(_per_batch_train_count>0, cout<<"perBatchTrainCount 未定义或取值非法！"<<endl);
     _batch_count = jo_hyperParameters["batchCount"].asInt();
-    ASSERT(_batch_count>0, cout<<"batchCount必须大于0！"<<endl);
+    ASSERT(_batch_count>0, cout<<"batchCount 未定义或取值非法！"<<endl);
 
-    Json::Value jo_input_shape = root["inputShape"];
+    Layer::BASE_LEARNING_RATE = jo_hyperParameters["BASE_LEARNING_RATE"].asFloat();
+    ASSERT(Layer::BASE_LEARNING_RATE > 0, cout<<"Layer::BASE_LEARNING_RATE 未定义或取值非法！"<<endl);
+
+    Layer::LEARNING_RATE_POLICY = STRING_TO_LR_POLICY(jo_hyperParameters["LEARNING_RATE_POLICY"].asString().c_str());
+    ASSERT(Layer::LEARNING_RATE_POLICY >= 0 && Layer::LEARNING_RATE_POLICY < LR_Policy_size, cout<<"Layer::LEARNING_RATE_POLICY 未定义或取值非法！"<<endl);
+
+    Layer::GAMMA = jo_hyperParameters["GAMMA"].asFloat();
+    ASSERT(Layer::GAMMA >= 0, cout<<"Layer::GAMMA 未定义或取值非法！"<<endl);
+
+    Layer::MOMENTUM = jo_hyperParameters["MOMENTUM"].asFloat();
+    ASSERT(Layer::MOMENTUM >= 0, cout<<"Layer::MOMENTUM 未定义或取值非法！"<<endl);
+
+    Layer::POWER = jo_hyperParameters["POWER"].asFloat();
+    ASSERT(Layer::POWER >= 0, cout<<"Layer::POWER 未定义或取值非法！"<<endl);
+
+    Layer::WEIGHT_DECAY = jo_hyperParameters["WEIGHT_DECAY"].asFloat();
+    ASSERT(Layer::WEIGHT_DECAY >= 0, cout<<"Layer::WEIGHT_DECAY 未定义或取值非法！"<<endl);
+
+    Layer::STEPSIZE = jo_hyperParameters["STEPSIZE"].asInt();
+    ASSERT(Layer::STEPSIZE >= 0, cout<<"Layer::STEPSIZE 未定义或取值非法！"<<endl);
+
+    //读取输入数据尺寸
+    Json::Value jo_input_shape = modelDefineRoot["inputShape"];
     ASSERT(!jo_input_shape.isNull(), cout<<"节点inputShape不存在！"<<endl);
 
     _input_shape_num = jo_input_shape["num"].asInt();
     _input_shape_channels = jo_input_shape["channels"].asInt();
     _input_shape_height = jo_input_shape["height"].asInt();
     _input_shape_width = jo_input_shape["width"].asInt();
-    Json::Value jo_layers = root["layersModel"];
+
+    //读取layers定义
+    Json::Value jo_layers = modelDefineRoot["layersModel"];
     cout<<"model json:"<<endl<<jo_layers<<endl;
     ASSERT(!jo_layers.isNull(), cout<<"节点layersModel不存在！"<<endl);
 
     //查找输入层
     Json::Value jo_layer = jo_layers["inputLayer"];
-    ASSERT(!jo_layer.isNull(), cout<<"inputLayer不存在！"<<endl);
+    ASSERT(!jo_layer.isNull(), cout<<"inputLayer 未定义！"<<endl);
 
     boost::shared_ptr<Layer> bottom_layer;
 
@@ -230,7 +305,7 @@ void NetModel::load_model(const char* filename)
         cout<<endl;
     }
 
-    is.close();
+
 }
 
 }

@@ -13,7 +13,7 @@ void FullConnectLayer::setUp(const boost::shared_ptr<Data>& data)
     int t_h = 1;
     int t_w = _num;
     _top_data.reset(new Data(t_n, 1, t_h, t_w, Data::CONSTANT));
-    _bias_data.reset(new Data(t_n, 1, t_h, t_w, Data::CONSTANT));
+    _bias_data.reset(new Data(t_n, 1, t_h, t_w, Data::XAVIER));
 
     for (int n = 0; n < t_n; n++) {
         for (int h = 0; h < t_h; h++) {

@@ -320,14 +320,13 @@ int main(int argc, char* argv[])
     }
     srand(RandomGenerator::rnd_seed);
 
-    NetModel* netMode = new NetModelMysql();
-    const char* fileName = "/home/chendejia/workspace/github/miniDL/net_model.json";
-    cout<<"load model file: "<<fileName<<endl;
-
-    netMode->load_model(fileName);
-    netMode->save_model(fileName);
-    //cout<<"------------train start--------------"<<endl;
-    //netMode->train();
+    string modelDefileName = "/home/chendejia/workspace/github/miniDL/net_model_define.json";
+    cout<<"load model file: "<<modelDefileName<<endl;
+    NetModel* netMode = new NetModelMysql(modelDefileName);
+    netMode->load_model();
+    cout<<"------------train start--------------"<<endl;
+    netMode->train();
+    netMode->save_model();
     //delete netMode;
 
     cout << "Hello world!" << endl;

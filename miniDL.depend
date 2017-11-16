@@ -253,7 +253,7 @@
 	"common.hpp"
 	"proto/caffe.pb.h"
 
-1510548408 /home/chendejia/workspace/github/miniDL/include/common.hpp
+1510820869 /home/chendejia/workspace/github/miniDL/include/common.hpp
 	<math.h>
 	<algorithm>
 	<float.h>
@@ -277,7 +277,7 @@
 	<sys/stat.h>
 	<string>
 
-1510303936 source:/home/chendejia/workspace/github/miniDL/src/conv_layer.cpp
+1510817845 source:/home/chendejia/workspace/github/miniDL/src/conv_layer.cpp
 	<iostream>
 	"conv_layer.hpp"
 	"neuron.hpp"
@@ -294,7 +294,7 @@
 	<boost/shared_ptr.hpp>
 	<vector>
 
-1509960818 /home/chendejia/workspace/github/miniDL/include/data.hpp
+1510734486 /home/chendejia/workspace/github/miniDL/include/data.hpp
 	"common.hpp"
 	"neuron.hpp"
 	<vector>
@@ -324,7 +324,7 @@
 	<boost/random.hpp>
 	<boost/shared_ptr.hpp>
 
-1509437031 source:/home/chendejia/workspace/github/miniDL/src/full_connect_layer.cpp
+1510817850 source:/home/chendejia/workspace/github/miniDL/src/full_connect_layer.cpp
 	<iostream>
 	"full_connect_layer.hpp"
 
@@ -349,7 +349,7 @@
 	<pthread.h>
 	"layer.hpp"
 
-1510732348 source:/home/chendejia/workspace/github/miniDL/src/main.cpp
+1510827602 source:/home/chendejia/workspace/github/miniDL/src/main.cpp
 	<iostream>
 	"util/gen_bmp.hpp"
 	"input_layer.hpp"
@@ -471,10 +471,10 @@
 	"layer.hpp"
 	"input_layer.hpp"
 
-1509957605 /home/chendejia/workspace/github/miniDL/include/net_model_mysql.hpp
+1510827578 /home/chendejia/workspace/github/miniDL/include/net_model_mysql.hpp
 	"net_model.hpp"
 
-1510548408 /home/chendejia/workspace/github/miniDL/include/net_model.hpp
+1510827557 /home/chendejia/workspace/github/miniDL/include/net_model.hpp
 	"common.hpp"
 	<iostream>
 	<stdio.h>
@@ -482,7 +482,7 @@
 	"layer.hpp"
 	"input_layer.hpp"
 
-1510548408 source:/home/chendejia/workspace/github/miniDL/src/net_model _mysql.cpp
+1510818958 source:/home/chendejia/workspace/github/miniDL/src/net_model _mysql.cpp
 	"common.hpp"
 	<fstream>
 	<iostream>
@@ -493,8 +493,9 @@
 	"net_model_mysql.hpp"
 	<boost/algorithm/string/classification.hpp>
 	<boost/algorithm/string/split.hpp>
+	"softmax_layer.hpp"
 
-1510732297 source:/home/chendejia/workspace/github/miniDL/src/net_model.cpp
+1510826528 source:/home/chendejia/workspace/github/miniDL/src/net_model.cpp
 	"common.hpp"
 	<fstream>
 	<iostream>

@@ -40,11 +40,12 @@ using namespace boost;
 
 namespace dong
 {
-const int LayerTypeSize = 6;
-enum LayerType_ {INPUT_LAYER, CONVOLUTION_LAYER, POOL_LAYER, FULL_CONNECT_LAYER, RELU_LAYER, LOSS_LAYER};
+enum LayerType_ {INPUT_LAYER, CONVOLUTION_LAYER, POOL_LAYER, FULL_CONNECT_LAYER, RELU_LAYER, LOSS_LAYER, LayerTypeSize};
 static const char* LayerTypeNames[] = {"INPUT_LAYER", "CONVOLUTION_LAYER", "POOL_LAYER", "FULL_CONNECT_LAYER", "RELU_LAYER", "LOSS_LAYER"};
 
-enum LR_Policy_ {FIXED, STEP, EXP, INV, MULTISTEP, POLY, SIGMOID};
+enum LR_Policy_ {FIXED, STEP, EXP, INV, MULTISTEP, POLY, SIGMOID, LR_Policy_size};
+static const char* LRPolicyNames[] = {"FIXED", "STEP", "EXP", "INV", "MULTISTEP", "POLY", "SIGMOID"};
+
 typedef LayerType_ LayerType;
 typedef LR_Policy_ LR_Policy;
 enum Mode {TRAIN, TEST};
@@ -66,6 +67,19 @@ static LayerType_ STRING_TO_LAYER_TYPE(const char* name)
 static const char* LAYER_TYPE_TO_STRING(LayerType_ type)
 {
     return LayerTypeNames[type];
+}
+
+static LR_Policy STRING_TO_LR_POLICY(const char* name)
+{
+    for(int i=0;i<LR_Policy_size;++i)
+    {
+        if(0==strcmp(LRPolicyNames[i],name))
+        {
+            return (LR_Policy)i;
+        }
+    }
+
+    return (LR_Policy)-1;
 }
 
 template<typename T> static string toString(const T& t)

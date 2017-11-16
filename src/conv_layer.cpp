@@ -27,7 +27,7 @@ void ConvLayer::setUp(const boost::shared_ptr<Data>& data)
     int t_h = b_h - k_h + 1;
     int t_w = b_w - k_w + 1;
     _top_data.reset(new Data(_num_output, 1, t_h, t_w, Data::CONSTANT));
-    _bias_data.reset(new Data(_num_output, 1, t_h, t_w, Data::CONSTANT));
+    _bias_data.reset(new Data(_num_output, 1, t_h, t_w, Data::XAVIER));
 
     for (int n = 0; n < t_n; n++) {
         for (int h = 0; h < t_h; h++) {

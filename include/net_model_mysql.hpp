@@ -10,7 +10,7 @@ namespace dong
 class NetModelMysql: public NetModel
 {
 public:
-    explicit NetModelMysql():NetModel(){};
+    explicit NetModelMysql(string& modelDefineFilePath):NetModel(modelDefineFilePath) {};
     virtual ~NetModelMysql() {};
     virtual void train();
 };

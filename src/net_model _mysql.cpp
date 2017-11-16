@@ -8,6 +8,7 @@
 #include "net_model_mysql.hpp"
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/split.hpp>
+#include "softmax_layer.hpp"
 using namespace std;
 
 namespace dong
@@ -90,13 +91,16 @@ void NetModelMysql::train()
             this->forward();
             this->backward();
             ++record_count;
-            //loss_record_sum += softmaxLayer->getLoss();
+            LossLayer* lossLayer = (LossLayer*)_loss_layer.get();
+            loss_record_sum += lossLayer->getLoss();
             ++Layer::CURRENT_ITER_COUNT;
             Layer::CURRENT_LEARNING_RATE = Layer::getLearningRate();
         }
 
         float avg_loss = loss_record_sum / record_count;
+        this->save_model();
         cout << "avg loss:" << setprecision(6) << fixed << avg_loss << ", lr_rate:" << Layer::CURRENT_LEARNING_RATE<<",label:"<<batchLabels[0] << endl<<endl;
+
         loss_record_sum = 0.0F;
         record_count = 0;
     }
