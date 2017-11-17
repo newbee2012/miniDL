@@ -495,7 +495,7 @@
 	<boost/algorithm/string/split.hpp>
 	"softmax_layer.hpp"
 
-1510826528 source:/home/chendejia/workspace/github/miniDL/src/net_model.cpp
+1510887082 source:/home/chendejia/workspace/github/miniDL/src/net_model.cpp
 	"common.hpp"
 	<fstream>
 	<iostream>

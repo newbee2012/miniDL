@@ -23,13 +23,7 @@ void NetModel::forward()
     while(layer->getTopLayer().get())
     {
         layer = layer->getTopLayer();
-        //cout<<"forward "<<LAYER_TYPE_TO_STRING(layer->getType())<<endl;
         layer->forward();
-        //if(layer->getType() == LOSS_LAYER)
-        //{
-        //    LossLayer* lossLayer = (LossLayer*)layer.get();
-        //    cout<<"Loss:"<<lossLayer->getLoss()<<endl;
-        //}
     }
 }
 
@@ -38,7 +32,6 @@ void NetModel::backward()
     boost::shared_ptr<Layer> layer = _loss_layer;
     while(layer.get())
     {
-        //cout<<"forward "<<LAYER_TYPE_TO_STRING(layer->getType())<<endl;
         layer->backward();
         layer = layer->getBottomLayer();
     }
@@ -66,7 +59,6 @@ void NetModel::fillDataForOnceTrainForward(Neuron* datas, int size, int label)
 
     if(_loss_layer.get() != NULL)
     {
-        //cout<<"setLabel:"<<label<<endl;
         _loss_layer->setLabel(label);
     }
 
@@ -105,9 +97,7 @@ Layer* NetModel::generateLayerByClassName(const char* className)
 void NetModel::save_model()
 {
     cout<<"saving model...."<<endl;
-    // 解析json用Json::Reader
     Json::Reader reader;
-    // Json::Value是一种很重要的类型，可以代表任意类型。如int, string, object, array...
     Json::Value root;
 
     std::ifstream is;
@@ -117,7 +107,6 @@ void NetModel::save_model()
         ASSERT(false, cout<<"Json 解析失败！"<<endl);
     }
 
-    //查找输入层
     Json::Value jo_layers = root["layersModel"];
     Json::Value jo_layer = jo_layers["inputLayer"];
     boost::shared_ptr<Layer> layer = _input_layer;
@@ -128,7 +117,6 @@ void NetModel::save_model()
     layer = layer->getTopLayer();
 
     Json::Value dataRoot;
-
     while(!jo_layer.isNull())
     {
         Json::Value weightArray;
@@ -158,8 +146,6 @@ void NetModel::save_model()
         jo_layer = jo_layers[layerName];
         layer = layer->getTopLayer();
     }
-
-
 
     Json::StyledWriter writer;
     std::string strWrite = writer.write(dataRoot);
@@ -228,19 +214,19 @@ void NetModel::load_model()
     ASSERT(Layer::LEARNING_RATE_POLICY >= 0 && Layer::LEARNING_RATE_POLICY < LR_Policy_size, cout<<"Layer::LEARNING_RATE_POLICY 未定义或取值非法！"<<endl);
 
     Layer::GAMMA = jo_hyperParameters["GAMMA"].asFloat();
-    ASSERT(Layer::GAMMA >= 0, cout<<"Layer::GAMMA 未定义或取值非法！"<<endl);
+    ASSERT(Layer::GAMMA > 0, cout<<"Layer::GAMMA 未定义或取值非法！"<<endl);
 
     Layer::MOMENTUM = jo_hyperParameters["MOMENTUM"].asFloat();
-    ASSERT(Layer::MOMENTUM >= 0, cout<<"Layer::MOMENTUM 未定义或取值非法！"<<endl);
+    ASSERT(Layer::MOMENTUM > 0, cout<<"Layer::MOMENTUM 未定义或取值非法！"<<endl);
 
     Layer::POWER = jo_hyperParameters["POWER"].asFloat();
-    ASSERT(Layer::POWER >= 0, cout<<"Layer::POWER 未定义或取值非法！"<<endl);
+    ASSERT(Layer::POWER > 0, cout<<"Layer::POWER 未定义或取值非法！"<<endl);
 
     Layer::WEIGHT_DECAY = jo_hyperParameters["WEIGHT_DECAY"].asFloat();
-    ASSERT(Layer::WEIGHT_DECAY >= 0, cout<<"Layer::WEIGHT_DECAY 未定义或取值非法！"<<endl);
+    ASSERT(Layer::WEIGHT_DECAY > 0, cout<<"Layer::WEIGHT_DECAY 未定义或取值非法！"<<endl);
 
     Layer::STEPSIZE = jo_hyperParameters["STEPSIZE"].asInt();
-    ASSERT(Layer::STEPSIZE >= 0, cout<<"Layer::STEPSIZE 未定义或取值非法！"<<endl);
+    ASSERT(Layer::STEPSIZE > 0, cout<<"Layer::STEPSIZE 未定义或取值非法！"<<endl);
 
     //读取输入数据尺寸
     Json::Value jo_input_shape = modelDefineRoot["inputShape"];
@@ -291,7 +277,6 @@ void NetModel::load_model()
         {
             _loss_layer = layer;
         }
-
 
         if(NULL != bottom_layer)
         {

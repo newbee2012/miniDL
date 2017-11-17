@@ -1,12 +1,12 @@
 {
     "modelDataFilePathIn": "/home/chendejia/workspace/github/miniDL/net_model_data.json",
-    "modelDataFilePathOut": "/home/chendejia/workspace/github/miniDL/net_model_data.json",
+    "modelDataFilePathOut": "/home/chendejia/workspace/github/miniDL/net_model_data2.json",
     "hyperParameters": {
-        "batchCount": 10,
+        "batchCount": 1000,
         "perBatchTrainCount": 1000,
-        "BASE_LEARNING_RATE": 0.0002,
+        "BASE_LEARNING_RATE": 0.02,
         "LEARNING_RATE_POLICY": "INV",
-        "GAMMA1": 0.0001,
+        "GAMMA": 0.0001,
         "MOMENTUM": 0.9,
         "POWER": 0.75,
         "WEIGHT_DECAY": 0.0005,
