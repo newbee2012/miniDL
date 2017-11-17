@@ -117,32 +117,35 @@ void Data::printDiff()
     }
 }
 
-void Data::genBmp(const char* format, int index)
+void Data::genBmp(string& filePathBase)
 {
+    filePathBase.append("_%d_%d.bmp");
     for (int n = 0; n < _num; n++) {
-        char filename[60];
-        snprintf(filename, sizeof(filename), format, index, n);
-        RGB* pRGB = new RGB[_width * _height];
-        memset(pRGB, 0x0, sizeof(RGB) * _width * _height); // 设置背景为黑色
+        for (int c = 0; c < _channels; c++) {
+            char filePath[128]={0};
+            sprintf(filePath,filePathBase.c_str(),n,c);
+            cout<<"genBmp : " << filePath<<endl;
+            RGB* pRGB = new RGB[_width * _height];
+            memset(pRGB, 0x0, sizeof(RGB) * _width * _height); // 设置背景为黑色
 
-        for (int h = 0; h < _height; h++) {
-            for (int w = 0; w < _width; w++) {
-                BYTE gray = this->get(n, 0, h, w)->_value > 1 ? this->get(n, 0, h, w)->_value : (this->get(n, 0, h,
-                            w)->_value) * 0xFF * 10;
-
-                if (w == 0 || w == _width - 1 || h == 0 || h == _height - 1) {
-                    pRGB[(_height - h - 1)*_width + w].r = 0xFF;
-                    pRGB[(_height - h - 1)*_width + w].g = 0xFF;
-                    pRGB[(_height - h - 1)*_width + w].b = 0xFF;
-                } else {
-                    pRGB[(_height - h - 1)*_width + w].r = gray;
-                    pRGB[(_height - h - 1)*_width + w].g = gray;
-                    pRGB[(_height - h - 1)*_width + w].b = gray;
+            for (int h = 0; h < _height; h++) {
+                for (int w = 0; w < _width; w++) {
+                    BYTE gray = this->get(n, c, h, w)->_value > 1 ? this->get(n, c, h, w)->_value : (this->get(n, c, h,
+                                w)->_value) * 0xFF * 10;
+                    if (w == 0 || w == _width - 1 || h == 0 || h == _height - 1) {
+                        pRGB[(_height - h - 1)*_width + w].r = 0xFF;
+                        pRGB[(_height - h - 1)*_width + w].g = 0xFF;
+                        pRGB[(_height - h - 1)*_width + w].b = 0xFF;
+                    } else {
+                        pRGB[(_height - h - 1)*_width + w].r = gray;
+                        pRGB[(_height - h - 1)*_width + w].g = gray;
+                        pRGB[(_height - h - 1)*_width + w].b = gray;
+                    }
                 }
             }
-        }
 
-        BmpTool::generateBMP((BYTE*)pRGB, _width, _height, filename);
+            BmpTool::generateBMP((BYTE*)pRGB, _width, _height, filePath);
+        }
     }
 }
 

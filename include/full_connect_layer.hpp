@@ -24,6 +24,9 @@ public:
 
 protected:
     int _num;
+    int _channels;
+    int _height;
+    int _width;
     DISABLE_COPY_AND_ASSIGN(FullConnectLayer);
 };
 

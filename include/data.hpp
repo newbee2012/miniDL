@@ -17,7 +17,7 @@ public:
     void setUp(const boost::shared_array<Neuron>& neurons);
     void print();
     void printDiff();
-    void genBmp(const char* filename, int label);
+    void genBmp(string& filePathBase);
     void clearDiff();
     void clearValue();
 

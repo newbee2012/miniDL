@@ -123,10 +123,22 @@ void NetModel::save_model()
         Json::Value biasArray;
         if(layer->getType() == CONVOLUTION_LAYER || layer->getType() == FULL_CONNECT_LAYER)
         {
-            boost::shared_ptr<Data> weightData = layer->getWeightData();
-            for(int i = 0; i< weightData ->count();++i)
+            string genBmpBasePath = "/home/chendejia/workspace/github/miniDL/bin/Release/";
+            genBmpBasePath.append(layerName);
+            if(layer->getType() == CONVOLUTION_LAYER)
             {
-                Neuron* neuron = weightData->get(i);
+                //genBmpBasePath += "_weight";
+                //layer->getWeightData()->genBmp(genBmpBasePath.c_str());
+            }else if(layer->getType() == FULL_CONNECT_LAYER)
+            {
+                genBmpBasePath += "_topdata";
+                layer->getTopData()->genBmp(genBmpBasePath);
+            }
+
+
+            for(int i = 0; i< layer->getWeightData() ->count();++i)
+            {
+                Neuron* neuron = layer->getWeightData()->get(i);
                 weightArray[i] = neuron->_value;
             }
 
