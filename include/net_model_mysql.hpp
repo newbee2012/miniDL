@@ -13,6 +13,7 @@ public:
     explicit NetModelMysql(string& modelDefineFilePath):NetModel(modelDefineFilePath) {};
     virtual ~NetModelMysql() {};
     virtual void train();
+    virtual void test();
 };
 
 }

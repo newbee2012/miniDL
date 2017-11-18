@@ -32,7 +32,7 @@ private:\
 #define ASSERT(exp, ending_action) \
 if(!(exp)) \
 { \
-    cout<< "程序异常终止！" << "原因:"; \
+    cout<< "程序异常终止！ "; \
     ending_action; \
     assert(exp); \
 }
@@ -48,14 +48,17 @@ static const char* LayerTypeNames[] = {"INPUT_LAYER", "CONVOLUTION_LAYER", "POOL
 enum LR_Policy_ {FIXED, STEP, EXP, INV, MULTISTEP, POLY, SIGMOID, LR_Policy_size};
 static const char* LRPolicyNames[] = {"FIXED", "STEP", "EXP", "INV", "MULTISTEP", "POLY", "SIGMOID"};
 
+enum Mode {TRAIN, TEST, MODE_SIZE};
+static const char* ModeNames[] = {"TRAIN", "TEST"};
+
 typedef LayerType_ LayerType;
 typedef LR_Policy_ LR_Policy;
-enum Mode {TRAIN, TEST};
+
 
 
 static LayerType_ STRING_TO_LAYER_TYPE(const char* name)
 {
-    for(int i=0;i<LayerTypeSize;++i)
+    for(int i=0; i<LayerTypeSize; ++i)
     {
         if(0==strcmp(LayerTypeNames[i],name))
         {
@@ -73,7 +76,7 @@ static const char* LAYER_TYPE_TO_STRING(LayerType_ type)
 
 static LR_Policy STRING_TO_LR_POLICY(const char* name)
 {
-    for(int i=0;i<LR_Policy_size;++i)
+    for(int i=0; i<LR_Policy_size; ++i)
     {
         if(0==strcmp(LRPolicyNames[i],name))
         {
@@ -82,6 +85,19 @@ static LR_Policy STRING_TO_LR_POLICY(const char* name)
     }
 
     return (LR_Policy)-1;
+}
+
+static Mode STRING_TO_MODE(const char* name)
+{
+    for(int i=0; i<MODE_SIZE; ++i)
+    {
+        if(0==strcmp(ModeNames[i],name))
+        {
+            return (Mode)i;
+        }
+    }
+
+    return (Mode)-1;
 }
 
 template<typename T> static string toString(const T& t)

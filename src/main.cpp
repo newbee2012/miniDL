@@ -75,10 +75,8 @@ int main(int argc, char* argv[])
     string modelDefileName = "/home/chendejia/workspace/github/miniDL/net_model_define_mnist.json";
     cout<<"load model file: "<<modelDefileName<<endl;
     NetModel* netMode = new NetModelLMDB(modelDefileName);
-    netMode->load_model();
-    cout<<"------------train start--------------"<<endl;
-    netMode->train();
-    netMode->save_model();
+    netMode->run();
+    //netMode->save_model();
     //delete netMode;
 
     cout << "Hello world!" << endl;

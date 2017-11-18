@@ -14,6 +14,10 @@ using namespace std;
 namespace dong
 {
 
+void NetModelMysql::test()
+{
+}
+
 void NetModelMysql::train()
 {
     time_t t1 = time(NULL);

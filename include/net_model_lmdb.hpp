@@ -13,6 +13,7 @@ public:
     explicit NetModelLMDB(string& modelDefineFilePath):NetModel(modelDefineFilePath) {};
     virtual ~NetModelLMDB() {};
     virtual void train();
+    virtual void test();
 };
 
 }

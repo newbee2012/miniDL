@@ -15,7 +15,23 @@ using namespace std;
 
 namespace dong
 {
-
+void NetModel::run()
+{
+    cout<<"------------load model--------------"<<endl;
+    load_model();
+    if(_mode == TRAIN)
+    {
+        cout<<"------------train start--------------"<<endl;
+        train();
+        cout<<"------------save model--------------"<<endl;
+        save_model();
+    }
+    else if(_mode == TEST)
+    {
+        cout<<"------------test start--------------"<<endl;
+        test();
+    }
+}
 void NetModel::forward()
 {
     //cout<<"NetModel forward..."<<endl;
@@ -88,7 +104,7 @@ Layer* NetModel::generateLayerByClassName(const char* className)
     }
     else if(0==strcmp(className,"SoftmaxLayer"))
     {
-        return new SoftmaxLayer();
+        return new SoftmaxLayer(_mode);
     }
 
     return NULL;
@@ -210,6 +226,11 @@ void NetModel::load_model()
     }
 
     is.close();
+
+    Json::Value jo_mode = modelDefineRoot["mode"];
+    _mode = STRING_TO_MODE(jo_mode.asString().c_str());
+    ASSERT(_mode >= 0 && _mode < MODE_SIZE, cout<<"mode 未定义或取值非法！"<<endl);
+
     //读取超参数
     Json::Value jo_hyperParameters = modelDefineRoot["hyperParameters"];
     ASSERT(!jo_hyperParameters.isNull(), cout<<"节点hyperParameters不存在！"<<endl);
@@ -255,25 +276,22 @@ void NetModel::load_model()
     ASSERT(!jo_layers.isNull(), cout<<"节点layersModel不存在！"<<endl);
 
     //查找输入层
-    Json::Value jo_layer = jo_layers["inputLayer"];
-    ASSERT(!jo_layer.isNull(), cout<<"inputLayer 未定义！"<<endl);
+    string layerName = "inputLayer";
+
+    Json::Value jo_layer = jo_layers[layerName];
+    ASSERT(!jo_layer.isNull(), cout<<layerName<<" 未定义！"<<endl);
 
     boost::shared_ptr<Layer> bottom_layer;
 
     while(!jo_layer.isNull())
     {
-        const string top_layer = jo_layer["topLayer"].asString();
         const string impl_class = jo_layer["implClass"].asString();
         Json::Value init_params = jo_layer["initParams"];
         int params_size = init_params.size();
         int params[4] = {0};
-        cout<<"impl_class:"<<impl_class<<endl;
-        cout<<"top_layer:"<<top_layer<<endl;
-        cout<<"params:";
         for(int j = 0; j < params_size; ++j)
         {
             params[j] = init_params[j].asInt();
-            cout<<params[j]<<",";
         }
 
         cout<<endl;
@@ -296,8 +314,34 @@ void NetModel::load_model()
             layer->setBottomLayer(bottom_layer);
         }
 
+        if(layer->getType() == CONVOLUTION_LAYER || layer->getType() == FULL_CONNECT_LAYER)
+        {
+            Json::Value jo_weights = modelDataRoot[layerName]["weight"];
+            Json::Value jo_bias = modelDataRoot[layerName]["bias"];
+            boost::shared_ptr<Data>& weightData = layer->getWeightData();
+            boost::shared_ptr<Data>& biasData = layer->getBiasData();
+            ASSERT(jo_weights.size() == weightData->count() || jo_weights.size() == 0, cout<<layerName<<"读取weights个数和model定义不一致"<<endl);
+            ASSERT(jo_bias.size() == biasData->count() || jo_bias.size() == 0, cout<<layerName<<"读取bias个数和model定义不一致"<<endl);
+
+            for(int i = 0; i < jo_weights.size(); ++i)
+            {
+                Neuron* neuron = weightData->get(i);
+                neuron->_value = jo_weights[i].asFloat();
+            }
+
+            for(int i = 0; i < jo_bias.size(); ++i)
+            {
+                Neuron* neuron = biasData->get(i);
+                neuron->_value = jo_bias[i].asFloat();
+            }
+
+            //layer->getWeightData()->print();
+        }
+
         bottom_layer = layer;
-        jo_layer = jo_layers[top_layer];
+
+        layerName = jo_layer["topLayer"].asString();
+        jo_layer = jo_layers[layerName];
 
         cout<<endl;
     }
