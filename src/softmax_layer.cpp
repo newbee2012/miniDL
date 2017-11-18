@@ -16,21 +16,21 @@ void SoftmaxLayer::setUp(const boost::shared_ptr<Data>& data)
 
 void SoftmaxLayer::forward_cpu()
 {
+    _forecast_label = -1;
     _forecast_success = false;
     const int count = _bottom_data->count();
     float maxValue = 0.0F;
 
-    int forecastLabel = 0;
     for (int i = 0; i < count; ++i)
     {
         if(_bottom_data->get(i)->_value > maxValue)
         {
-            forecastLabel = i;
+            _forecast_label = i;
             maxValue = _bottom_data->get(i)->_value;
         }
     }
 
-    if(_label == forecastLabel)
+    if(_label == _forecast_label)
     {
         _forecast_success = true;
     }

@@ -14,6 +14,7 @@ public:
     virtual ~NetModelLMDB() {};
     virtual void train();
     virtual void test();
+    virtual void testFromABmp(string& fileName);
 };
 
 }

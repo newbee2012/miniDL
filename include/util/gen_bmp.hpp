@@ -10,13 +10,15 @@ using namespace std;
 namespace dong
 {
 #pragma pack(push, 2)//必须得写，否则sizeof得不到正确的结果
-typedef struct {
+typedef struct
+{
     BYTE b;
     BYTE g;
     BYTE r;
 } RGB;
 
-typedef struct {
+typedef struct
+{
     WORD    bfType;
     DWORD   bfSize;
     WORD    bfReserved1;
@@ -24,7 +26,8 @@ typedef struct {
     DWORD   bfOffBits;
 } BITMAPFILEHEADER;
 
-typedef struct {
+typedef struct
+{
     DWORD      biSize;
     INT32       biWidth;
     INT32       biHeight;
@@ -42,6 +45,32 @@ typedef struct {
 class BmpTool
 {
 public:
+    static BYTE* readBmp(const char *bmpName)
+    {
+        FILE *fp;
+        if( (fp = fopen(bmpName,"rb")) == NULL)  //以二进制的方式打开文件
+        {
+            cout<<"The file "<<bmpName<<"was not opened"<<endl;
+            return NULL;
+        }
+        if(fseek(fp,sizeof(BITMAPFILEHEADER),0))  //跳过BITMAPFILEHEADE
+        {
+            cout<<"跳转失败"<<endl;
+            return NULL;
+        }
+        BITMAPINFOHEADER infoHead;
+        fread(&infoHead,sizeof(BITMAPINFOHEADER),1,fp);   //从fp中读取BITMAPINFOHEADER信息到infoHead中,同时fp的指针移动
+        int bmpwidth = infoHead.biWidth;
+        int bmpheight = infoHead.biHeight;
+        int linebyte = (bmpwidth*24/8+3)/4*4; //计算每行的字节数，24：该图片是24位的bmp图，3：确保不丢失像素
+
+        //cout<<bmpwidth<<" "<<bmpheight<<endl;
+        BYTE* pBmpBuf = new unsigned char[linebyte*bmpheight];
+        fread(pBmpBuf,sizeof(char),linebyte*bmpheight,fp);
+        fclose(fp);   //关闭文件
+        return pBmpBuf;
+    }
+
     static void generateBMP( BYTE* pData, int width, int height, const char* filename )
     {
         int size = width * height * 3; // 每个像素点3个字节
@@ -70,7 +99,8 @@ public:
         bih.biClrImportant = 0;
         FILE* fp = fopen( filename, "wb" );
 
-        if ( !fp ) {
+        if ( !fp )
+        {
             return;
         }
 

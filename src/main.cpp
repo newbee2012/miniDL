@@ -61,6 +61,7 @@ void test2(char* p, char* q, int count1, int count2, int v)
 
 int main(int argc, char* argv[])
 {
+
     RandomGenerator::rnd_seed = -1;
     if (argc == 2) {
         RandomGenerator::rnd_seed = atoi(argv[1]);
@@ -74,10 +75,13 @@ int main(int argc, char* argv[])
 
     string modelDefileName = "/home/chendejia/workspace/github/miniDL/net_model_define_mnist.json";
     cout<<"load model file: "<<modelDefileName<<endl;
-    NetModel* netMode = new NetModelLMDB(modelDefileName);
-    netMode->run();
+    NetModelLMDB* netMode = new NetModelLMDB(modelDefileName);
+    netMode->load_model();
+    string fileName = "/home/chendejia/workspace/github/miniDL/bin/Release/7.bmp";
+    netMode->testFromABmp(fileName);
+    //netMode->run();
     //netMode->save_model();
-    //delete netMode;
+    delete netMode;
 
     cout << "Hello world!" << endl;
 

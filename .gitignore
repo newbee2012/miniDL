@@ -10,3 +10,4 @@ data/
 bin/
 *.mdb
 *~
+*.json

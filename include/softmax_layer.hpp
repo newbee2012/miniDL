@@ -13,13 +13,14 @@ class LossLayer: public Layer
 public:
     virtual float getLoss() = 0;
     virtual bool getForecastResult() = 0;
+    virtual int getForecastLabel() = 0;
 };
 
 class SoftmaxLayer: public LossLayer
 {
 public:
 
-    explicit SoftmaxLayer(Mode mode):_mode(mode), _forecast_success(false), _loss(0.0F), _label(-1){}
+    explicit SoftmaxLayer(Mode mode):_mode(mode), _forecast_success(false), _loss(0.0F), _label(-1), _forecast_label(-1){}
     virtual ~SoftmaxLayer() {}
     virtual LayerType getType()
     {
@@ -40,10 +41,16 @@ public:
     {
         return _forecast_success;
     }
+
+    inline int getForecastLabel()
+    {
+        return _forecast_label;
+    }
 private:
     Mode _mode;
     float _loss;
     int _label;
+    int _forecast_label;
     bool _forecast_success;
 protected:
 

@@ -9,12 +9,41 @@
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/split.hpp>
 #include "softmax_layer.hpp"
-
+#include "util/gen_bmp.hpp"
 using namespace std;
 using namespace caffe;
 
 namespace dong
 {
+
+void NetModelLMDB::testFromABmp(string& fileName)
+{
+    Data batchDatas(1, 1, 28, 28, Data::CONSTANT);
+    BYTE* pBmpBuf = BmpTool::readBmp(fileName.c_str());
+
+    for(int h=0;h < 28; ++h)
+    {
+        for(int w=0;w< 28; ++w)
+        {
+            batchDatas.get(0,0,h,w)->_value = pBmpBuf[((28 - h - 1)*28 + w)*3];
+        }
+    }
+
+    batchDatas.print();
+
+    int label = 5;
+    Neuron* neuron = batchDatas.get(0, 0, 0, 0);
+
+    this->fillDataForOnceTrainForward(neuron, batchDatas.offset(1, 0, 0, 0), label);
+    this->forward();
+
+    _loss_layer->getTopData()->print();
+
+    LossLayer* lossLayer = (LossLayer*)_loss_layer.get();
+    cout<< "识别结果:"<<lossLayer->getForecastLabel()<<endl;
+}
+
+
 void NetModelLMDB::test()
 {
     time_t t1 = time(NULL);
@@ -61,6 +90,7 @@ void NetModelLMDB::test()
         {
             int label = batchLabels[i];
             Neuron* neuron = batchDatas.get(i, 0, 0, 0);
+
             this->fillDataForOnceTrainForward(neuron, batchDatas.offset(1, 0, 0, 0), label);
             this->forward();
             //this->backward();
@@ -82,15 +112,12 @@ void NetModelLMDB::test()
             Layer::CURRENT_LEARNING_RATE = Layer::getLearningRate();
         }
 
-        float success_rate = (float)success_count / (float)test_count;
-        cout << "success_count / test_count : " <<success_count<<"/"<< test_count<< ",success_rate:"<< setprecision(6) << success_rate <<endl;
+        float accuracy = (float)success_count / (float)test_count;
+        cout << "success_count / test_count : " <<success_count<<"/"<< test_count<< " , accuracy : "<< setprecision(6) << accuracy <<endl;
 
         loss_record_sum = 0.0F;
         record_count = 0;
     }
-
-    float success_rate = (float)success_count / (float)test_count;
-    cout << "success_count / test_count : " <<success_count<<"/"<< test_count<< ",success_rate:"<< setprecision(6) << success_rate <<endl;
 
     delete cursor;
     mydb->Close();
