@@ -185,8 +185,7 @@ void NetModelLMDB::train()
         }
 
         float avg_loss = loss_record_sum / record_count;
-        //this->save_model();
-        cout << "avg loss:" << setprecision(6) << fixed << avg_loss << ", lr_rate:" << Layer::CURRENT_LEARNING_RATE<<",label:"<<batchLabels[0] << endl<<endl;
+        cout << "batch:"<< batch << ", avg loss:" << setprecision(6) << fixed << avg_loss << ", lr_rate:" << Layer::CURRENT_LEARNING_RATE<<",label:"<<batchLabels[0] << endl<<endl;
 
         loss_record_sum = 0.0F;
         record_count = 0;

@@ -80,7 +80,6 @@ int main(int argc, char* argv[])
     string fileName = "/home/chendejia/workspace/github/miniDL/bin/Release/7.bmp";
     netMode->testFromABmp(fileName);
     //netMode->run();
-    //netMode->save_model();
     delete netMode;
 
     cout << "Hello world!" << endl;

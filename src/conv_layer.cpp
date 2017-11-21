@@ -54,6 +54,7 @@ void ConvLayer::setUp(const boost::shared_ptr<Data>& data)
 void ConvLayer::forward_cpu()
 {
     Layer::forwardBase();
+    _top_data->genBmp()
 }
 
 void ConvLayer::backward_cpu()
