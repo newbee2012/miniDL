@@ -59,9 +59,96 @@ void test2(char* p, char* q, int count1, int count2, int v)
     }
 }
 
+int64_t mypow(int64_t n, int exp)
+{
+    int64_t value = 1;
+    int i;
+    for(i=1;i<=exp; ++i)
+    {
+        value *= n;
+    }
+
+    return value;
+}
+
+int64_t count3(int len)
+{
+    int64_t t=1;
+    int i;
+    for(i=2; i<=len; ++i)
+    {
+        t=t*10+mypow(10,i-1)/2;
+    }
+
+    return t;
+}
+
+int64_t test(char* x)
+{
+    char c = x[0];
+
+    int len = strlen(x);
+    int num = c-'0';
+
+    if(len ==1)
+    {
+        if(num >= 3)
+        {
+            return 1;
+        }else
+        {
+            return 0;
+        }
+    }
+
+    int64_t t= count3(len-1);
+    x++;
+    if(num > 3)
+    {
+        return num * t + test(x)+ mypow(10,len-1)/2;
+    }
+    else if(num == 3)
+    {
+        return num * t + (atoi(x)+1)/2 + test(x);
+    }
+    else
+    {
+        return num * t + test(x);
+    }
+}
+
+long long count(long long n, int x) {
+    long long cnt = 0, k;
+    long long i = 0;
+    for (i = 1;k = n / i;i *= 10) {
+        cnt += (k / 10) * ((i+1)/2);
+        //printf("k=%lld,cnt1+=%lld\n", k, (k / 10) * ((i+1)/2));
+        int cur = k % 10;
+        if (cur > x) {
+            cnt += (i+1)/2;
+            //printf("cnt2+=%lld\n", (i+1)/2);
+        } else if (cur == x) {
+            cnt += (n-k*i-1)/2+1;
+            //printf("cnt3+=%lld\n", (n-k*i-1)/2+1);
+        }
+    }
+    return cnt;
+}
+
+
+void solution(char *line)
+{
+    int a;
+    // 在此处理单行测试数据
+    sscanf(line,"%d",&a);
+    // 打印处理结果
+    printf("%lld\n", count(a,3));
+}
+
+
 int main(int argc, char* argv[])
 {
-
+    /*
     RandomGenerator::rnd_seed = -1;
     if (argc == 2) {
         RandomGenerator::rnd_seed = atoi(argv[1]);
@@ -81,8 +168,8 @@ int main(int argc, char* argv[])
     netMode->testFromABmp(fileName);
     //netMode->run();
     delete netMode;
-
+    */
     cout << "Hello world!" << endl;
-
+    solution(argv[1]);
     return 0;
 }
