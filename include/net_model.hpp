@@ -23,6 +23,7 @@ public:
     virtual void test()=0;
     virtual void load_model();
     virtual void save_model();
+    virtual void outputBmp();
 
 
 

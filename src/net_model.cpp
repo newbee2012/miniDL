@@ -23,6 +23,7 @@ void NetModel::run()
     {
         cout<<"------------train start--------------"<<endl;
         train();
+        outputBmp();
         cout<<"------------save model--------------"<<endl;
         save_model();
     }
@@ -32,14 +33,29 @@ void NetModel::run()
         test();
     }
 }
+
 void NetModel::forward()
 {
-    //cout<<"NetModel forward..."<<endl;
     boost::shared_ptr<Layer> layer = _input_layer;
     while(layer->getTopLayer().get())
     {
         layer = layer->getTopLayer();
         layer->forward();
+    }
+}
+
+void NetModel::outputBmp()
+{
+    boost::shared_ptr<Layer> layer = _input_layer;
+    while(layer->getTopLayer().get())
+    {
+        layer = layer->getTopLayer();
+        if(layer->getType() == CONVOLUTION_LAYER)
+        {
+            string filepath("/home/chendejia/workspace/github/miniDL/bin/Release/conv");
+            layer->getWeightData()->genBmp(filepath);
+            break;
+        }
     }
 }
 

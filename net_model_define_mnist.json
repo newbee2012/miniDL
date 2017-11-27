@@ -1,9 +1,9 @@
 {
-    "mode":"TEST",
-    "modelDataFilePathIn": "/home/chendejia/workspace/github/miniDL/net_model_data_mnist_4.json",
-    "modelDataFilePathOut": "/home/chendejia/workspace/github/miniDL/net_model_data_mnist_4.json",
+    "mode":"TRAIN",
+    "modelDataFilePathIn": "/home/chendejia/workspace/github/miniDL/net_model_data_mnist.json",
+    "modelDataFilePathOut": "/home/chendejia/workspace/github/miniDL/net_model_data_mnist.json",
     "hyperParameters": {
-        "batchCount": 600,
+        "batchCount": 100,
         "perBatchTrainCount": 100,
         "BASE_LEARNING_RATE": 0.0002,
         "LEARNING_RATE_POLICY": "INV",
@@ -27,8 +27,8 @@
         },
         "convLayer": {
             "implClass": "ConvLayer",
-            "initParams": [20,3,3],
-            "topLayer": "poolLayer2"
+            "initParams": [20,10,10],
+            "topLayer": "poolLayer"
         },
 	"poolLayer": {
             "implClass": "PoolLayer",
@@ -47,7 +47,7 @@
         },
         "fullConnectLayer": {
             "implClass": "FullConnectLayer",
-            "initParams": [1,1,28,28],
+            "initParams": [1,1,1,500],
             "topLayer": "reluLayer"
         },
         "reluLayer": {

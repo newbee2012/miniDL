@@ -37,8 +37,6 @@ int RandomGenerator::rnd_seed;          //随机种子，-1表示使用time(0)�
 
 void test2(char* p, char* q, int count1, int count2, int v)
 {
-    Json::Reader reader;
-    Json::Value root;
     if (count1 + count2 == 0)
     {
         cout << p << endl;
@@ -102,6 +100,7 @@ int64_t test(char* x)
     }
 
     int64_t t= count3(len-1);
+    cout<<"count3:"<<t<<",len:"<<len-1<<endl;
     x++;
     if(num > 3)
     {
@@ -117,24 +116,6 @@ int64_t test(char* x)
     }
 }
 
-long long count(long long n, int x) {
-    long long cnt = 0, k;
-    long long i = 0;
-    for (i = 1;k = n / i;i *= 10) {
-        cnt += (k / 10) * ((i+1)/2);
-        //printf("k=%lld,cnt1+=%lld\n", k, (k / 10) * ((i+1)/2));
-        int cur = k % 10;
-        if (cur > x) {
-            cnt += (i+1)/2;
-            //printf("cnt2+=%lld\n", (i+1)/2);
-        } else if (cur == x) {
-            cnt += (n-k*i-1)/2+1;
-            //printf("cnt3+=%lld\n", (n-k*i-1)/2+1);
-        }
-    }
-    return cnt;
-}
-
 
 void solution(char *line)
 {
@@ -142,13 +123,13 @@ void solution(char *line)
     // 在此处理单行测试数据
     sscanf(line,"%d",&a);
     // 打印处理结果
-    printf("%lld\n", count(a,3));
+    printf("%lld\n", test(line));
 }
 
 
 int main(int argc, char* argv[])
 {
-    /*
+
     RandomGenerator::rnd_seed = -1;
     if (argc == 2) {
         RandomGenerator::rnd_seed = atoi(argv[1]);
@@ -163,13 +144,13 @@ int main(int argc, char* argv[])
     string modelDefileName = "/home/chendejia/workspace/github/miniDL/net_model_define_mnist.json";
     cout<<"load model file: "<<modelDefileName<<endl;
     NetModelLMDB* netMode = new NetModelLMDB(modelDefileName);
-    netMode->load_model();
-    string fileName = "/home/chendejia/workspace/github/miniDL/bin/Release/7.bmp";
-    netMode->testFromABmp(fileName);
-    //netMode->run();
+    //netMode->load_model();
+    //string fileName = "/home/chendejia/workspace/github/miniDL/bin/Release/7.bmp";
+    //netMode->testFromABmp(fileName);
+    netMode->run();
     delete netMode;
-    */
-    cout << "Hello world!" << endl;
-    solution(argv[1]);
+
+    //cout << "Hello world!" << endl;
+    //solution(argv[1]);
     return 0;
 }
