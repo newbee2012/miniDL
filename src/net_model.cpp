@@ -52,9 +52,13 @@ void NetModel::outputBmp()
         layer = layer->getTopLayer();
         if(layer->getType() == CONVOLUTION_LAYER)
         {
-            string filepath("/home/chendejia/workspace/github/miniDL/bin/Release/conv");
+            string filepath("/home/chendejia/workspace/github/miniDL/bin/Release/");
+            filepath.append(layer->getName()).append("_weight");
             layer->getWeightData()->genBmp(filepath);
-            break;
+
+            filepath = "/home/chendejia/workspace/github/miniDL/bin/Release/";
+            filepath.append(layer->getName()).append("_topdata");
+            layer->getTopData()->genBmp(filepath);
         }
     }
 }
@@ -313,6 +317,7 @@ void NetModel::load_model()
         cout<<endl;
 
         boost::shared_ptr<Layer> layer(generateLayerByClassName(impl_class.c_str()));
+        layer->setName(layerName);
         layer->init(params);
         if(layer->getType() == INPUT_LAYER)
         {

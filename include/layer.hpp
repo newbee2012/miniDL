@@ -52,8 +52,10 @@ public:
     virtual void setTopLayer(boost::shared_ptr<Layer>& layer);
     virtual boost::shared_ptr<Layer>& getBottomLayer();
     virtual void setBottomLayer(boost::shared_ptr<Layer>& layer);
-    static float getLearningRate();
     virtual void setLabel(int label){};
+    inline virtual void setName(string& name){this->name = name;};
+    inline string& getName(){return name;};
+    static float getLearningRate();
 
     inline virtual void setUp(const boost::shared_ptr<Data>& data)
     {
@@ -94,6 +96,7 @@ protected:
     boost::shared_ptr<Data> _bias_data;
     boost::shared_ptr<Layer> _top_layer;
     boost::shared_ptr<Layer> _bottom_layer;
+    string name;
 
     DISABLE_COPY_AND_ASSIGN(Layer);
 };

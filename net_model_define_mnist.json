@@ -1,6 +1,6 @@
 {
     "mode":"TRAIN",
-    "modelDataFilePathIn": "/home/chendejia/workspace/github/miniDL/net_model_data_mnist.json",
+    "modelDataFilePathIn": "/home/chendejia/workspace/github/miniDL/null_model_data.json",
     "modelDataFilePathOut": "/home/chendejia/workspace/github/miniDL/net_model_data_mnist.json",
     "hyperParameters": {
         "batchCount": 100,
@@ -27,7 +27,7 @@
         },
         "convLayer": {
             "implClass": "ConvLayer",
-            "initParams": [20,10,10],
+            "initParams": [20,3,3],
             "topLayer": "poolLayer"
         },
 	"poolLayer": {
@@ -37,7 +37,7 @@
         },
 	"convLayer2": {
             "implClass": "ConvLayer",
-            "initParams": [50,5,5],
+            "initParams": [50,3,3],
             "topLayer": "poolLayer2"
         },
 	"poolLayer2": {
