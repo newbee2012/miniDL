@@ -24,6 +24,7 @@ public:
     void backward();
     float _value;
     float _diff;
+    float _batch_diff;
 
     vector< Neuron* > _forward_neuron;
     vector< Neuron* > _weight_neuron;

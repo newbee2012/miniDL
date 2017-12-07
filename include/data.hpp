@@ -19,6 +19,7 @@ public:
     void printDiff();
     void genBmp(string& filePathBase);
     void clearDiff();
+    void clearBatchDiff();
     void clearValue();
 
     inline int count()

@@ -32,6 +32,7 @@ float Layer::POWER;
 float Layer::WEIGHT_DECAY;              //权重衰减常数
 float Layer::CURRENT_LEARNING_RATE;
 int Layer::STEPSIZE;
+int Layer::BATCH_SIZE;
 
 int RandomGenerator::rnd_seed;          //随机种子，-1表示使用time(0)做种子
 

@@ -34,16 +34,6 @@ void NetModel::run()
     }
 }
 
-void NetModel::forward()
-{
-    boost::shared_ptr<Layer> layer = _input_layer;
-    while(layer->getTopLayer().get())
-    {
-        layer = layer->getTopLayer();
-        layer->forward();
-    }
-}
-
 void NetModel::outputBmp()
 {
     boost::shared_ptr<Layer> layer = _input_layer;
@@ -59,6 +49,16 @@ void NetModel::outputBmp()
     }
 }
 
+void NetModel::forward()
+{
+    boost::shared_ptr<Layer> layer = _input_layer->getTopLayer();
+    while(layer.get())
+    {
+        layer->forward();
+        layer = layer->getTopLayer();
+    }
+}
+
 void NetModel::backward()
 {
     boost::shared_ptr<Layer> layer = _loss_layer;
@@ -68,6 +68,23 @@ void NetModel::backward()
         layer = layer->getBottomLayer();
     }
 }
+
+void NetModel::update()
+{
+    boost::shared_ptr<Layer> layer = _input_layer->getTopLayer();
+    while(layer.get())
+    {
+        if(layer->getType() == CONVOLUTION_LAYER || layer->getType() == FULL_CONNECT_LAYER)
+        {
+            layer->updateWeight();
+            layer->updateBias();
+        }
+
+        layer = layer->getTopLayer();
+    }
+}
+
+
 
 void NetModel::setUpInputLayer()
 {
@@ -210,6 +227,7 @@ void NetModel::load_model()
     Layer::WEIGHT_DECAY = 0.0005F;
     Layer::STEPSIZE = 100;
     Layer::CURRENT_ITER_COUNT = 0;
+    Layer::BATCH_SIZE = 1;
     cout<<"loading model...."<<endl;
 
     Json::Reader reader;
@@ -253,6 +271,8 @@ void NetModel::load_model()
 
     _per_batch_train_count = jo_hyperParameters["perBatchTrainCount"].asInt();
     ASSERT(_per_batch_train_count>0, cout<<"perBatchTrainCount 未定义或取值非法！"<<endl);
+    Layer::BATCH_SIZE = _per_batch_train_count;
+
     _batch_count = jo_hyperParameters["batchCount"].asInt();
     ASSERT(_batch_count>0, cout<<"batchCount 未定义或取值非法！"<<endl);
 
@@ -310,8 +330,6 @@ void NetModel::load_model()
             params[j] = init_params[j].asInt();
         }
 
-        cout<<endl;
-
         boost::shared_ptr<Layer> layer(generateLayerByClassName(impl_class.c_str()));
         layer->init(params);
         if(layer->getType() == INPUT_LAYER)
@@ -358,8 +376,6 @@ void NetModel::load_model()
 
         layerName = jo_layer["topLayer"].asString();
         jo_layer = jo_layers[layerName];
-
-        cout<<endl;
     }
 
 

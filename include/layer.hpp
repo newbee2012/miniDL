@@ -39,6 +39,7 @@ public:
     static float WEIGHT_DECAY;              //权重衰减常数
     static float CURRENT_LEARNING_RATE;     //当前学习速率
     static int STEPSIZE;                  //每STEPSIZE次迭代，更新一次学习率
+    static int BATCH_SIZE;                  //批量训练数据大小
 
     Layer() {}
     virtual ~Layer() {};
@@ -54,7 +55,8 @@ public:
     virtual void setBottomLayer(boost::shared_ptr<Layer>& layer);
     static float getLearningRate();
     virtual void setLabel(int label){};
-
+    virtual void updateWeight();
+    virtual void updateBias();
     inline virtual void setUp(const boost::shared_ptr<Data>& data)
     {
         this->_bottom_data = data;
@@ -85,8 +87,6 @@ protected:
     virtual void backwardBase();
     static void* backwardBaseThread(void* ptr);
     static void backwardLimit(Data* _bottom_data, int offset_start, int offset_end);
-    virtual void updateWeight();
-    virtual void updateBias();
 
     boost::shared_ptr<Data> _bottom_data;
     boost::shared_ptr<Data> _top_data;

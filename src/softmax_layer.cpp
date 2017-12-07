@@ -19,7 +19,7 @@ void SoftmaxLayer::forward_cpu()
     _forecast_label = -1;
     _forecast_success = false;
     const int count = _bottom_data->count();
-    float maxValue = 0.0F;
+    float maxValue = -FLT_MAX;
 
     for (int i = 0; i < count; ++i)
     {

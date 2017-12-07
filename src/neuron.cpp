@@ -22,7 +22,7 @@ void Neuron::backward()
         Neuron* w_neuron = _weight_neuron[i];
         _diff += (t_neuron->_diff * w_neuron->_value);
         w_neuron->_diff += (t_neuron->_diff * _value);
-
+        w_neuron->_batch_diff += (t_neuron->_diff * _value);
         if (NULL != _bias) {
             _bias->_diff += t_neuron->_diff;
         }

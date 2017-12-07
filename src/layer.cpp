@@ -130,16 +130,16 @@ void Layer::backwardBase()
         Layer::backwardLimit(_bottom_data.get(), 0, _bottom_data->count());
     }
 
+    /*
     switch (getType()) {
     case CONVOLUTION_LAYER:
     case FULL_CONNECT_LAYER:
         updateWeight();
         updateBias();
         break;
-
     default:
         break;
-    }
+    }*/
 };
 
 
@@ -154,7 +154,8 @@ void Layer::updateWeight()
 {
     for (int i = 0; i < _weight_data->count(); ++i) {
         Neuron* w_neuron = _weight_data->get(i);
-        w_neuron->_value -= (CURRENT_LEARNING_RATE * w_neuron->_diff);
+        w_neuron->_value -= (CURRENT_LEARNING_RATE * w_neuron->_batch_diff / Layer::BATCH_SIZE);
+        w_neuron->_batch_diff = 0.0F;
     }
 }
 
@@ -162,7 +163,8 @@ void Layer::updateBias()
 {
     for (int i = 0; i < _bias_data->count(); ++i) {
         Neuron* bias_neuron = _bias_data->get(i);
-        bias_neuron->_value -= (CURRENT_LEARNING_RATE * bias_neuron->_diff);
+        bias_neuron->_value -= (CURRENT_LEARNING_RATE * bias_neuron->_batch_diff / Layer::BATCH_SIZE);
+        bias_neuron->_batch_diff = 0.0F;
     }
 }
 

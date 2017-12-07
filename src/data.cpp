@@ -34,6 +34,7 @@ Data::Data(int num, int channels, int height, int width, InitType type): _num(nu
         }
 
         _neurons[i]._diff = 0.0F;
+        _neurons[i]._batch_diff = 0.0F;
     }
 
     delete[] t;
@@ -43,6 +44,13 @@ void Data::clearDiff()
 {
     for (int i = 0; i < count(); ++i) {
         _neurons[i]._diff = 0.0F;
+    }
+}
+
+void Data::clearBatchDiff()
+{
+    for (int i = 0; i < count(); ++i) {
+        _neurons[i]._batch_diff = 0.0F;
     }
 }
 
@@ -137,9 +145,9 @@ void Data::genBmp(string& filePathBase)
                         pRGB[(_height - h - 1)*_width + w].g = 0xFF;
                         pRGB[(_height - h - 1)*_width + w].b = 0xFF;
                     } else {
-                        pRGB[(_height - h - 1)*_width + w].r = gray;
-                        pRGB[(_height - h - 1)*_width + w].g = gray;
-                        pRGB[(_height - h - 1)*_width + w].b = gray;
+                        pRGB[(_height - h - 1)*_width + w].r = gray * 255;
+                        pRGB[(_height - h - 1)*_width + w].g = gray * 255;
+                        pRGB[(_height - h - 1)*_width + w].b = gray * 255;
                     }
                 }
             }
