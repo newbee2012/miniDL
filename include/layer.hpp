@@ -41,8 +41,12 @@ public:
     static int STEPSIZE;                  //每STEPSIZE次迭代，更新一次学习率
     static int BATCH_SIZE;                  //批量训练数据大小
 
-    Layer() {}
-    virtual ~Layer() {};
+    Layer()
+    {
+        lr_mult_weight = 1.0F;
+        lr_mult_bias = 1.0F;
+    }
+    virtual ~Layer();
     virtual void init(int (&params)[4]) = 0;
     virtual void forward_cpu() = 0;
     virtual void forward();
@@ -85,6 +89,18 @@ public:
         return _bias_data;
     }
 
+    inline virtual void setLrMultWeight(float lr_mult)
+    {
+        this->lr_mult_weight = lr_mult;
+    }
+
+    inline virtual void setLrMultBias(float lr_mult)
+    {
+        this->lr_mult_bias = lr_mult;
+    }
+
+
+
 protected:
     virtual void forwardBase();
     virtual void backwardBase();
@@ -97,8 +113,9 @@ protected:
     boost::shared_ptr<Data> _bias_data;
     boost::shared_ptr<Layer> _top_layer;
     boost::shared_ptr<Layer> _bottom_layer;
-    string name;
-
+    string _name;
+    float _lr_mult_weight;
+    float _lr_mult_bias;
     DISABLE_COPY_AND_ASSIGN(Layer);
 };
 

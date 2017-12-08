@@ -163,7 +163,7 @@ void Layer::updateBias()
 {
     for (int i = 0; i < _bias_data->count(); ++i) {
         Neuron* bias_neuron = _bias_data->get(i);
-        bias_neuron->_value -= (CURRENT_LEARNING_RATE * bias_neuron->_batch_diff / Layer::BATCH_SIZE);
+        bias_neuron->_value -= (CURRENT_LEARNING_RATE *  * bias_neuron->_batch_diff / Layer::BATCH_SIZE);
         bias_neuron->_batch_diff = 0.0F;
     }
 }

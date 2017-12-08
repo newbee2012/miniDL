@@ -184,8 +184,8 @@ void NetModel::save_model()
                 //layer->getWeightData()->genBmp(genBmpBasePath.c_str());
             }else if(layer->getType() == FULL_CONNECT_LAYER)
             {
-                genBmpBasePath += "_topdata";
-                layer->getTopData()->genBmp(genBmpBasePath);
+                //genBmpBasePath += "_topdata";
+                //layer->getTopData()->genBmp(genBmpBasePath);
             }
 
 
@@ -215,7 +215,7 @@ void NetModel::save_model()
     Json::StyledWriter writer;
     std::string strWrite = writer.write(dataRoot);
     std::ofstream ofs;
-    cout<<this->model_data_file_path_in<<endl;
+    cout<<this->model_data_file_path_out<<endl;
     ofs.open(this->model_data_file_path_out.c_str());
     ofs << strWrite;
     ofs.close();
@@ -327,6 +327,7 @@ void NetModel::load_model()
     {
         const string impl_class = jo_layer["implClass"].asString();
         Json::Value init_params = jo_layer["initParams"];
+
         int params_size = init_params.size();
         int params[4] = {0};
         for(int j = 0; j < params_size; ++j)
@@ -337,6 +338,19 @@ void NetModel::load_model()
         boost::shared_ptr<Layer> layer(generateLayerByClassName(impl_class.c_str()));
         layer->setName(layerName);
         layer->init(params);
+        Json::Value lr_mult_weight = jo_layer["lr_mult_weight"];
+        Json::Value lr_mult_bias = jo_layer["lr_mult_bias"];
+        if(!lr_mult_weight.isNull())
+        {
+            layer->setLrMultWeight(lr_mult_weight.asFloat());
+        }
+
+        if(!lr_mult_bias.isNull())
+        {
+            layer->setLrMultBias(lr_mult_bias.asFloat());
+        }
+
+
         if(layer->getType() == INPUT_LAYER)
         {
             _input_layer = layer;

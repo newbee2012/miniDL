@@ -72,7 +72,12 @@ void NetModelLMDB::test()
     for (int batch = 0; batch < _batch_count; ++batch)
     {
         //读取一批数据
-        for (int i = 0; i < _per_batch_train_count && cursor->valid(); i++, cursor->Next()) {
+        for (int i = 0; i < _per_batch_train_count; ++i) {
+            if(!cursor->valid())
+            {
+                cursor->SeekToFirst();
+            }
+
             const string& value = cursor->value();
             Datum datum;
             datum.ParseFromString(value);
@@ -81,11 +86,13 @@ void NetModelLMDB::test()
                 for (int w = 0; w < width; w++) {
                     for (int h = 0; h < height; h++) {
                         batchDatas.get(i, c, w, h)->_value = (BYTE)(datum.data()[w * height + h]);
-                        batchDatas.get(i, c, w, h)->_value /= 255.0F;
+                        batchDatas.get(i, c, w, h)->_value /= 256.0F;
                         batchLabels[i] = datum.label();
                     }
                 }
             }
+
+            cursor->Next();
         }
 
         //测试这批数据
@@ -154,7 +161,13 @@ void NetModelLMDB::train()
     for (int batch = 0; batch < _batch_count; ++batch)
     {
         //读取一批数据
-        for (int i = 0; i < _per_batch_train_count && cursor->valid(); i++, cursor->Next()) {
+        for (int i = 0; i < _per_batch_train_count; ++i) {
+            if(!cursor->valid())
+            {
+                cout<<"Train data seek to first!"<<endl;
+                cursor->SeekToFirst();
+            }
+
             const string& value = cursor->value();
             Datum datum;
             datum.ParseFromString(value);
@@ -163,11 +176,13 @@ void NetModelLMDB::train()
                 for (int w = 0; w < width; w++) {
                     for (int h = 0; h < height; h++) {
                         batchDatas.get(i, c, w, h)->_value = (BYTE)(datum.data()[w * height + h]);
-                        batchDatas.get(i, c, w, h)->_value /= 255.0F;
+                        batchDatas.get(i, c, w, h)->_value /= 256.0F;
                         batchLabels[i] = datum.label();
                     }
                 }
             }
+
+            cursor->Next();
         }
 
         //batchDatas.print();
@@ -188,6 +203,10 @@ void NetModelLMDB::train()
 
         ++Layer::CURRENT_ITER_COUNT;
         this->update();
+        if(batch % 100 == 0){
+            this->save_model();
+        }
+
 
         float avg_loss = loss_record_sum / record_count;
         cout << "batch:"<< batch << ", avg loss:" << setprecision(6) << fixed << avg_loss << ", lr_rate:" << Layer::CURRENT_LEARNING_RATE<< endl<<endl;
