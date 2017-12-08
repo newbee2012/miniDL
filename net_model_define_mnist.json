@@ -69,7 +69,7 @@
             "implClass": "FullConnectLayer",
             "initParams": [1,1,1,10],
             "topLayer": "lossLayer",
-	　　　　"lr_mult_weight": 1,
+	    "lr_mult_weight": 1,
 	    "lr_mult_bias": 2
         },
         "lossLayer": {

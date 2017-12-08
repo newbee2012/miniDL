@@ -43,10 +43,10 @@ public:
 
     Layer()
     {
-        lr_mult_weight = 1.0F;
-        lr_mult_bias = 1.0F;
+        _lr_mult_weight = 1.0F;
+        _lr_mult_bias = 1.0F;
     }
-    virtual ~Layer();
+    virtual ~Layer(){};
     virtual void init(int (&params)[4]) = 0;
     virtual void forward_cpu() = 0;
     virtual void forward();
@@ -60,8 +60,8 @@ public:
     virtual void setLabel(int label){};
     virtual void updateWeight();
     virtual void updateBias();
-    inline virtual void setName(string& name){this->name = name;};
-    inline string& getName(){return name;};
+    inline virtual void setName(string& name){this->_name = name;};
+    inline string& getName(){return _name;};
     static float getLearningRate();
 
     inline virtual void setUp(const boost::shared_ptr<Data>& data)
@@ -91,12 +91,12 @@ public:
 
     inline virtual void setLrMultWeight(float lr_mult)
     {
-        this->lr_mult_weight = lr_mult;
+        this->_lr_mult_weight = lr_mult;
     }
 
     inline virtual void setLrMultBias(float lr_mult)
     {
-        this->lr_mult_bias = lr_mult;
+        this->_lr_mult_bias = lr_mult;
     }
 
 
