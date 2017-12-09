@@ -25,6 +25,7 @@ void Neuron::backward()
         w_neuron->_batch_diff += (t_neuron->_diff * _value);
         if (NULL != _bias) {
             _bias->_diff += t_neuron->_diff;
+            _bias->_batch_diff += t_neuron->_diff;
         }
     }
 }
