@@ -154,7 +154,12 @@ void Layer::updateWeight()
 {
     for (int i = 0; i < _weight_data->count(); ++i) {
         Neuron* w_neuron = _weight_data->get(i);
-        w_neuron->_value -= (CURRENT_LEARNING_RATE * _lr_mult_weight * w_neuron->_batch_diff / Layer::BATCH_SIZE);
+        float diff =  w_neuron->_batch_diff / Layer::BATCH_SIZE;
+        diff += w_neuron->_value * Layer::WEIGHT_DECAY;
+        diff *= CURRENT_LEARNING_RATE * _lr_mult_weight;
+        diff += Layer::MOMENTUM * w_neuron->_history_diff;
+        w_neuron->_history_diff = diff;
+        w_neuron->_value -= diff;
         w_neuron->_batch_diff = 0.0F;
     }
 }
@@ -163,7 +168,12 @@ void Layer::updateBias()
 {
     for (int i = 0; i < _bias_data->count(); ++i) {
         Neuron* bias_neuron = _bias_data->get(i);
-        bias_neuron->_value -= (CURRENT_LEARNING_RATE * _lr_mult_bias * bias_neuron->_batch_diff / Layer::BATCH_SIZE);
+        float diff = bias_neuron->_batch_diff / Layer::BATCH_SIZE;
+        diff += bias_neuron->_value * Layer::WEIGHT_DECAY;
+        diff *= CURRENT_LEARNING_RATE * _lr_mult_bias;
+        diff += Layer::MOMENTUM * bias_neuron->_history_diff;
+        bias_neuron->_history_diff = diff;
+        bias_neuron->_value -= diff;
         bias_neuron->_batch_diff = 0.0F;
     }
 }

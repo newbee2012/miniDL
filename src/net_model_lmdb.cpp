@@ -144,7 +144,6 @@ void NetModelLMDB::train()
     int width = _input_shape_width;
     ///////////////////////////////////////////////////////////////////////////
     float loss_record_sum = 0.0F;
-    int record_count = 0;
 
     /////////////////////////////////////////////////////
     db::DB* mydb = db::GetDB("lmdb");
@@ -188,7 +187,9 @@ void NetModelLMDB::train()
         //batchDatas.print();
 
         //训练这批数据
+
         Layer::CURRENT_LEARNING_RATE = Layer::getLearningRate();
+        loss_record_sum = 0.0F;
         for (int i = 0; i < _per_batch_train_count; i++)
         {
             int label = batchLabels[i];
@@ -196,23 +197,21 @@ void NetModelLMDB::train()
             this->fillDataForOnceTrainForward(neuron, size, label);
             this->forward();
             this->backward();
-            ++record_count;
             ++train_count;
             loss_record_sum += lossLayer->getLoss();
         }
 
         ++Layer::CURRENT_ITER_COUNT;
+        float avg_loss = loss_record_sum / _per_batch_train_count;
+        cout << "batch:"<< batch << ", loss:" << setprecision(6) << fixed << avg_loss << ", lr_rate:" << Layer::CURRENT_LEARNING_RATE<< endl<<endl;
+
         this->update();
-        if(batch % 100 == 0){
+        if(Layer::CURRENT_ITER_COUNT % 100 == 0){
             this->save_model();
         }
 
 
-        float avg_loss = loss_record_sum / record_count;
-        cout << "batch:"<< batch << ", avg loss:" << setprecision(6) << fixed << avg_loss << ", lr_rate:" << Layer::CURRENT_LEARNING_RATE<< endl<<endl;
 
-        loss_record_sum = 0.0F;
-        record_count = 0;
     }
 
     delete cursor;

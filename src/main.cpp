@@ -130,7 +130,6 @@ void solution(char *line)
 
 int main(int argc, char* argv[])
 {
-
     RandomGenerator::rnd_seed = -1;
     if (argc == 2) {
         RandomGenerator::rnd_seed = atoi(argv[1]);
