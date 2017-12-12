@@ -26,7 +26,7 @@ void NetModelLMDB::testFromABmp(string& fileName)
         for(int w=0;w< 28; ++w)
         {
             batchDatas.get(0,0,h,w)->_value = pBmpBuf[((28 - h - 1)*28 + w)*3];
-            batchDatas.get(0,0,h,w)->_value /= 255.0F;
+            batchDatas.get(0,0,h,w)->_value /= 255;
         }
     }
 
@@ -86,7 +86,7 @@ void NetModelLMDB::test()
                 for (int w = 0; w < width; w++) {
                     for (int h = 0; h < height; h++) {
                         batchDatas.get(i, c, w, h)->_value = (BYTE)(datum.data()[w * height + h]);
-                        batchDatas.get(i, c, w, h)->_value /= 256.0F;
+                        batchDatas.get(i, c, w, h)->_value /= 255;
                         batchLabels[i] = datum.label();
                     }
                 }
@@ -175,7 +175,7 @@ void NetModelLMDB::train()
                 for (int w = 0; w < width; w++) {
                     for (int h = 0; h < height; h++) {
                         batchDatas.get(i, c, w, h)->_value = (BYTE)(datum.data()[w * height + h]);
-                        batchDatas.get(i, c, w, h)->_value /= 256.0F;
+                        batchDatas.get(i, c, w, h)->_value /= 255;
                         batchLabels[i] = datum.label();
                     }
                 }
