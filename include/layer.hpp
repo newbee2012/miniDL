@@ -45,6 +45,8 @@ public:
     {
         _lr_mult_weight = 1.0F;
         _lr_mult_bias = 1.0F;
+        _sum_forward_time = 0.0D;
+        _sum_backward_time = 0.0D;
     }
     virtual ~Layer(){};
     virtual void init(int (&params)[4]) = 0;
@@ -99,7 +101,15 @@ public:
         this->_lr_mult_bias = lr_mult;
     }
 
+    inline double sumForwardTime()
+    {
+        return _sum_forward_time;
+    }
 
+    inline double sumBackwardTime()
+    {
+        return _sum_backward_time;
+    }
 
 protected:
     virtual void forwardBase();
@@ -116,6 +126,8 @@ protected:
     string _name;
     float _lr_mult_weight;
     float _lr_mult_bias;
+    double _sum_forward_time;
+    double _sum_backward_time;
     DISABLE_COPY_AND_ASSIGN(Layer);
 };
 

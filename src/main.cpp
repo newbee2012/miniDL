@@ -18,6 +18,7 @@
 #include "net_model_mysql.hpp"
 #include "net_model_lmdb.hpp"
 #include "net_model.hpp"
+
 using namespace std;
 using namespace dong;
 int sum = 0;

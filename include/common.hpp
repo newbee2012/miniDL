@@ -17,6 +17,7 @@ private:\
 #include <algorithm>
 #include <float.h>
 #include <boost/math/special_functions/next.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/random.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/shared_array.hpp>
@@ -42,6 +43,9 @@ using namespace boost;
 
 namespace dong
 {
+
+
+
 enum LayerType_ {INPUT_LAYER, CONVOLUTION_LAYER, POOL_LAYER, FULL_CONNECT_LAYER, RELU_LAYER, LOSS_LAYER, LayerTypeSize};
 static const char* LayerTypeNames[] = {"INPUT_LAYER", "CONVOLUTION_LAYER", "POOL_LAYER", "FULL_CONNECT_LAYER", "RELU_LAYER", "LOSS_LAYER"};
 

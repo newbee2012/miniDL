@@ -24,8 +24,7 @@ public:
     virtual void load_model();
     virtual void save_model();
     virtual void outputBmp();
-
-
+    virtual void outputTime();
 
 protected:
     virtual void fillDataForOnceTrainForward(Neuron* datas, int size, int label);

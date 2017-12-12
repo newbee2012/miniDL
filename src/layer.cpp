@@ -1,6 +1,9 @@
 #include <iostream>
 #include <pthread.h>
 #include "layer.hpp"
+
+#define RECORD_FORWARD_TIME
+#define RECORD_BACKWARD_TIME
 using namespace std;
 namespace dong
 {
@@ -31,9 +34,14 @@ void Layer::setBottomLayer(boost::shared_ptr<Layer>& layer)
 
 void Layer::forward()
 {
+#ifdef RECORD_FORWARD_TIME
+    boost::posix_time::ptime start_cpu_;
+    boost::posix_time::ptime stop_cpu_;
+    start_cpu_ = boost::posix_time::microsec_clock::local_time();
+#endif
+
     _bottom_data->clearDiff();
     _top_data->clearValue();
-
     if (_weight_data.get() != NULL) {
         _weight_data->clearDiff();
 
@@ -55,37 +63,26 @@ void Layer::forward()
 
     this->forward_cpu();
 
-    /*
-            cout<<"--------------------"<< LayerTypeNames[getType()]<<" forward-----------------------"<<endl;
-            cout<<"bottom data forward"<<endl;
-            _bottom_data->print();
-            cout<<"top data forward"<<endl;
-            _top_data->print();
-            cout<<"weight data forward"<<endl;
-            if(_weight_data.get()!= NULL)
-            {
-                _weight_data->print();
-            }
-*/
+#ifdef RECORD_FORWARD_TIME
+    stop_cpu_ = boost::posix_time::microsec_clock::local_time();
+    _sum_forward_time += (stop_cpu_ - start_cpu_).total_microseconds();
+#endif
 }
 
 void Layer::backward()
 {
+#ifdef RECORD_BACKWARD_TIME
+    boost::posix_time::ptime start_cpu_;
+    boost::posix_time::ptime stop_cpu_;
+    start_cpu_ = boost::posix_time::microsec_clock::local_time();
+#endif
+
     this->backward_cpu();
-    /*
-            cout<<"--------------------"<< LayerTypeNames[getType()]<<" backward-----------------------"<<endl;
-            cout<<"bottom diff backward"<<endl;
-            _bottom_data->printDiff();
-            cout<<"weight diff backward"<<endl;
-            if(_weight_data.get()!= NULL)
-            {
-                _weight_data->printDiff();
-            }
-            else
-            {
-                cout<<"---------------"<<endl;
-            }
-    */
+
+#ifdef RECORD_BACKWARD_TIME
+    stop_cpu_ = boost::posix_time::microsec_clock::local_time();
+    _sum_backward_time += (stop_cpu_ - start_cpu_).total_microseconds();
+#endif
 }
 
 void Layer::forwardBase()

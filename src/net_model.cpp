@@ -19,27 +19,40 @@ void NetModel::run()
 {
     cout<<"------------load model--------------"<<endl;
     load_model();
+
+    boost::posix_time::ptime start_cpu_;
+    boost::posix_time::ptime stop_cpu_;
+    start_cpu_ = boost::posix_time::microsec_clock::local_time();
+
     if(_mode == TRAIN)
     {
         cout<<"------------train start--------------"<<endl;
         train();
-        outputBmp();
+        stop_cpu_ = boost::posix_time::microsec_clock::local_time();
+        cout<< "Train time:"<< (stop_cpu_ - start_cpu_).total_milliseconds() << " ms."<<endl;
+        outputTime();
+        //outputBmp();
         cout<<"------------save model--------------"<<endl;
         save_model();
     }
     else if(_mode == TEST)
     {
+
         cout<<"------------test start--------------"<<endl;
         test();
+        stop_cpu_ = boost::posix_time::microsec_clock::local_time();
+        cout<< "Test time:"<< (stop_cpu_ - start_cpu_).total_milliseconds() << " ms."<<endl;
+        outputTime();
     }
+
+
 }
 
 void NetModel::outputBmp()
 {
     boost::shared_ptr<Layer> layer = _input_layer;
-    while(layer->getTopLayer().get())
+    while(layer.get())
     {
-        layer = layer->getTopLayer();
         if(layer->getType() == CONVOLUTION_LAYER)
         {
             string filepath("/home/chendejia/workspace/github/miniDL/bin/Release/");
@@ -50,7 +63,34 @@ void NetModel::outputBmp()
             filepath.append(layer->getName()).append("_topdata");
             layer->getTopData()->genBmp(filepath);
         }
+
+        layer = layer->getTopLayer();
     }
+}
+
+void NetModel::outputTime()
+{
+    cout<<"-------------outputTime--------------"<<endl;
+    boost::shared_ptr<Layer> layer = _input_layer;
+    double sum_forward_time = 0.0D;
+    double sum_backward_time = 0.0D;
+    int trainCount = _per_batch_train_count * _batch_count;
+    while(layer.get())
+    {
+        cout<<layer->getName()<<" total forward time:"<<layer->sumForwardTime()/1000<< " ms."<<endl;
+        cout<<layer->getName()<<" total backward time:"<<layer->sumBackwardTime()/1000<< " ms."<<endl;
+        cout<<layer->getName()<<" average forward time:"<<layer->sumForwardTime()/trainCount/1000<< " ms."<<endl;
+        cout<<layer->getName()<<" average backward time:"<<layer->sumBackwardTime()/trainCount/1000<< " ms."<<endl;
+        sum_forward_time += layer->sumForwardTime();
+        sum_backward_time += layer->sumBackwardTime();
+        layer = layer->getTopLayer();
+    }
+
+    cout<<endl;
+    cout<<"total forward time:"<<sum_forward_time/1000<< " ms."<<endl;
+    cout<<"total backward time:"<<sum_backward_time/1000<< " ms."<<endl;
+    cout<<"average forward time:"<<sum_forward_time/trainCount/1000 << " ms."<<endl;
+    cout<<"average backward time:"<<sum_backward_time/trainCount/1000<< " ms."<<endl;
 }
 
 void NetModel::forward()
@@ -182,14 +222,15 @@ void NetModel::save_model()
             {
                 //genBmpBasePath += "_weight";
                 //layer->getWeightData()->genBmp(genBmpBasePath.c_str());
-            }else if(layer->getType() == FULL_CONNECT_LAYER)
+            }
+            else if(layer->getType() == FULL_CONNECT_LAYER)
             {
                 //genBmpBasePath += "_topdata";
                 //layer->getTopData()->genBmp(genBmpBasePath);
             }
 
 
-            for(int i = 0; i< layer->getWeightData() ->count();++i)
+            for(int i = 0; i< layer->getWeightData() ->count(); ++i)
             {
                 Neuron* neuron = layer->getWeightData()->get(i);
                 weightArray[i] = neuron->_value;
@@ -198,7 +239,7 @@ void NetModel::save_model()
             dataRoot[layerName]["weight"] = weightArray;
 
             boost::shared_ptr<Data> biasData = layer->getBiasData();
-            for(int i = 0; i< biasData ->count();++i)
+            for(int i = 0; i< biasData ->count(); ++i)
             {
                 Neuron* neuron = biasData->get(i);
                 biasArray[i] = neuron->_value;
