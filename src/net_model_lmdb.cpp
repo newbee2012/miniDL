@@ -26,7 +26,7 @@ void NetModelLMDB::testFromABmp(string& fileName)
         for(int w=0;w< 28; ++w)
         {
             batchDatas.get(0,0,h,w)->_value = pBmpBuf[((28 - h - 1)*28 + w)*3];
-            //batchDatas.get(0,0,h,w)->_value /= 256.0F;
+            batchDatas.get(0,0,h,w)->_value /= 255;
         }
     }
 
