@@ -51,7 +51,6 @@ public:
     DISABLE_COPY_AND_ASSIGN(DB);
 };
 
-DB* GetDB(DataParameter::DB backend);
 DB* GetDB(const string& backend);
 
 }  // namespace db

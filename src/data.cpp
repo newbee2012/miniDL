@@ -145,9 +145,9 @@ void Data::genBmp(string& filePathBase)
                         pRGB[(_height - h - 1)*_width + w].g = 0xFF;
                         pRGB[(_height - h - 1)*_width + w].b = 0xFF;
                     } else {
-                        pRGB[(_height - h - 1)*_width + w].r = gray * 256;
-                        pRGB[(_height - h - 1)*_width + w].g = gray * 256;
-                        pRGB[(_height - h - 1)*_width + w].b = gray * 256;
+                        pRGB[(_height - h - 1)*_width + w].r = gray;
+                        pRGB[(_height - h - 1)*_width + w].g = gray;
+                        pRGB[(_height - h - 1)*_width + w].b = gray;
                     }
                 }
             }

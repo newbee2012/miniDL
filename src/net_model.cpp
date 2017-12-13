@@ -31,6 +31,7 @@ void NetModel::run()
     {
         cout<<"------------test start--------------"<<endl;
         test();
+        outputBmp();
     }
 }
 
@@ -40,7 +41,7 @@ void NetModel::outputBmp()
     while(layer->getTopLayer().get())
     {
         layer = layer->getTopLayer();
-        if(layer->getType() == CONVOLUTION_LAYER)
+        if(layer->getName() == "convLayer")
         {
             string filepath("/home/chendejia/workspace/github/miniDL/bin/Release/");
             filepath.append(layer->getName()).append("_weight");
