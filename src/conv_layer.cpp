@@ -21,11 +21,6 @@ void ConvLayer::setUp(const boost::shared_ptr<Data>& data)
     _bias_data.reset(new Data(1, _num_output,  _top_data->height(), _top_data->width(), Data::CONSTANT));
     _weight_data.reset(new Data(_num_output, _bottom_data->channels(), _kernel_h, _kernel_w, Data::XAVIER));
 
-    int k_n = _weight_data->num();
-    int k_c = _weight_data->channels();
-    int k_h = _weight_data->height();
-    int k_w = _weight_data->width();
-
     for (int t_n = 0; t_n < _top_data->num(); ++t_n)
     {
         for (int t_c = 0; t_c < _top_data->channels(); ++t_c)
@@ -39,9 +34,9 @@ void ConvLayer::setUp(const boost::shared_ptr<Data>& data)
                     t_neuron->_bias = bias_neuron;
                     for(int k_c = 0; k_c < _weight_data->channels(); ++k_c)
                     {
-                        for (int offset_h = 0; offset_h < k_h; ++offset_h)
+                        for (int offset_h = 0; offset_h < _weight_data->height(); ++offset_h)
                         {
-                            for (int offset_w = 0; offset_w < k_w; ++offset_w)
+                            for (int offset_w = 0; offset_w < _weight_data->width(); ++offset_w)
                             {
                                 Neuron* w_neuron = _weight_data->get(t_c, k_c, offset_h, offset_w);
                                 for (int b_n = 0; b_n < _bottom_data->num(); ++b_n)

@@ -13,9 +13,10 @@ void FullConnectLayer::setUp(const boost::shared_ptr<Data>& data)
     int t_h = _height;
     int t_w = _width;
     int t_count = _num * _channels *_height * _width;
-    _weight_data.reset(new Data(t_count, _bottom_data->count(), 1, 1, Data::XAVIER));
 
-    _top_data.reset(new Data(t_n, t_c, t_h, t_w, Data::CONSTANT));
+
+    _top_data.reset(new Data(_num, _channels, _height, _width, Data::CONSTANT));
+    _weight_data.reset(new Data(t_count, _bottom_data->channels(), _bottom_data->height(), _bottom_data->width(), Data::XAVIER));
     _bias_data.reset(new Data(t_n, t_c, t_h, t_w, Data::CONSTANT));
 
     for (int n = 0; n < t_n; n++)
