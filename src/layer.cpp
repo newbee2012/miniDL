@@ -87,12 +87,14 @@ void Layer::backward()
 
 void Layer::forwardBase()
 {
-    for (int i = 0; i < _bottom_data->count(); ++i) {
+    int bottom_count = _bottom_data->count();
+    for (int i = 0; i < bottom_count; ++i) {
         _bottom_data->get(i)->forward();
     }
 
     if (NULL != _bias_data.get()) {
-        for (int i = 0; i < _top_data->count(); ++i) {
+        int top_count = _top_data->count();
+        for (int i = 0; i < top_count; ++i) {
             _top_data->get(i)->_value += _bias_data->get(i)->_value;
         }
     }

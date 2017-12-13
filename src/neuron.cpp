@@ -8,7 +8,8 @@ namespace dong
 
 void Neuron::forward()
 {
-    for (int i = 0; i < _forward_neuron.size(); ++i) {
+    int n = _forward_neuron.size();
+    for (int i = 0; i < n; ++i) {
         Neuron* t_neuron = _forward_neuron[i];
         Neuron* w_neuron = _weight_neuron[i];
         t_neuron->_value += (_value * w_neuron->_value);

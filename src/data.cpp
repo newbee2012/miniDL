@@ -42,21 +42,24 @@ Data::Data(int num, int channels, int height, int width, InitType type): _num(nu
 
 void Data::clearDiff()
 {
-    for (int i = 0; i < count(); ++i) {
+    int c = count();
+    for (int i = 0; i < c; ++i) {
         _neurons[i]._diff = 0.0F;
     }
 }
 
 void Data::clearBatchDiff()
 {
-    for (int i = 0; i < count(); ++i) {
+    int c = count();
+    for (int i = 0; i < c; ++i) {
         _neurons[i]._batch_diff = 0.0F;
     }
 }
 
 void Data::clearValue()
 {
-    for (int i = 0; i < count(); ++i) {
+    int c = count();
+    for (int i = 0; i < c; ++i) {
         _neurons[i]._value = 0.0F;
     }
 }
