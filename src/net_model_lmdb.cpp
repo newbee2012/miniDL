@@ -32,16 +32,16 @@ void NetModelLMDB::testFromABmp(string& fileName)
 
     batchDatas.print();
 
-    int label = 5;
+    //int label = 5;
     Neuron* neuron = batchDatas.get(0, 0, 0, 0);
 
-    this->fillDataForOnceTrainForward(neuron, batchDatas.offset(1, 0, 0, 0), label);
+    //this->fillDataForOnceTrainForward(neuron, batchDatas.offset(1, 0, 0, 0), label);
     this->forward();
 
     _loss_layer->getTopData()->print();
 
     LossLayer* lossLayer = (LossLayer*)_loss_layer.get();
-    cout<< "识别结果:"<<lossLayer->getForecastLabel()<<endl;
+    cout<< "识别结果:"<<lossLayer->getForecastLabels()<<endl;
     outputBmp();
 }
 
@@ -100,16 +100,16 @@ void NetModelLMDB::test()
         LossLayer* lossLayer = (LossLayer*)_loss_layer.get();
         for (int i = 0; i < _per_batch_train_count; i++)
         {
-            int label = batchLabels[i];
+            //int label = batchLabels[i];
             Neuron* neuron = batchDatas.get(i, 0, 0, 0);
 
-            this->fillDataForOnceTrainForward(neuron, size, label);
+            //this->fillDataForOnceTrainForward(neuron, size, label);
             this->forward();
             ++test_count;
-            if(lossLayer->getForecastResult())
-            {
-                ++success_count;
-            }
+            //if(lossLayer->getForecastResult())
+            //{
+            //    ++success_count;
+            //}
 
             //cout<<"label:"<<label<<",forecastResult:"<< lossLayer->getForecastResult()<<endl;
             //_loss_layer->getTopData()->print();
@@ -144,7 +144,6 @@ void NetModelLMDB::train()
     int height = _input_shape_height;
     int width = _input_shape_width;
     ///////////////////////////////////////////////////////////////////////////
-    float loss_record_sum = 0.0F;
 
     /////////////////////////////////////////////////////
     db::DB* mydb = db::GetDB("lmdb");
@@ -153,9 +152,7 @@ void NetModelLMDB::train()
     cursor->SeekToFirst();
 
     Data batchDatas(_per_batch_train_count, 1, height, width, Data::CONSTANT);
-    int batchLabels[_per_batch_train_count];
-    int train_count = 0;
-    int size = batchDatas.offset(1, 0, 0, 0);
+    boost::shared_array<int> labels(new int[_per_batch_train_count]);
     LossLayer* lossLayer = (LossLayer*)_loss_layer.get();
     //训练batch_count批数据
     for (int batch = 0; batch < _batch_count; ++batch)
@@ -176,7 +173,7 @@ void NetModelLMDB::train()
                     for (int h = 0; h < height; h++) {
                         batchDatas.get(i, c, w, h)->_value = (BYTE)(datum.data()[w * height + h]);
                         batchDatas.get(i, c, w, h)->_value /= 255;
-                        batchLabels[i] = datum.label();
+                        labels[i] = datum.label();
                     }
                 }
             }
@@ -185,21 +182,13 @@ void NetModelLMDB::train()
         }
 
         Layer::CURRENT_LEARNING_RATE = Layer::getLearningRate();
-        loss_record_sum = 0.0F;
-        for (int i = 0; i < _per_batch_train_count; i++)
-        {
-            int label = batchLabels[i];
-            Neuron* neuron = batchDatas.get(i, 0, 0, 0);
-            this->fillDataForOnceTrainForward(neuron, size, label);
-            this->forward();
-            this->backward();
-            ++train_count;
-            loss_record_sum += lossLayer->getLoss();
-        }
-
+        Neuron* neuron = batchDatas.get(0, 0, 0, 0);
+        this->fillDataForOnceTrainForward(neuron, batchDatas.count(), labels);
+        this->forward();
+        this->backward();
         ++Layer::CURRENT_ITER_COUNT;
-        float avg_loss = loss_record_sum / _per_batch_train_count;
-        cout << "batch:"<< batch << ", loss:" << setprecision(6) << fixed << avg_loss << ", lr_rate:" << Layer::CURRENT_LEARNING_RATE<< endl<<endl;
+
+        cout << "batch:"<< batch << ", loss:" << setprecision(6) << fixed << lossLayer->getLoss() << ", lr_rate:" << Layer::CURRENT_LEARNING_RATE<< endl<<endl;
 
         this->update();
         if(Layer::CURRENT_ITER_COUNT % 100 == 0){
@@ -213,7 +202,7 @@ void NetModelLMDB::train()
     delete mydb;
 
     time_t t2 = time(NULL);
-    cout <<"总共耗时:"<< t2 -t1<<"秒, 训练速度:" << train_count /
+    cout <<"总共耗时:"<< t2 -t1<<"秒, 训练速度:" << (float)(_batch_count * _per_batch_train_count) /
          (t2 - t1 + 1) << " pic / s" << endl;
 }
 

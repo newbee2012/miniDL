@@ -1,5 +1,6 @@
 #include <iostream>
 #include "neuron.hpp"
+#include "layer.hpp"
 using namespace std;
 
 namespace dong

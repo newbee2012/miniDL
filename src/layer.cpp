@@ -42,10 +42,12 @@ void Layer::forward()
 
     _bottom_data->clearDiff();
     _top_data->clearValue();
-    if (_weight_data.get() != NULL) {
+    if (_weight_data.get() != NULL)
+    {
         _weight_data->clearDiff();
 
-        switch (getType()) {
+        switch (getType())
+        {
         case POOL_LAYER:
         case RELU_LAYER:
         case LOSS_LAYER:
@@ -57,7 +59,8 @@ void Layer::forward()
         }
     }
 
-    if (_bias_data != NULL) {
+    if (_bias_data != NULL)
+    {
         _bias_data->clearDiff();
     }
 
@@ -88,33 +91,47 @@ void Layer::backward()
 void Layer::forwardBase()
 {
     int bottom_count = _bottom_data->count();
-    for (int i = 0; i < bottom_count; ++i) {
+    for (int i = 0; i < bottom_count; ++i)
+    {
         _bottom_data->get(i)->forward();
     }
 
-    if (NULL != _bias_data.get()) {
-        int top_count = _top_data->count();
-        for (int i = 0; i < top_count; ++i) {
-            _top_data->get(i)->_value += _bias_data->get(i)->_value;
+    if (NULL != _bias_data.get())
+    {
+        for (int n = 0; n < _top_data->num(); ++n)
+        {
+            for (int c = 0; c < _top_data->channels(); ++c)
+            {
+                for (int h = 0; h < _top_data->height(); ++h)
+                {
+                    for (int w = 0; w < _top_data->width(); ++w)
+                    {
+                        _top_data->get(n,c,h,w)->_value += _bias_data->get(c,h,w,0)->_value;
+                    }
+                }
+            }
         }
     }
 }
 
 void Layer::backwardBase()
 {
-#define THREAD_COUNT 4
-    bool multithreading = false;
+#define THREAD_COUNT 8
+    bool multithreading = true;
 
-    if (multithreading) {
+    if (multithreading)
+    {
         pthread_t thread[THREAD_COUNT];
         ThreadParam p[THREAD_COUNT];
         int spilit_count = _bottom_data->count() / THREAD_COUNT;
 
-        for (int i = 0; i < THREAD_COUNT; ++i) {
+        for (int i = 0; i < THREAD_COUNT; ++i)
+        {
             int offset_start = i * spilit_count;
             int offset_end = offset_start + spilit_count;
 
-            if (i == THREAD_COUNT - 1) {
+            if (i == THREAD_COUNT - 1)
+            {
                 offset_end = _bottom_data->count();
             }
 
@@ -122,36 +139,30 @@ void Layer::backwardBase()
             pthread_create(&thread[i], NULL, backwardBaseThread, &p[i]);
         }
 
-        for (int i = 0; i < THREAD_COUNT; ++i) {
+        for (int i = 0; i < THREAD_COUNT; ++i)
+        {
             pthread_join(thread[i], NULL);
         }
-    } else {
+    }
+    else
+    {
         Layer::backwardLimit(_bottom_data.get(), 0, _bottom_data->count());
     }
-
-    /*
-    switch (getType()) {
-    case CONVOLUTION_LAYER:
-    case FULL_CONNECT_LAYER:
-        updateWeight();
-        updateBias();
-        break;
-    default:
-        break;
-    }*/
 };
 
 
 void Layer::backwardLimit(Data* bottom_data, int offset_start, int offset_end)
 {
-    for (int i = offset_start; i < offset_end; ++i) {
+    for (int i = offset_start; i < offset_end; ++i)
+    {
         bottom_data->get(i)->backward();
     }
 }
 
 void Layer::updateWeight()
 {
-    for (int i = 0; i < _weight_data->count(); ++i) {
+    for (int i = 0; i < _weight_data->count(); ++i)
+    {
         Neuron* w_neuron = _weight_data->get(i);
         float diff =  w_neuron->_batch_diff / Layer::BATCH_SIZE;
         diff += w_neuron->_value * Layer::WEIGHT_DECAY;
@@ -165,7 +176,8 @@ void Layer::updateWeight()
 
 void Layer::updateBias()
 {
-    for (int i = 0; i < _bias_data->count(); ++i) {
+    for (int i = 0; i < _bias_data->count(); ++i)
+    {
         Neuron* bias_neuron = _bias_data->get(i);
         float diff = bias_neuron->_batch_diff / Layer::BATCH_SIZE;
         diff += bias_neuron->_value * Layer::WEIGHT_DECAY;
@@ -187,7 +199,8 @@ void* Layer::backwardBaseThread(void* ptr)
 
 float Layer::getLearningRate()
 {
-    switch (Layer::LEARNING_RATE_POLICY) {
+    switch (Layer::LEARNING_RATE_POLICY)
+    {
     case FIXED:
         return BASE_LEARNING_RATE;
 

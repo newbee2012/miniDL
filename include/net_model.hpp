@@ -27,7 +27,7 @@ public:
     virtual void outputTime();
 
 protected:
-    virtual void fillDataForOnceTrainForward(Neuron* datas, int size, int label);
+    virtual void fillDataForOnceTrainForward(Neuron* datas, int size, boost::shared_array<int>& labels);
     virtual void setUpInputLayer();
     virtual void forward();
     virtual void backward();

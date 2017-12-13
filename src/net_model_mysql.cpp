@@ -91,7 +91,7 @@ void NetModelMysql::train()
         {
             int label = batchLabels[i];
             Neuron* neuron = batchDatas.get(i, 0, 0, 0);
-            this->fillDataForOnceTrainForward(neuron, batchDatas.offset(1, 0, 0, 0), label);
+            //this->fillDataForOnceTrainForward(neuron, batchDatas.offset(1, 0, 0, 0), label);
             this->forward();
             this->backward();
             ++record_count;

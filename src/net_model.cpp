@@ -142,7 +142,7 @@ void NetModel::setUpInputLayer()
     _input_layer->setUp(_input_data);
 }
 
-void NetModel::fillDataForOnceTrainForward(Neuron* datas, int size, int label)
+void NetModel::fillDataForOnceTrainForward(Neuron* datas, int size, boost::shared_array<int>& labels)
 {
     int shape_size = _input_shape_num*_input_shape_channels*_input_shape_height * _input_shape_width;
     ASSERT(size >= shape_size, "输入数据size<shape_size");
@@ -153,7 +153,7 @@ void NetModel::fillDataForOnceTrainForward(Neuron* datas, int size, int label)
 
     if(_loss_layer.get() != NULL)
     {
-        _loss_layer->setLabel(label);
+        _loss_layer->setLabels(labels);
     }
 
 }

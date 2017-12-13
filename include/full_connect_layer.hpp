@@ -23,10 +23,7 @@ public:
     virtual void backward_cpu();
 
 protected:
-    int _num;
-    int _channels;
-    int _height;
-    int _width;
+    int _output_count;
     DISABLE_COPY_AND_ASSIGN(FullConnectLayer);
 };
 

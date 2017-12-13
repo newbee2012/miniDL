@@ -59,7 +59,7 @@ public:
     virtual void setTopLayer(boost::shared_ptr<Layer>& layer);
     virtual boost::shared_ptr<Layer>& getBottomLayer();
     virtual void setBottomLayer(boost::shared_ptr<Layer>& layer);
-    virtual void setLabel(int label){};
+    virtual void setLabels(boost::shared_array<int>& labels){};
     virtual void updateWeight();
     virtual void updateBias();
     inline virtual void setName(string& name){this->_name = name;};

@@ -11,73 +11,79 @@ namespace dong
 void SoftmaxLayer::setUp(const boost::shared_ptr<Data>& data)
 {
     Layer::setUp(data);
-    _top_data.reset(new Data(1, 1, _bottom_data->height(), _bottom_data->width(), Data::CONSTANT));
+    _num = _bottom_data->num();
+    _forecast_labels.reset(new int[_num]{-1});
+    int input_count = _bottom_data->channels() *_bottom_data->height() * _bottom_data->width();
+    _top_data.reset(new Data(_num, input_count, 1, 1, Data::CONSTANT));
 }
 
 void SoftmaxLayer::forward_cpu()
 {
-    _forecast_label = -1;
-    _forecast_success = false;
-    const int count = _bottom_data->count();
-    float maxValue = -FLT_MAX;
-
-    for (int i = 0; i < count; ++i)
+    _loss = 0.0F;
+    int input_count = _bottom_data->channels() *_bottom_data->height() * _bottom_data->width();
+    for(int n = 0; n < _top_data->num(); ++n)
     {
-        if(_bottom_data->get(i)->_value > maxValue)
+        float maxValue = -FLT_MAX;
+        for (int c = 0; c < input_count; ++c)
         {
-            _forecast_label = i;
-            maxValue = _bottom_data->get(i)->_value;
+            if(_bottom_data->get(n, c, 0, 0)->_value > maxValue)
+            {
+                _forecast_labels[n] = c;
+                maxValue = _bottom_data->get(n, c, 0, 0)->_value;
+            }
         }
+
+        double sumExp = 0.0F;
+
+        for (int c = 0; c < input_count; ++c)
+        {
+            float expValue = exp(_bottom_data->get(n, c, 0, 0)->_value - maxValue) ;
+            _top_data->get(n,c,0,0)->_value = expValue;
+            sumExp += expValue;
+        }
+
+        for (int c = 0; c < input_count; ++c)
+        {
+            _top_data->get(n,c,0,0)->_value = (float)_top_data->get(n,c,0,0)->_value / sumExp;
+        }
+
+        _loss += -log(std::max(_top_data->get(n, _labels[n], 0, 0)->_value, FLT_MIN));
     }
 
-    if(_label == _forecast_label)
-    {
-        _forecast_success = true;
-    }
-
-    double sumExp = 0.0F;
-
-    for (int i = 0; i < count; ++i)
-    {
-        float expValue = exp(_bottom_data->get(i)->_value - maxValue) ;
-        _top_data->get(i)->_value = expValue;
-        sumExp += expValue;
-    }
-
-    for (int i = 0; i < count; ++i)
-    {
-        _top_data->get(i)->_value = (float)_top_data->get(i)->_value / sumExp;
-    }
-
-    _loss = -log(std::max(_top_data->get(_label)->_value, FLT_MIN));
-
+    _loss /= _num;
 }
 
 void SoftmaxLayer::backward_cpu()
 {
-    for (int i = 0; i < _bottom_data->count(); ++i)
+    for (int n = 0; n < _top_data->num(); ++n)
     {
-        Neuron* b_neuron = _bottom_data->get(i);
-        Neuron* t_neuron = _top_data->get(i);
-        b_neuron->_diff = t_neuron->_value;
-
-        if (NULL != b_neuron->_bias)
+        for (int c = 0; c < _top_data->channels(); ++c)
         {
-            b_neuron->_bias->_diff = b_neuron->_diff;
+            Neuron* b_neuron = _bottom_data->get(n, c, 0, 0);
+            Neuron* t_neuron = _top_data->get(n, c, 0, 0);
+            b_neuron->_diff = t_neuron->_value / _top_data->num();
+            if (NULL != b_neuron->_bias)
+            {
+                b_neuron->_bias->_diff = b_neuron->_diff;
+            }
         }
-    }
 
-    _bottom_data->get(_label)->_diff -= 1;
 
-    if (NULL != _bottom_data->get(_label)->_bias)
-    {
-        _bottom_data->get(_label)->_bias->_diff -= _bottom_data->get(_label)->_diff;
+        Neuron* label_neuron = _bottom_data->get(n, _labels[n], 0, 0);
+        label_neuron->_diff -= 1;
+        label_neuron->_diff /= _top_data->num();
+
+        if (NULL != label_neuron->_bias)
+        {
+            label_neuron->_bias->_diff = label_neuron->_diff;
+        }
+
     }
 }
 
-void SoftmaxLayer::setLabel(int label)
+void SoftmaxLayer::setLabels(boost::shared_array<int>& labels)
 {
-    _label = label;
+    _labels = labels;
 }
 
 void SoftmaxLayer::init(int (&params)[4])
