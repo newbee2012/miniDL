@@ -50,7 +50,7 @@ void SoftmaxLayer::forward_cpu()
         _loss += -log(std::max(_top_data->get(n, _labels[n], 0, 0)->_value, FLT_MIN));
     }
 
-    _loss /= _top_data->count();
+    _loss /= _top_data->num();
 }
 
 void SoftmaxLayer::backward_cpu()
@@ -61,7 +61,7 @@ void SoftmaxLayer::backward_cpu()
         {
             Neuron* b_neuron = _bottom_data->get(n, c, 0, 0);
             Neuron* t_neuron = _top_data->get(n, c, 0, 0);
-            b_neuron->_diff = t_neuron->_value / _top_data->num();
+            b_neuron->_diff = t_neuron->_value;
             if (NULL != b_neuron->_bias)
             {
                 b_neuron->_bias->_diff = b_neuron->_diff;
@@ -71,13 +71,21 @@ void SoftmaxLayer::backward_cpu()
 
         Neuron* label_neuron = _bottom_data->get(n, _labels[n], 0, 0);
         label_neuron->_diff -= 1;
-        label_neuron->_diff /= _top_data->num();
 
         if (NULL != label_neuron->_bias)
         {
             label_neuron->_bias->_diff -= label_neuron->_diff;
         }
+    }
 
+    for (int i = 0; i < _top_data->count(); ++i)
+    {
+        Neuron* b_neuron = _bottom_data->get(i);
+        b_neuron->_diff /= _top_data->num();
+        if (NULL != b_neuron->_bias)
+        {
+            b_neuron->_bias->_diff /= _top_data->num();
+        }
     }
 }
 

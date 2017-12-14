@@ -62,18 +62,15 @@ void NetModelLMDB::test()
     db::Cursor* cursor = mydb->NewCursor();
     cursor->SeekToFirst();
 
-    Data batchDatas(_per_batch_train_count, 1, height, width, Data::CONSTANT);
-    int batchLabels[_per_batch_train_count];
+    Data batchDatas(_batch_size, channels, height, width, Data::CONSTANT);
+    boost::shared_array<int> labels(new int[_batch_size]);
     cout <<setprecision(6)<< fixed;
 
-    int success_count = 0;
-    int test_count = 0;
+    int correct_sum = 0;
     int size = batchDatas.offset(1, 0, 0, 0);
-    //测试batch_count批数据
-    for (int batch = 0; batch < _batch_count; ++batch)
+    for (int iter = 0; iter < _max_iter_count; ++iter)
     {
-        //读取一批数据
-        for (int i = 0; i < _per_batch_train_count; ++i) {
+        for (int i = 0; i < _batch_size; ++i) {
             if(!cursor->valid())
             {
                 cursor->SeekToFirst();
@@ -88,7 +85,7 @@ void NetModelLMDB::test()
                     for (int h = 0; h < height; h++) {
                         batchDatas.get(i, c, w, h)->_value = (BYTE)(datum.data()[w * height + h]);
                         batchDatas.get(i, c, w, h)->_value /= 255;
-                        batchLabels[i] = datum.label();
+                        labels[i] = datum.label();
                     }
                 }
             }
@@ -96,44 +93,37 @@ void NetModelLMDB::test()
             cursor->Next();
         }
 
-        //测试这批数据
+        /////////////////////////////测试这批数据，统计准确率/////////////////////////////////////////
         LossLayer* lossLayer = (LossLayer*)_loss_layer.get();
-        for (int i = 0; i < _per_batch_train_count; i++)
+        this->fillDataToModel(batchDatas.get(0, 0, 0, 0), batchDatas.count(), labels);
+        this->forward();
+
+        int correct = 0;
+        boost::shared_array<int>& forecastLabels = lossLayer->getForecastLabels();
+        for(int i=0;i < _batch_size; ++i)
         {
-            //int label = batchLabels[i];
-            Neuron* neuron = batchDatas.get(i, 0, 0, 0);
-
-            //this->fillDataForOnceTrainForward(neuron, size, label);
-            this->forward();
-            ++test_count;
-            //if(lossLayer->getForecastResult())
-            //{
-            //    ++success_count;
-            //}
-
-            //cout<<"label:"<<label<<",forecastResult:"<< lossLayer->getForecastResult()<<endl;
-            //_loss_layer->getTopData()->print();
-            //cout<<endl;
-
-            loss_record_sum += lossLayer->getLoss();
-            ++record_count;
+            if(labels[i] == forecastLabels[i])
+            {
+                ++correct;
+                ++correct_sum;
+            }
         }
 
-        ++Layer::CURRENT_ITER_COUNT;
-
-        float accuracy = (float)success_count / (float)test_count;
-        cout << "success_count / test_count : " <<success_count<<"/"<< test_count<< " , accuracy : "<< setprecision(6) << accuracy <<endl;
-
-        loss_record_sum = 0.0F;
-        record_count = 0;
+        float accuracy = (float)correct / _batch_size;
+        cout << "iter:" << iter<< ", correct / count : " <<correct<<"/"<< _batch_size<< " , accuracy : "<< setprecision(6) << accuracy <<endl;
+        ////////////////////////////////////////////////////////////////////////////////
     }
+
+    int count = _batch_size * _max_iter_count;
+    float accuracy = (float)correct_sum / count;
+    cout<< "all iters: correct_sum / count_sum:" <<correct_sum<<"/"<< count<< " , accuracy : "<< setprecision(6) << accuracy <<endl;
 
     delete cursor;
     mydb->Close();
     delete mydb;
 
     time_t t2 = time(NULL);
-    cout <<"总共耗时:"<< t2 -t1<<"秒, 预测速度:" << test_count /
+    cout <<"总共耗时:"<< t2 -t1<<"秒, 预测速度:" << count /
          (t2 - t1 + 1) << " pic / s" << endl;
 }
 
@@ -150,15 +140,11 @@ void NetModelLMDB::train()
     mydb->Open("/home/chendejia/workspace/github/dong/data/mnist_train_lmdb", db::READ);
     db::Cursor* cursor = mydb->NewCursor();
     cursor->SeekToFirst();
-
-    Data batchDatas(_per_batch_train_count, 1, height, width, Data::CONSTANT);
-    boost::shared_array<int> labels(new int[_per_batch_train_count]);
-    LossLayer* lossLayer = (LossLayer*)_loss_layer.get();
-    //训练batch_count批数据
-    for (int batch = 0; batch < _batch_count; ++batch)
+    Data batchDatas(_batch_size, channels, height, width, Data::CONSTANT);
+    boost::shared_array<int> labels(new int[_batch_size]);
+    for (int iter = 0; iter < _max_iter_count; ++iter)
     {
-        //读取一批数据
-        for (int i = 0; i < _per_batch_train_count; ++i) {
+        for (int i = 0; i < _batch_size; ++i) {
             if(!cursor->valid())
             {
                 cout<<"Train data seek to first!"<<endl;
@@ -181,17 +167,15 @@ void NetModelLMDB::train()
             cursor->Next();
         }
 
-        Layer::CURRENT_LEARNING_RATE = Layer::getLearningRate();
-        Neuron* neuron = batchDatas.get(0, 0, 0, 0);
-        this->fillDataForOnceTrainForward(neuron, batchDatas.count(), labels);
+        /////////////////////////////////训练一批数据///////////////////////////////////
+        this->fillDataToModel(batchDatas.get(0, 0, 0, 0), batchDatas.count(), labels);
         this->forward();
         this->backward();
-        ++Layer::CURRENT_ITER_COUNT;
-
-        cout << "batch:"<< batch << ", loss:" << setprecision(6) << fixed << lossLayer->getLoss() << ", lr_rate:" << Layer::CURRENT_LEARNING_RATE<< endl<<endl;
-
         this->update();
-        if(Layer::CURRENT_ITER_COUNT % 100 == 0){
+        //////////////////////////////////////////////////////////////////////////////
+        LossLayer* lossLayer = (LossLayer*)_loss_layer.get();
+        cout << "iter:"<< iter << ", loss:" << setprecision(6) << fixed << lossLayer->getLoss() << ", lr_rate:" << Layer::CURRENT_LEARNING_RATE<< endl<<endl;
+        if(iter % 100 == 0){
             this->save_model();
         }
 
@@ -202,7 +186,7 @@ void NetModelLMDB::train()
     delete mydb;
 
     time_t t2 = time(NULL);
-    cout <<"总共耗时:"<< t2 -t1<<"秒, 训练速度:" << (float)(_batch_count * _per_batch_train_count) /
+    cout <<"总共耗时:"<< t2 -t1<<"秒, 训练速度:" << (float)(_batch_size * _max_iter_count) /
          (t2 - t1 + 1) << " pic / s" << endl;
 }
 

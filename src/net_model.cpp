@@ -75,7 +75,7 @@ void NetModel::outputTime()
     boost::shared_ptr<Layer> layer = _input_layer;
     double sum_forward_time = 0.0D;
     double sum_backward_time = 0.0D;
-    int trainCount = _per_batch_train_count * _batch_count;
+    int trainCount = _batch_size * _max_iter_count;
     while(layer.get())
     {
         cout<<layer->getName()<<" total forward time:"<<layer->sumForwardTime()/1000<< " ms."<<endl;
@@ -96,6 +96,7 @@ void NetModel::outputTime()
 
 void NetModel::forward()
 {
+    Layer::CURRENT_LEARNING_RATE = Layer::getLearningRate();
     boost::shared_ptr<Layer> layer = _input_layer->getTopLayer();
     while(layer.get())
     {
@@ -112,6 +113,8 @@ void NetModel::backward()
         layer->backward();
         layer = layer->getBottomLayer();
     }
+
+    ++Layer::CURRENT_ITER_COUNT;
 }
 
 void NetModel::update()
@@ -142,10 +145,10 @@ void NetModel::setUpInputLayer()
     _input_layer->setUp(_input_data);
 }
 
-void NetModel::fillDataForOnceTrainForward(Neuron* datas, int size, boost::shared_array<int>& labels)
+void NetModel::fillDataToModel(Neuron* datas, int size, boost::shared_array<int>& labels)
 {
     int shape_size = _input_shape_num*_input_shape_channels*_input_shape_height * _input_shape_width;
-    ASSERT(size >= shape_size, "输入数据size<shape_size");
+    ASSERT(size == shape_size, "输入数据size != shape_size");
     for (int i = 0; i < shape_size; ++i)
     {
         _input_neurons[i]._value = datas[i]._value;
@@ -315,33 +318,33 @@ void NetModel::load_model()
     Json::Value jo_hyperParameters = modelDefineRoot["hyperParameters"];
     ASSERT(!jo_hyperParameters.isNull(), cout<<"节点hyperParameters不存在！"<<endl);
 
-    _per_batch_train_count = jo_hyperParameters["perBatchTrainCount"].asInt();
-    ASSERT(_per_batch_train_count>0, cout<<"perBatchTrainCount 未定义或取值非法！"<<endl);
-    Layer::BATCH_SIZE = _per_batch_train_count;
+    _batch_size = jo_hyperParameters["BATCH_SIZE"].asInt();
+    ASSERT(_batch_size>0, cout<<"BATCH_SIZE 未定义或取值非法！"<<endl);
+    Layer::BATCH_SIZE = _batch_size;
 
-    _batch_count = jo_hyperParameters["batchCount"].asInt();
-    ASSERT(_batch_count>0, cout<<"batchCount 未定义或取值非法！"<<endl);
+    _max_iter_count = jo_hyperParameters["MAX_ITER_COUNT"].asInt();
+    ASSERT(_max_iter_count>0, cout<<"MAX_ITER_COUNT 未定义或取值非法！"<<endl);
 
     Layer::BASE_LEARNING_RATE = jo_hyperParameters["BASE_LEARNING_RATE"].asFloat();
-    ASSERT(Layer::BASE_LEARNING_RATE > 0, cout<<"Layer::BASE_LEARNING_RATE 未定义或取值非法！"<<endl);
+    ASSERT(Layer::BASE_LEARNING_RATE > 0, cout<<"BASE_LEARNING_RATE 未定义或取值非法！"<<endl);
 
     Layer::LEARNING_RATE_POLICY = STRING_TO_LR_POLICY(jo_hyperParameters["LEARNING_RATE_POLICY"].asString().c_str());
-    ASSERT(Layer::LEARNING_RATE_POLICY >= 0 && Layer::LEARNING_RATE_POLICY < LR_Policy_size, cout<<"Layer::LEARNING_RATE_POLICY 未定义或取值非法！"<<endl);
+    ASSERT(Layer::LEARNING_RATE_POLICY >= 0 && Layer::LEARNING_RATE_POLICY < LR_Policy_size, cout<<"LEARNING_RATE_POLICY 未定义或取值非法！"<<endl);
 
     Layer::GAMMA = jo_hyperParameters["GAMMA"].asFloat();
-    ASSERT(Layer::GAMMA > 0, cout<<"Layer::GAMMA 未定义或取值非法！"<<endl);
+    ASSERT(Layer::GAMMA > 0, cout<<"GAMMA 未定义或取值非法！"<<endl);
 
     Layer::MOMENTUM = jo_hyperParameters["MOMENTUM"].asFloat();
-    ASSERT(Layer::MOMENTUM > 0, cout<<"Layer::MOMENTUM 未定义或取值非法！"<<endl);
+    ASSERT(Layer::MOMENTUM > 0, cout<<"MOMENTUM 未定义或取值非法！"<<endl);
 
     Layer::POWER = jo_hyperParameters["POWER"].asFloat();
-    ASSERT(Layer::POWER > 0, cout<<"Layer::POWER 未定义或取值非法！"<<endl);
+    ASSERT(Layer::POWER > 0, cout<<"POWER 未定义或取值非法！"<<endl);
 
     Layer::WEIGHT_DECAY = jo_hyperParameters["WEIGHT_DECAY"].asFloat();
-    ASSERT(Layer::WEIGHT_DECAY > 0, cout<<"Layer::WEIGHT_DECAY 未定义或取值非法！"<<endl);
+    ASSERT(Layer::WEIGHT_DECAY > 0, cout<<"WEIGHT_DECAY 未定义或取值非法！"<<endl);
 
     Layer::STEPSIZE = jo_hyperParameters["STEPSIZE"].asInt();
-    ASSERT(Layer::STEPSIZE > 0, cout<<"Layer::STEPSIZE 未定义或取值非法！"<<endl);
+    ASSERT(Layer::STEPSIZE > 0, cout<<"STEPSIZE 未定义或取值非法！"<<endl);
 
     //读取输入数据尺寸
     Json::Value jo_input_shape = modelDefineRoot["inputShape"];
