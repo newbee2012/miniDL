@@ -142,10 +142,10 @@ int main(int argc, char* argv[])
 
     srand(RandomGenerator::rnd_seed);
 
-    //string modelDefileName = "/home/chendejia/workspace/github/miniDL/net_model_define_mnist.json";
-    string modelDefileName = "/home/chendejia/workspace/github/miniDL/net_model_define.json";
+    string modelDefileName = "/home/chendejia/workspace/github/miniDL/net_model_define_mnist.json";
+    //string modelDefileName = "/home/chendejia/workspace/github/miniDL/net_model_define.json";
     cout<<"load model file: "<<modelDefileName<<endl;
-    NetModelMysql* netMode = new NetModelMysql(modelDefileName);
+    NetModelLMDB* netMode = new NetModelLMDB(modelDefileName);
     //netMode->load_model();
     //string fileName = "/home/chendejia/workspace/github/miniDL/bin/Release/7.bmp";
     //netMode->testFromABmp(fileName);

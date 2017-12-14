@@ -21,9 +21,9 @@ void NetModelLMDB::testFromABmp(string& fileName)
     Data batchDatas(1, 1, 28, 28, Data::CONSTANT);
     BYTE* pBmpBuf = BmpTool::readBmp(fileName.c_str());
 
-    for(int h=0;h < 28; ++h)
+    for(int h=0; h < 28; ++h)
     {
-        for(int w=0;w< 28; ++w)
+        for(int w=0; w< 28; ++w)
         {
             batchDatas.get(0,0,h,w)->_value = pBmpBuf[((28 - h - 1)*28 + w)*3];
             batchDatas.get(0,0,h,w)->_value /= 255;
@@ -70,7 +70,8 @@ void NetModelLMDB::test()
     int size = batchDatas.offset(1, 0, 0, 0);
     for (int iter = 0; iter < _max_iter_count; ++iter)
     {
-        for (int i = 0; i < _batch_size; ++i) {
+        for (int i = 0; i < _batch_size; ++i)
+        {
             if(!cursor->valid())
             {
                 cursor->SeekToFirst();
@@ -80,9 +81,12 @@ void NetModelLMDB::test()
             Datum datum;
             datum.ParseFromString(value);
 
-            for (int c = 0; c < channels; c++) {
-                for (int w = 0; w < width; w++) {
-                    for (int h = 0; h < height; h++) {
+            for (int c = 0; c < channels; c++)
+            {
+                for (int w = 0; w < width; w++)
+                {
+                    for (int h = 0; h < height; h++)
+                    {
                         batchDatas.get(i, c, w, h)->_value = (BYTE)(datum.data()[w * height + h]);
                         batchDatas.get(i, c, w, h)->_value /= 255;
                         labels[i] = datum.label();
@@ -100,7 +104,7 @@ void NetModelLMDB::test()
 
         int correct = 0;
         boost::shared_array<int>& forecastLabels = lossLayer->getForecastLabels();
-        for(int i=0;i < _batch_size; ++i)
+        for(int i=0; i < _batch_size; ++i)
         {
             if(labels[i] == forecastLabels[i])
             {
@@ -144,7 +148,8 @@ void NetModelLMDB::train()
     boost::shared_array<int> labels(new int[_batch_size]);
     for (int iter = 0; iter < _max_iter_count; ++iter)
     {
-        for (int i = 0; i < _batch_size; ++i) {
+        for (int i = 0; i < _batch_size; ++i)
+        {
             if(!cursor->valid())
             {
                 cout<<"Train data seek to first!"<<endl;
@@ -154,9 +159,12 @@ void NetModelLMDB::train()
             const string& value = cursor->value();
             Datum datum;
             datum.ParseFromString(value);
-            for (int c = 0; c < channels; c++) {
-                for (int w = 0; w < width; w++) {
-                    for (int h = 0; h < height; h++) {
+            for (int c = 0; c < channels; c++)
+            {
+                for (int w = 0; w < width; w++)
+                {
+                    for (int h = 0; h < height; h++)
+                    {
                         batchDatas.get(i, c, w, h)->_value = (BYTE)(datum.data()[w * height + h]);
                         batchDatas.get(i, c, w, h)->_value /= 255;
                         labels[i] = datum.label();
@@ -175,7 +183,8 @@ void NetModelLMDB::train()
         //////////////////////////////////////////////////////////////////////////////
         LossLayer* lossLayer = (LossLayer*)_loss_layer.get();
         cout << "iter:"<< iter << ", loss:" << setprecision(6) << fixed << lossLayer->getLoss() << ", lr_rate:" << Layer::CURRENT_LEARNING_RATE<< endl<<endl;
-        if(iter % 100 == 0){
+        if((iter+1) % 100 == 0)
+        {
             this->save_model();
         }
 
