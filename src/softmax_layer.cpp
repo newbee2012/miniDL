@@ -50,7 +50,7 @@ void SoftmaxLayer::forward_cpu()
         _loss += -log(std::max(_top_data->get(n, _labels[n], 0, 0)->_value, FLT_MIN));
     }
 
-    _loss /= _num;
+    _loss /= _top_data->count();
 }
 
 void SoftmaxLayer::backward_cpu()
@@ -75,7 +75,7 @@ void SoftmaxLayer::backward_cpu()
 
         if (NULL != label_neuron->_bias)
         {
-            label_neuron->_bias->_diff = label_neuron->_diff;
+            label_neuron->_bias->_diff -= label_neuron->_diff;
         }
 
     }

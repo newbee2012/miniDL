@@ -116,8 +116,8 @@ void Layer::forwardBase()
 
 void Layer::backwardBase()
 {
-#define THREAD_COUNT 8
-    bool multithreading = true;
+#define THREAD_COUNT 4
+    bool multithreading = false;
 
     if (multithreading)
     {
