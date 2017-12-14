@@ -90,10 +90,37 @@ void Layer::backward()
 
 void Layer::forwardBase()
 {
-    int bottom_count = _bottom_data->count();
-    for (int i = 0; i < bottom_count; ++i)
+    #define FORWARD_THREAD_COUNT 4
+    bool multithreading = true;
+
+    if (multithreading)
     {
-        _bottom_data->get(i)->forward();
+        pthread_t thread[FORWARD_THREAD_COUNT];
+        ThreadParam p[FORWARD_THREAD_COUNT];
+        int spilit_count = _bottom_data->count() / FORWARD_THREAD_COUNT;
+
+        for (int i = 0; i < FORWARD_THREAD_COUNT; ++i)
+        {
+            int offset_start = i * spilit_count;
+            int offset_end = offset_start + spilit_count;
+
+            if (i == FORWARD_THREAD_COUNT - 1)
+            {
+                offset_end = _bottom_data->count();
+            }
+
+            p[i].init(_bottom_data.get(), offset_start, offset_end, i);
+            pthread_create(&thread[i], NULL, forwardBaseThread, &p[i]);
+        }
+
+        for (int i = 0; i < FORWARD_THREAD_COUNT; ++i)
+        {
+            pthread_join(thread[i], NULL);
+        }
+    }
+    else
+    {
+        Layer::forwardLimit(_bottom_data.get(), 0, _bottom_data->count());
     }
 
     if (NULL != _bias_data.get())
@@ -116,21 +143,21 @@ void Layer::forwardBase()
 
 void Layer::backwardBase()
 {
-#define THREAD_COUNT 8
+#define BACKWARD_THREAD_COUNT 4
     bool multithreading = true;
 
     if (multithreading)
     {
-        pthread_t thread[THREAD_COUNT];
-        ThreadParam p[THREAD_COUNT];
-        int spilit_count = _bottom_data->count() / THREAD_COUNT;
+        pthread_t thread[BACKWARD_THREAD_COUNT];
+        ThreadParam p[BACKWARD_THREAD_COUNT];
+        int spilit_count = _bottom_data->count() / BACKWARD_THREAD_COUNT;
 
-        for (int i = 0; i < THREAD_COUNT; ++i)
+        for (int i = 0; i < BACKWARD_THREAD_COUNT; ++i)
         {
             int offset_start = i * spilit_count;
             int offset_end = offset_start + spilit_count;
 
-            if (i == THREAD_COUNT - 1)
+            if (i == BACKWARD_THREAD_COUNT - 1)
             {
                 offset_end = _bottom_data->count();
             }
@@ -139,7 +166,7 @@ void Layer::backwardBase()
             pthread_create(&thread[i], NULL, backwardBaseThread, &p[i]);
         }
 
-        for (int i = 0; i < THREAD_COUNT; ++i)
+        for (int i = 0; i < BACKWARD_THREAD_COUNT; ++i)
         {
             pthread_join(thread[i], NULL);
         }
@@ -150,6 +177,21 @@ void Layer::backwardBase()
     }
 };
 
+void* Layer::forwardBaseThread(void* ptr)
+{
+    ThreadParam* p = (ThreadParam*)ptr;
+    Data* bottom_data = p->_bottom_data;
+    Layer::forwardLimit(bottom_data, p->_offset_start, p->_offset_end);
+    return 0;
+}
+
+void Layer::forwardLimit(Data* bottom_data, int offset_start, int offset_end)
+{
+    for (int i = offset_start; i < offset_end; ++i)
+    {
+        bottom_data->get(i)->forward();
+    }
+}
 
 void Layer::backwardLimit(Data* bottom_data, int offset_start, int offset_end)
 {
@@ -157,6 +199,14 @@ void Layer::backwardLimit(Data* bottom_data, int offset_start, int offset_end)
     {
         bottom_data->get(i)->backward();
     }
+}
+
+void* Layer::backwardBaseThread(void* ptr)
+{
+    ThreadParam* p = (ThreadParam*)ptr;
+    Data* bottom_data = p->_bottom_data;
+    Layer::backwardLimit(bottom_data, p->_offset_start, p->_offset_end);
+    return 0;
 }
 
 void Layer::updateWeight()
@@ -185,14 +235,6 @@ void Layer::updateBias()
         bias_neuron->_history_diff = diff;
         bias_neuron->_value -= diff;
     }
-}
-
-void* Layer::backwardBaseThread(void* ptr)
-{
-    ThreadParam* p = (ThreadParam*)ptr;
-    Data* bottom_data = p->_bottom_data;
-    Layer::backwardLimit(bottom_data, p->_offset_start, p->_offset_end);
-    return 0;
 }
 
 float Layer::getLearningRate()

@@ -114,6 +114,8 @@ public:
 protected:
     virtual void forwardBase();
     virtual void backwardBase();
+    static void* forwardBaseThread(void* ptr);
+    static void forwardLimit(Data* _bottom_data, int offset_start, int offset_end);
     static void* backwardBaseThread(void* ptr);
     static void backwardLimit(Data* _bottom_data, int offset_start, int offset_end);
 
