@@ -1,5 +1,5 @@
-#ifndef DONG_NEURON_LAYER_HPP_
-#define DONG_NEURON_LAYER_HPP_
+#ifndef DONG_NEURON_HPP_
+#define DONG_NEURON_HPP_
 #include "common.hpp"
 #include <boost/shared_ptr.hpp>
 #include <vector>
@@ -39,4 +39,4 @@ public:
 
 }
 
-#endif  // DONG_NEURON_LAYER_HPP_
+#endif  // DONG_NEURON_HPP_

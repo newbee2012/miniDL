@@ -31,7 +31,7 @@ void NetModel::run()
         stop_cpu_ = boost::posix_time::microsec_clock::local_time();
         cout<< "Train time:"<< (stop_cpu_ - start_cpu_).total_milliseconds() << " ms."<<endl;
         outputTime();
-        //outputBmp();
+        outputBmp();
         cout<<"------------save model--------------"<<endl;
         save_model();
     }
@@ -42,7 +42,7 @@ void NetModel::run()
         test();
         stop_cpu_ = boost::posix_time::microsec_clock::local_time();
         cout<< "Test time:"<< (stop_cpu_ - start_cpu_).total_milliseconds() << " ms."<<endl;
-        outputTime();
+        //outputTime();
     }
 
 
@@ -53,7 +53,6 @@ void NetModel::outputBmp()
     boost::shared_ptr<Layer> layer = _input_layer;
     while(layer.get())
     {
-        layer = layer->getTopLayer();
         if(layer->getName() == "convLayer")
         {
             string filepath("/home/chendejia/workspace/github/miniDL/bin/Release/");

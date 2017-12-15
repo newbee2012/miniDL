@@ -67,6 +67,7 @@ void NetModelLMDB::test()
     cout <<setprecision(6)<< fixed;
 
     int correct_sum = 0;
+    int error_sum = 0;
     int size = batchDatas.offset(1, 0, 0, 0);
     for (int iter = 0; iter < _max_iter_count; ++iter)
     {
@@ -110,17 +111,21 @@ void NetModelLMDB::test()
             {
                 ++correct;
                 ++correct_sum;
+            }else
+            {
+                ++error_sum;
+                cout<<"index :"<<iter*_batch_size+i<<" error!"<<endl;
             }
         }
 
-        float accuracy = (float)correct / _batch_size;
-        cout << "iter:" << iter<< ", correct / count : " <<correct<<"/"<< _batch_size<< " , accuracy : "<< setprecision(6) << accuracy <<endl;
+        //float accuracy = (float)correct / _batch_size;
+        //cout << "iter:" << iter<< ", correct / count : " <<correct<<"/"<< _batch_size<< " , accuracy : "<< setprecision(6) << accuracy <<endl;
         ////////////////////////////////////////////////////////////////////////////////
     }
 
     int count = _batch_size * _max_iter_count;
     float accuracy = (float)correct_sum / count;
-    cout<< "all iters: correct_sum / count_sum:" <<correct_sum<<"/"<< count<< " , accuracy : "<< setprecision(6) << accuracy <<endl;
+    cout<< "all iters: correct_sum, error_sum, count_sum :" <<correct_sum<<","<<error_sum<<","<< count<< ",accuracy : "<< setprecision(6) << accuracy <<endl;
 
     delete cursor;
     mydb->Close();
