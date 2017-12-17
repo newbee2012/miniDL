@@ -18,7 +18,8 @@ Data::Data(int num, int channels, int height, int width, InitType type): _num(nu
     _neurons.reset(new Neuron[count()]);
     int fan_in = count() / num;
     int fan_out = count() / channels;
-    float n = (fan_in + fan_out) / float(2);
+    //float n = (fan_in + fan_out) / float(2);
+    float n = fan_in;
     float scale = sqrt(float(3) / n);
     float* t = new float[count()];
     RandomGenerator::rng_uniform(count(), -scale, scale, t);

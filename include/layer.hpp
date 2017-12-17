@@ -39,8 +39,8 @@ public:
     static float WEIGHT_DECAY;              //权重衰减常数
     static float CURRENT_LEARNING_RATE;     //当前学习速率
     static int STEPSIZE;                  //每STEPSIZE次迭代，更新一次学习率
-    static int BATCH_SIZE;                  //批量训练数据大小
-
+    static int FORWARD_THREAD_COUNT;        //前向传播线程数
+    static int BACKWARD_THREAD_COUNT;        //反向传播线程数
     Layer()
     {
         _lr_mult_weight = 1.0F;

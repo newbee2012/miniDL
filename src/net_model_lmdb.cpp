@@ -89,7 +89,6 @@ void NetModelLMDB::test()
                     for (int h = 0; h < height; h++)
                     {
                         batchDatas.get(i, c, w, h)->_value = (BYTE)(datum.data()[w * height + h]);
-                        batchDatas.get(i, c, w, h)->_value /= 255;
                         labels[i] = datum.label();
                     }
                 }
@@ -114,12 +113,12 @@ void NetModelLMDB::test()
             }else
             {
                 ++error_sum;
-                cout<<"index :"<<iter*_batch_size+i<<" error!"<<endl;
+                //cout<<"index :"<<iter*_batch_size+i<<" error!"<<endl;
             }
         }
 
-        //float accuracy = (float)correct / _batch_size;
-        //cout << "iter:" << iter<< ", correct / count : " <<correct<<"/"<< _batch_size<< " , accuracy : "<< setprecision(6) << accuracy <<endl;
+        float accuracy = (float)correct / _batch_size;
+        cout << "iter:" << iter<< ", correct / count : " <<correct<<"/"<< _batch_size<< " , accuracy : "<< setprecision(6) << accuracy <<endl;
         ////////////////////////////////////////////////////////////////////////////////
     }
 
@@ -171,7 +170,6 @@ void NetModelLMDB::train()
                     for (int h = 0; h < height; h++)
                     {
                         batchDatas.get(i, c, w, h)->_value = (BYTE)(datum.data()[w * height + h]);
-                        batchDatas.get(i, c, w, h)->_value /= 255;
                         labels[i] = datum.label();
                     }
                 }

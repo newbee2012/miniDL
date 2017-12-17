@@ -22,8 +22,12 @@ public:
     virtual void forward_cpu();
     virtual void backward_cpu();
     virtual void init(int (&params)[4]);
-
+    inline void setScale(float scale)
+    {
+        _scale = scale;
+    }
 protected:
+    float _scale;
 
     DISABLE_COPY_AND_ASSIGN(InputLayer);
 };

@@ -31,7 +31,7 @@ void NetModel::run()
         stop_cpu_ = boost::posix_time::microsec_clock::local_time();
         cout<< "Train time:"<< (stop_cpu_ - start_cpu_).total_milliseconds() << " ms."<<endl;
         outputTime();
-        outputBmp();
+        //outputBmp();
         cout<<"------------save model--------------"<<endl;
         save_model();
     }
@@ -42,7 +42,7 @@ void NetModel::run()
         test();
         stop_cpu_ = boost::posix_time::microsec_clock::local_time();
         cout<< "Test time:"<< (stop_cpu_ - start_cpu_).total_milliseconds() << " ms."<<endl;
-        //outputTime();
+        outputTime();
     }
 
 
@@ -96,7 +96,7 @@ void NetModel::outputTime()
 void NetModel::forward()
 {
     Layer::CURRENT_LEARNING_RATE = Layer::getLearningRate();
-    boost::shared_ptr<Layer> layer = _input_layer->getTopLayer();
+    boost::shared_ptr<Layer> layer = _input_layer;
     while(layer.get())
     {
         layer->forward();
@@ -135,18 +135,18 @@ void NetModel::update()
 
 void NetModel::setUpInputLayer()
 {
-    int shape_size = _input_shape_num*_input_shape_channels*_input_shape_height * _input_shape_width;
+    int shape_size = _batch_size*_input_shape_channels*_input_shape_height * _input_shape_width;
     ASSERT(shape_size>0, cout<<"训练数据尺寸定义错误！"<<endl);
 
-    _input_neurons.reset(new Neuron[_input_shape_num *_input_shape_channels *_input_shape_height * _input_shape_width]);
-    _input_data.reset(new Data(_input_shape_num, _input_shape_channels, _input_shape_height, _input_shape_width));
+    _input_neurons.reset(new Neuron[_batch_size *_input_shape_channels *_input_shape_height * _input_shape_width]);
+    _input_data.reset(new Data(_batch_size, _input_shape_channels, _input_shape_height, _input_shape_width));
     _input_data->setUp(_input_neurons);
     _input_layer->setUp(_input_data);
 }
 
 void NetModel::fillDataToModel(Neuron* datas, int size, boost::shared_array<int>& labels)
 {
-    int shape_size = _input_shape_num*_input_shape_channels*_input_shape_height * _input_shape_width;
+    int shape_size = _batch_size*_input_shape_channels*_input_shape_height * _input_shape_width;
     ASSERT(size == shape_size, "输入数据size != shape_size");
     for (int i = 0; i < shape_size; ++i)
     {
@@ -195,7 +195,6 @@ void NetModel::save_model()
     cout<<"saving model...."<<endl;
     Json::Reader reader;
     Json::Value root;
-
     std::ifstream is;
     is.open (this->model_define_file_path.c_str(), std::ios::binary );
     if (!reader.parse(is, root))
@@ -219,20 +218,6 @@ void NetModel::save_model()
         Json::Value biasArray;
         if(layer->getType() == CONVOLUTION_LAYER || layer->getType() == FULL_CONNECT_LAYER)
         {
-            string genBmpBasePath = "/home/chendejia/workspace/github/miniDL/bin/Release/";
-            genBmpBasePath.append(layerName);
-            if(layer->getType() == CONVOLUTION_LAYER)
-            {
-                //genBmpBasePath += "_weight";
-                //layer->getWeightData()->genBmp(genBmpBasePath.c_str());
-            }
-            else if(layer->getType() == FULL_CONNECT_LAYER)
-            {
-                //genBmpBasePath += "_topdata";
-                //layer->getTopData()->genBmp(genBmpBasePath);
-            }
-
-
             for(int i = 0; i< layer->getWeightData() ->count(); ++i)
             {
                 Neuron* neuron = layer->getWeightData()->get(i);
@@ -267,7 +252,7 @@ void NetModel::save_model()
 
 void NetModel::load_model()
 {
-    Layer::BASE_LEARNING_RATE = 0.0002F;
+    Layer::BASE_LEARNING_RATE = 0.01F;
     Layer::LEARNING_RATE_POLICY = INV;
     Layer::GAMMA = 0.0001F;
     Layer::MOMENTUM = 0.9F;
@@ -275,7 +260,8 @@ void NetModel::load_model()
     Layer::WEIGHT_DECAY = 0.0005F;
     Layer::STEPSIZE = 100;
     Layer::CURRENT_ITER_COUNT = 0;
-    Layer::BATCH_SIZE = 1;
+    Layer::FORWARD_THREAD_COUNT = 1;
+    Layer::BACKWARD_THREAD_COUNT = 1;
     cout<<"loading model...."<<endl;
 
     Json::Reader reader;
@@ -319,7 +305,6 @@ void NetModel::load_model()
 
     _batch_size = jo_hyperParameters["BATCH_SIZE"].asInt();
     ASSERT(_batch_size>0, cout<<"BATCH_SIZE 未定义或取值非法！"<<endl);
-    Layer::BATCH_SIZE = _batch_size;
 
     _max_iter_count = jo_hyperParameters["MAX_ITER_COUNT"].asInt();
     ASSERT(_max_iter_count>0, cout<<"MAX_ITER_COUNT 未定义或取值非法！"<<endl);
@@ -345,11 +330,16 @@ void NetModel::load_model()
     Layer::STEPSIZE = jo_hyperParameters["STEPSIZE"].asInt();
     ASSERT(Layer::STEPSIZE > 0, cout<<"STEPSIZE 未定义或取值非法！"<<endl);
 
+    Layer::FORWARD_THREAD_COUNT = jo_hyperParameters["FORWARD_THREAD_COUNT"].asInt();
+    ASSERT(Layer::FORWARD_THREAD_COUNT > 0, cout<<"FORWARD_THREAD_COUNT 未定义或取值非法！"<<endl);
+
+    Layer::BACKWARD_THREAD_COUNT = jo_hyperParameters["BACKWARD_THREAD_COUNT"].asInt();
+    ASSERT(Layer::BACKWARD_THREAD_COUNT > 0, cout<<"BACKWARD_THREAD_COUNT 未定义或取值非法！"<<endl);
+
     //读取输入数据尺寸
     Json::Value jo_input_shape = modelDefineRoot["inputShape"];
     ASSERT(!jo_input_shape.isNull(), cout<<"节点inputShape不存在！"<<endl);
 
-    _input_shape_num = jo_input_shape["num"].asInt();
     _input_shape_channels = jo_input_shape["channels"].asInt();
     _input_shape_height = jo_input_shape["height"].asInt();
     _input_shape_width = jo_input_shape["width"].asInt();
@@ -397,6 +387,13 @@ void NetModel::load_model()
 
         if(layer->getType() == INPUT_LAYER)
         {
+            Json::Value scale = jo_layer["scale"];
+            if(!scale.isNull())
+            {
+                InputLayer* inputLayer = (InputLayer*)layer.get();
+                inputLayer->setScale(scale.asFloat());
+            }
+
             _input_layer = layer;
             this->setUpInputLayer();
         }
@@ -431,8 +428,6 @@ void NetModel::load_model()
                 Neuron* neuron = biasData->get(i);
                 neuron->_value = jo_bias[i].asFloat();
             }
-
-            //layer->getWeightData()->print();
         }
 
         bottom_layer = layer;

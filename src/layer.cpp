@@ -90,30 +90,35 @@ void Layer::backward()
 
 void Layer::forwardBase()
 {
-    #define FORWARD_THREAD_COUNT 4
-    bool multithreading = true;
-
-    if (multithreading)
+    int thread_count = Layer::FORWARD_THREAD_COUNT;
+    if (thread_count > 1)
     {
-        pthread_t thread[FORWARD_THREAD_COUNT];
-        ThreadParam p[FORWARD_THREAD_COUNT];
-        int spilit_count = _bottom_data->count() / FORWARD_THREAD_COUNT;
-
-        for (int i = 0; i < FORWARD_THREAD_COUNT; ++i)
+        int spilit_num = _bottom_data->num() / thread_count;
+        if(spilit_num < 1)
         {
-            int offset_start = i * spilit_count;
-            int offset_end = offset_start + spilit_count;
+            spilit_num = 1;
+            thread_count = _bottom_data->num();
+        }
 
-            if (i == FORWARD_THREAD_COUNT - 1)
+        pthread_t thread[thread_count];
+        ThreadParam p[thread_count];
+
+        int count = _bottom_data->offset(1,0,0,0);
+        for (int i = 0; i < thread_count; ++i)
+        {
+            int offset_num_start = i * spilit_num;
+            int offset_num_end = offset_num_start + spilit_num;
+
+            if (i == thread_count - 1)
             {
-                offset_end = _bottom_data->count();
+                offset_num_end = _bottom_data->num();
             }
 
-            p[i].init(_bottom_data.get(), offset_start, offset_end, i);
+            p[i].init(_bottom_data.get(), offset_num_start * count, offset_num_end * count, i);
             pthread_create(&thread[i], NULL, forwardBaseThread, &p[i]);
         }
 
-        for (int i = 0; i < FORWARD_THREAD_COUNT; ++i)
+        for (int i = 0; i < thread_count; ++i)
         {
             pthread_join(thread[i], NULL);
         }
@@ -143,21 +148,24 @@ void Layer::forwardBase()
 
 void Layer::backwardBase()
 {
-#define BACKWARD_THREAD_COUNT 4
-    bool multithreading = true;
-
-    if (multithreading)
+    int thread_count = Layer::BACKWARD_THREAD_COUNT;
+    if (thread_count > 1)
     {
-        pthread_t thread[BACKWARD_THREAD_COUNT];
-        ThreadParam p[BACKWARD_THREAD_COUNT];
-        int spilit_count = _bottom_data->count() / BACKWARD_THREAD_COUNT;
+        int spilit_count = _bottom_data->count() / thread_count;
+        if(spilit_count < 1)
+        {
+            spilit_count = 1;
+            thread_count = _bottom_data->count();
+        }
 
-        for (int i = 0; i < BACKWARD_THREAD_COUNT; ++i)
+        pthread_t thread[thread_count];
+        ThreadParam p[thread_count];
+        for (int i = 0; i < thread_count; ++i)
         {
             int offset_start = i * spilit_count;
             int offset_end = offset_start + spilit_count;
 
-            if (i == BACKWARD_THREAD_COUNT - 1)
+            if (i == thread_count - 1)
             {
                 offset_end = _bottom_data->count();
             }
@@ -166,7 +174,7 @@ void Layer::backwardBase()
             pthread_create(&thread[i], NULL, backwardBaseThread, &p[i]);
         }
 
-        for (int i = 0; i < BACKWARD_THREAD_COUNT; ++i)
+        for (int i = 0; i < thread_count; ++i)
         {
             pthread_join(thread[i], NULL);
         }

@@ -14,8 +14,8 @@ namespace dong
 class NetModel
 {
 public:
-    explicit NetModel(string& modelDefineFilePath):_input_shape_num(0),_input_shape_channels(0),_input_shape_height(0),
-        _input_shape_width(0),_batch_size(0),_max_iter_count(0),model_define_file_path(modelDefineFilePath)
+    explicit NetModel(string& modelDefineFilePath):_batch_size(0),_input_shape_channels(0),_input_shape_height(0),
+        _input_shape_width(0),_max_iter_count(0),model_define_file_path(modelDefineFilePath)
     {};
     virtual ~NetModel() {};
     virtual void run();
@@ -38,11 +38,10 @@ protected:
     boost::shared_ptr<Layer> _input_layer;
     boost::shared_ptr<Layer> _loss_layer;
 
-    int _input_shape_num;
+    int _batch_size;
     int _input_shape_channels;
     int _input_shape_height;
     int _input_shape_width;
-    int _batch_size;
     int _max_iter_count;
     string model_define_file_path;
     string model_data_file_path_in;

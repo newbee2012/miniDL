@@ -18,7 +18,7 @@
 #include "net_model_mysql.hpp"
 #include "net_model_lmdb.hpp"
 #include "net_model.hpp"
-
+#include <vector>
 using namespace std;
 using namespace dong;
 int sum = 0;
@@ -33,7 +33,8 @@ float Layer::POWER;
 float Layer::WEIGHT_DECAY;              //权重衰减常数
 float Layer::CURRENT_LEARNING_RATE;
 int Layer::STEPSIZE;
-int Layer::BATCH_SIZE;
+int Layer::FORWARD_THREAD_COUNT;
+int Layer::BACKWARD_THREAD_COUNT;
 
 int RandomGenerator::rnd_seed;          //随机种子，-1表示使用time(0)做种子
 
@@ -128,9 +129,69 @@ void solution(char *line)
     printf("%lld\n", test(line));
 }
 
+void testVector()
+{
+    boost::posix_time::ptime start_cpu_;
+    boost::posix_time::ptime stop_cpu_;
+
+    start_cpu_ = boost::posix_time::microsec_clock::local_time();
+    int N = 999999999;
+    vector<float> v(N);
+    for(int i=0;i<N;++i)
+    {
+        v[i] = 0.32455F;
+        //v.push_back(0.32455F);
+    }
+    stop_cpu_ = boost::posix_time::microsec_clock::local_time();
+    cout<<"vector 分配内存耗时: "<<(stop_cpu_ - start_cpu_).total_microseconds() <<endl;
+
+    start_cpu_ = boost::posix_time::microsec_clock::local_time();
+    float n = 0;
+    for(int i=0;i<N;++i)
+    {
+        n = v[i];
+        //n =i;
+    }
+    stop_cpu_ = boost::posix_time::microsec_clock::local_time();
+    cout<<"vector 寻址耗时: "<<(stop_cpu_ - start_cpu_).total_microseconds() <<endl;
+
+    cout<<n<<endl;
+}
+
+void testArray()
+{
+    boost::posix_time::ptime start_cpu_;
+    boost::posix_time::ptime stop_cpu_;
+
+    start_cpu_ = boost::posix_time::microsec_clock::local_time();
+    const int N = 999999999;
+    float* v = new float[N];
+    for(int i=0;i<N;++i)
+    {
+        v[i]=0.32455F;
+    }
+    stop_cpu_ = boost::posix_time::microsec_clock::local_time();
+    cout<<"array 分配内存耗时: "<<(stop_cpu_ - start_cpu_).total_microseconds() <<endl;
+
+    start_cpu_ = boost::posix_time::microsec_clock::local_time();
+    float n = 0;
+    for(int i=0;i<N;++i)
+    {
+        n = v[i];
+        //n =i*i;
+    }
+    stop_cpu_ = boost::posix_time::microsec_clock::local_time();
+    cout<<"array 寻址内存耗时: "<<(stop_cpu_ - start_cpu_).total_microseconds() <<endl;
+
+    cout<<n<<endl;
+    delete[] v;
+}
 
 int main(int argc, char* argv[])
 {
+    //testVector();
+    //testArray();
+
     RandomGenerator::rnd_seed = -1;
     if (argc == 2) {
         RandomGenerator::rnd_seed = atoi(argv[1]);
@@ -154,5 +215,6 @@ int main(int argc, char* argv[])
 
     //cout << "Hello world!" << endl;
     //solution(argv[1]);
+
     return 0;
 }
