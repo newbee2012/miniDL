@@ -4,7 +4,7 @@
 #include <boost/math/special_functions/next.hpp>
 #include <boost/random.hpp>
 #include <boost/shared_ptr.hpp>
-
+#include <cblas.h>
 namespace dong
 {
 typedef boost::mt19937 rng_t;
@@ -31,7 +31,8 @@ public:
 
     static RNG& rng_stream()
     {
-        if (!random_generator_) {
+        if (!random_generator_)
+        {
             random_generator_.reset(new RNG());
         }
 
@@ -50,11 +51,31 @@ public:
         boost::uniform_real<float> random_distribution(a, nextafter(b));
         boost::variate_generator<dong::rng_t*, boost::uniform_real<float> > my_generator(&engine, random_distribution);
 
-        for (int i = 0; i < n; ++i) {
+        for (int i = 0; i < n; ++i)
+        {
             r[i] = my_generator();
         }
     }
 };
+
+class Blas
+{
+public:
+    static void caffe_cpu_gemm (const CBLAS_TRANSPOSE TransA,
+                                const CBLAS_TRANSPOSE TransB, const int M, const int N, const int K,
+                                const float alpha, const float* A, const float* B, const float beta,
+                                float* C)
+    {
+        int lda = (TransA == CblasNoTrans) ? K : M;
+        int ldb = (TransB == CblasNoTrans) ? N : K;
+        cblas_sgemm(CblasRowMajor, TransA, TransB, M, N, K, alpha, A, lda, B,
+                    ldb, beta, C, N);
+    }
+};
+
+
+
+
 
 }
 

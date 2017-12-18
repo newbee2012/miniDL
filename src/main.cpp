@@ -19,6 +19,7 @@
 #include "net_model_lmdb.hpp"
 #include "net_model.hpp"
 #include <vector>
+#include <cblas.h>
 using namespace std;
 using namespace dong;
 int sum = 0;
@@ -64,7 +65,7 @@ int64_t mypow(int64_t n, int exp)
 {
     int64_t value = 1;
     int i;
-    for(i=1;i<=exp; ++i)
+    for(i=1; i<=exp; ++i)
     {
         value *= n;
     }
@@ -96,7 +97,8 @@ int64_t test(char* x)
         if(num >= 3)
         {
             return 1;
-        }else
+        }
+        else
         {
             return 0;
         }
@@ -137,7 +139,7 @@ void testVector()
     start_cpu_ = boost::posix_time::microsec_clock::local_time();
     int N = 999999999;
     vector<float> v(N);
-    for(int i=0;i<N;++i)
+    for(int i=0; i<N; ++i)
     {
         v[i] = 0.32455F;
         //v.push_back(0.32455F);
@@ -147,7 +149,7 @@ void testVector()
 
     start_cpu_ = boost::posix_time::microsec_clock::local_time();
     float n = 0;
-    for(int i=0;i<N;++i)
+    for(int i=0; i<N; ++i)
     {
         n = v[i];
         //n =i;
@@ -166,7 +168,7 @@ void testArray()
     start_cpu_ = boost::posix_time::microsec_clock::local_time();
     const int N = 999999999;
     float* v = new float[N];
-    for(int i=0;i<N;++i)
+    for(int i=0; i<N; ++i)
     {
         v[i]=0.32455F;
     }
@@ -175,7 +177,7 @@ void testArray()
 
     start_cpu_ = boost::posix_time::microsec_clock::local_time();
     float n = 0;
-    for(int i=0;i<N;++i)
+    for(int i=0; i<N; ++i)
     {
         n = v[i];
         //n =i*i;
@@ -187,34 +189,101 @@ void testArray()
     delete[] v;
 }
 
+void testBlas()
+{
+#define M 100
+#define N (50*8*8)
+#define K (20*12*12)
+    float* A = new float[M * K];
+    float* B = new float[K * N];
+    float* C = new float[M * N];
+    cout<<"分配内存完成！共分配："<<(M * K+N * K+M * N)*sizeof(float)/1024/1024<<" MB"<< endl;
+    boost::posix_time::ptime start_cpu_;
+    boost::posix_time::ptime stop_cpu_;
+    start_cpu_ = boost::posix_time::microsec_clock::local_time();
+
+    Blas::caffe_cpu_gemm(CblasNoTrans, CblasNoTrans,M, N, K, 1.F, A, B, 0.F, C);
+
+    stop_cpu_ = boost::posix_time::microsec_clock::local_time();
+    cout<<"CBlas cblas_sgemm 耗时: "<<(stop_cpu_ - start_cpu_).total_microseconds() <<endl;
+
+////////////////////////////////////////////////////////////////////////
+    start_cpu_ = boost::posix_time::microsec_clock::local_time();
+    for(int m=0; m<M ; ++m)
+    {
+        for(int k=0; k< K ; ++k)
+        {
+            for(int n=0; n< N ; ++n)
+            {
+                C[m*n] += A[m*k] * B[k*n];
+            }
+        }
+    }
+    stop_cpu_ = boost::posix_time::microsec_clock::local_time();
+    cout<<"一般矩阵计算 耗时: "<<(stop_cpu_ - start_cpu_).total_microseconds() <<endl;
+
+}
+
+void testMyBlas()
+{
+#define M 1000
+#define N 200
+#define K 500
+    float* A = new float[M * K];
+    float* B = new float[K * N];
+    float* C = new float[M * N];
+    cout<<"分配内存完成！共分配："<<(M * K+N * K+M * N)*sizeof(float)/1024/1024<<" MB"<< endl;
+    boost::posix_time::ptime start_cpu_;
+    boost::posix_time::ptime stop_cpu_;
+    start_cpu_ = boost::posix_time::microsec_clock::local_time();
+
+    for(int m=0; m<M ; ++m)
+    {
+        for(int k=0; k< K ; ++k)
+        {
+            for(int n=0; n< N ; ++n)
+            {
+                C[m*n] += A[m*k] * B[k*n];
+            }
+        }
+    }
+
+    stop_cpu_ = boost::posix_time::microsec_clock::local_time();
+    cout<<"CBlas cblas_sgemm 耗时: "<<(stop_cpu_ - start_cpu_).total_microseconds() <<endl;
+
+}
+
+
 int main(int argc, char* argv[])
 {
     //testVector();
     //testArray();
+    testBlas();
 
-    RandomGenerator::rnd_seed = -1;
-    if (argc == 2) {
-        RandomGenerator::rnd_seed = atoi(argv[1]);
-    }
+    /*
+        RandomGenerator::rnd_seed = -1;
+        if (argc == 2) {
+            RandomGenerator::rnd_seed = atoi(argv[1]);
+        }
 
-    if (RandomGenerator::rnd_seed == -1) {
-        RandomGenerator::rnd_seed = (int)time(0);
-    }
+        if (RandomGenerator::rnd_seed == -1) {
+            RandomGenerator::rnd_seed = (int)time(0);
+        }
 
-    srand(RandomGenerator::rnd_seed);
+        srand(RandomGenerator::rnd_seed);
 
-    string modelDefileName = "/home/chendejia/workspace/github/miniDL/net_model_define_mnist.json";
-    //string modelDefileName = "/home/chendejia/workspace/github/miniDL/net_model_define.json";
-    cout<<"load model file: "<<modelDefileName<<endl;
-    NetModelLMDB* netMode = new NetModelLMDB(modelDefileName);
-    //netMode->load_model();
-    //string fileName = "/home/chendejia/workspace/github/miniDL/bin/Release/7.bmp";
-    //netMode->testFromABmp(fileName);
-    netMode->run();
-    delete netMode;
+        string modelDefileName = "./net_model_define_mnist.json";
+        //string modelDefileName = "/home/chendejia/workspace/github/miniDL/net_model_define.json";
+        cout<<"load model file: "<<modelDefileName<<endl;
+        NetModelLMDB* netMode = new NetModelLMDB(modelDefileName);
+        //netMode->load_model();
+        //string fileName = "/home/chendejia/workspace/github/miniDL/bin/Release/7.bmp";
+        //netMode->testFromABmp(fileName);
+        netMode->run();
+        delete netMode;
 
-    //cout << "Hello world!" << endl;
-    //solution(argv[1]);
-
+        //cout << "Hello world!" << endl;
+        //solution(argv[1]);
+    */
     return 0;
 }
