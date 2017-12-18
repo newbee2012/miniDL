@@ -1,6 +1,6 @@
 {
     "mode":"TRAIN",
-    "modelDataFilePathIn": "/home/chendejia/workspace/github/miniDL/null_model_data.json",
+    "modelDataFilePathIn": "/home/chendejia/workspace/github/miniDL/null_data.json",
     "modelDataFilePathOut": "/home/chendejia/workspace/github/miniDL/net_model_data_mnist_time.json",
     "hyperParameters": {
         "MAX_ITER_COUNT": 10000,
