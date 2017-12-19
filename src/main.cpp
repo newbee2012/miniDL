@@ -1,24 +1,9 @@
 #include <iostream>
-#include "util/gen_bmp.hpp"
-#include "input_layer.hpp"
-#include "conv_layer.hpp"
-#include "pool_layer.hpp"
-#include "full_connect_layer.hpp"
-#include "relu_layer.hpp"
-#include "softmax_layer.hpp"
-#include <time.h>
-#include <boost/shared_ptr.hpp>
-#include <pthread.h>
 #include "util/math_utils.hpp"
-#include <mysql/mysql.h>
-#include <vector>
-#include <boost/algorithm/string/classification.hpp>
-#include <boost/algorithm/string/split.hpp>
 #include "net_model_mysql.hpp"
 #include "net_model_lmdb.hpp"
 #include "net_model.hpp"
-#include <vector>
-#include <cblas.h>
+
 using namespace std;
 using namespace dong;
 

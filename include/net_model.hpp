@@ -15,7 +15,7 @@ class NetModel
 {
 public:
     explicit NetModel(string& modelDefineFilePath):_batch_size(0),_input_shape_channels(0),_input_shape_height(0),
-        _input_shape_width(0),_max_iter_count(0),model_define_file_path(modelDefineFilePath)
+        _input_shape_width(0),_max_iter_count(0),_model_define_file_path(modelDefineFilePath)
     {};
     virtual ~NetModel() {};
     virtual void run();
@@ -43,10 +43,8 @@ protected:
     int _input_shape_height;
     int _input_shape_width;
     int _max_iter_count;
-    string model_define_file_path;
-    string model_data_file_path_in;
-    string model_data_file_path_out;
-
+    string _model_define_file_path;
+    string _model_data_file_path;
     Mode _mode;
     DISABLE_COPY_AND_ASSIGN(NetModel);
 };

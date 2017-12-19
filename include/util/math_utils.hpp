@@ -5,6 +5,7 @@
 #include <boost/random.hpp>
 #include <boost/shared_ptr.hpp>
 #include <cblas.h>
+using namespace boost;
 namespace dong
 {
 typedef boost::mt19937 rng_t;

@@ -185,28 +185,13 @@ Layer* NetModel::generateLayerByClassName(const char* className)
 
 void NetModel::save_model()
 {
-    cout<<"saving model: "<<this->model_define_file_path<<endl;
+    cout<<"saving model to file: "<<this->_model_data_file_path<<endl;
     Json::Reader reader;
-    Json::Value root;
-    std::ifstream is;
-    is.open (this->model_define_file_path.c_str(), std::ios::binary );
-    if (!reader.parse(is, root))
-    {
-        ASSERT(false, cout<<"Json 解析失败！"<<endl);
-    }
-
-    Json::Value jo_layers = root["layersModel"];
-    Json::Value jo_layer = jo_layers["inputLayer"];
-    boost::shared_ptr<Layer> layer = _input_layer;
-    ASSERT(!jo_layer.isNull(), cout<<"inputLayer不存在！"<<endl);
-
-    string layerName = jo_layer["topLayer"].asString();
-    jo_layer = jo_layers[layerName];
-    layer = layer->getTopLayer();
-
     Json::Value dataRoot;
-    while(!jo_layer.isNull())
+    boost::shared_ptr<Layer> layer = _input_layer;
+    while(layer.get())
     {
+        string layerName = layer->getName();
         Json::Value weightArray;
         Json::Value biasArray;
         if(layer->getType() == CONVOLUTION_LAYER || layer->getType() == FULL_CONNECT_LAYER)
@@ -229,23 +214,21 @@ void NetModel::save_model()
             dataRoot[layerName]["bias"] = biasArray;
         }
 
-        layerName = jo_layer["topLayer"].asString();
-        jo_layer = jo_layers[layerName];
         layer = layer->getTopLayer();
     }
 
     Json::StyledWriter writer;
     std::string strWrite = writer.write(dataRoot);
     std::ofstream ofs;
-    cout<<this->model_data_file_path_out<<endl;
-    ofs.open(this->model_data_file_path_out.c_str());
+    cout<<this->_model_data_file_path<<endl;
+    ofs.open(this->_model_data_file_path.c_str());
     ofs << strWrite;
     ofs.close();
 }
 
 void NetModel::load_model()
 {
-    cout<<"loading model: "<<this->model_define_file_path<<endl;
+    cout<<"loading model from file: "<<this->_model_define_file_path<<endl;
     Layer::BASE_LEARNING_RATE = 0.01F;
     Layer::LEARNING_RATE_POLICY = INV;
     Layer::GAMMA = 0.0001F;
@@ -260,31 +243,36 @@ void NetModel::load_model()
     Json::Value modelDefineRoot;
     Json::Value modelDataRoot;
     std::ifstream is;
-    is.open (this->model_define_file_path.c_str(), std::ios::binary );
+    is.open (this->_model_define_file_path.c_str(), std::ios::binary );
     if (!reader.parse(is, modelDefineRoot))
     {
-        ASSERT(false, cout<<this->model_define_file_path<< " 解析失败！"<<endl);
+        ASSERT(false, cout<<this->_model_define_file_path<< " 解析失败！"<<endl);
     }
     is.close();
 
     cout<<"model json:"<<modelDefineRoot<<endl;
 
-    string modelDataFilePathIn = modelDefineRoot["modelDataFilePathIn"].asString();
-    string modelDataFilePathOut = modelDefineRoot["modelDataFilePathOut"].asString();
-    this->model_data_file_path_in = modelDataFilePathIn;
-    this->model_data_file_path_out = modelDataFilePathOut;
-
-    is.open (model_data_file_path_in.c_str(), std::ios::binary );
-    if (!reader.parse(is, modelDataRoot))
-    {
-        ASSERT(false, cout<<this->model_data_file_path_in<< " 解析失败！"<<endl);
-    }
-    is.close();
-
-
     Json::Value jo_mode = modelDefineRoot["mode"];
     _mode = STRING_TO_MODE(jo_mode.asString().c_str());
     ASSERT(_mode >= 0 && _mode < MODE_SIZE, cout<<"mode 未定义或取值非法！"<<endl);
+
+    Json::Value jo_modelDataFilePath = modelDefineRoot["modelDataFilePath"];
+    ASSERT(!jo_modelDataFilePath.isNull(), cout<<"节点modelDataFilePath不存在！"<<endl);
+    this->_model_data_file_path = jo_modelDataFilePath.asString();
+
+    Json::Value jo_initModelByExistentData = modelDefineRoot["initModelByExistentData"];
+    ASSERT(!jo_initModelByExistentData.isNull(), cout<<"节点initModelByExistentData不存在！"<<endl);
+    bool  initModelByExistentData = jo_initModelByExistentData.asBool();
+
+    if(initModelByExistentData)
+    {
+        is.open (_model_data_file_path.c_str(), std::ios::binary );
+        if (!reader.parse(is, modelDataRoot))
+        {
+            ASSERT(false, cout<<this->_model_data_file_path<< " 解析失败！"<<endl);
+        }
+        is.close();
+    }
 
     //读取超参数
     Json::Value jo_hyperParameters = modelDefineRoot["hyperParameters"];

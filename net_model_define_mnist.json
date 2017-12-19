@@ -1,8 +1,7 @@
 {
-    "mode":"TRAIN",
-    "trainModelDataLoadPath": "/home/chendejia/workspace/github/miniDL/null_model_data.json",
-    "trainModelDataSavePath": "/home/chendejia/workspace/github/miniDL/mnist_data_1218_1035.json",
-　　　　"trainModelDataSavePath": "/home/chendejia/workspace/github/miniDL/mnist_data_1218_1035.json",
+    "mode":"TEST",
+    "modelDataFilePath": "/home/chendejia/workspace/github/miniDL/mnist_data_1218_1035.json",
+    "initModelByExistentData": true,
     "hyperParameters": {
         "MAX_ITER_COUNT": 10,
         "BATCH_SIZE": 64,
