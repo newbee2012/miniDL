@@ -17,13 +17,9 @@ namespace dong
 {
 void NetModel::run()
 {
-    cout<<"------------load model--------------"<<endl;
-    load_model();
-
     boost::posix_time::ptime start_cpu_;
     boost::posix_time::ptime stop_cpu_;
     start_cpu_ = boost::posix_time::microsec_clock::local_time();
-
     if(_mode == TRAIN)
     {
         cout<<"------------train start--------------"<<endl;
@@ -37,15 +33,12 @@ void NetModel::run()
     }
     else if(_mode == TEST)
     {
-
         cout<<"------------test start--------------"<<endl;
         test();
         stop_cpu_ = boost::posix_time::microsec_clock::local_time();
         cout<< "Test time:"<< (stop_cpu_ - start_cpu_).total_milliseconds() << " ms."<<endl;
         outputTime();
     }
-
-
 }
 
 void NetModel::outputBmp()
@@ -192,7 +185,7 @@ Layer* NetModel::generateLayerByClassName(const char* className)
 
 void NetModel::save_model()
 {
-    cout<<"saving model...."<<endl;
+    cout<<"saving model: "<<this->model_define_file_path<<endl;
     Json::Reader reader;
     Json::Value root;
     std::ifstream is;
@@ -252,6 +245,7 @@ void NetModel::save_model()
 
 void NetModel::load_model()
 {
+    cout<<"loading model: "<<this->model_define_file_path<<endl;
     Layer::BASE_LEARNING_RATE = 0.01F;
     Layer::LEARNING_RATE_POLICY = INV;
     Layer::GAMMA = 0.0001F;
@@ -262,10 +256,7 @@ void NetModel::load_model()
     Layer::CURRENT_ITER_COUNT = 0;
     Layer::FORWARD_THREAD_COUNT = 1;
     Layer::BACKWARD_THREAD_COUNT = 1;
-    cout<<"loading model...."<<endl;
-
     Json::Reader reader;
-
     Json::Value modelDefineRoot;
     Json::Value modelDataRoot;
     std::ifstream is;
@@ -274,8 +265,9 @@ void NetModel::load_model()
     {
         ASSERT(false, cout<<this->model_define_file_path<< " 解析失败！"<<endl);
     }
-
     is.close();
+
+    cout<<"model json:"<<modelDefineRoot<<endl;
 
     string modelDataFilePathIn = modelDefineRoot["modelDataFilePathIn"].asString();
     string modelDataFilePathOut = modelDefineRoot["modelDataFilePathOut"].asString();
@@ -287,13 +279,8 @@ void NetModel::load_model()
     {
         ASSERT(false, cout<<this->model_data_file_path_in<< " 解析失败！"<<endl);
     }
-    else
-    {
-        cout<<this->model_data_file_path_in<<endl;
-        cout<<this->model_data_file_path_out<<endl;
-    }
-
     is.close();
+
 
     Json::Value jo_mode = modelDefineRoot["mode"];
     _mode = STRING_TO_MODE(jo_mode.asString().c_str());
@@ -313,7 +300,8 @@ void NetModel::load_model()
     ASSERT(Layer::BASE_LEARNING_RATE > 0, cout<<"BASE_LEARNING_RATE 未定义或取值非法！"<<endl);
 
     Layer::LEARNING_RATE_POLICY = STRING_TO_LR_POLICY(jo_hyperParameters["LEARNING_RATE_POLICY"].asString().c_str());
-    ASSERT(Layer::LEARNING_RATE_POLICY >= 0 && Layer::LEARNING_RATE_POLICY < LR_Policy_size, cout<<"LEARNING_RATE_POLICY 未定义或取值非法！"<<endl);
+    ASSERT(Layer::LEARNING_RATE_POLICY >= 0
+           && Layer::LEARNING_RATE_POLICY < LR_Policy_size, cout<<"LEARNING_RATE_POLICY 未定义或取值非法！"<<endl);
 
     Layer::GAMMA = jo_hyperParameters["GAMMA"].asFloat();
     ASSERT(Layer::GAMMA > 0, cout<<"GAMMA 未定义或取值非法！"<<endl);
@@ -346,7 +334,6 @@ void NetModel::load_model()
 
     //读取layers定义
     Json::Value jo_layers = modelDefineRoot["layersModel"];
-    cout<<"model json:"<<endl<<jo_layers<<endl;
     ASSERT(!jo_layers.isNull(), cout<<"节点layersModel不存在！"<<endl);
 
     //查找输入层
@@ -414,8 +401,10 @@ void NetModel::load_model()
             Json::Value jo_bias = modelDataRoot[layerName]["bias"];
             boost::shared_ptr<Data>& weightData = layer->getWeightData();
             boost::shared_ptr<Data>& biasData = layer->getBiasData();
-            ASSERT(jo_weights.size() == weightData->count() || jo_weights.size() == 0, cout<<layerName<<"读取weights个数和model定义不一致"<<endl);
-            ASSERT(jo_bias.size() == biasData->count() || jo_bias.size() == 0, cout<<layerName<<"读取bias个数和model定义不一致"<<endl);
+            ASSERT(jo_weights.size() == weightData->count()
+                   || jo_weights.size() == 0, cout<<layerName<<"读取weights个数和model定义不一致"<<endl);
+            ASSERT(jo_bias.size() == biasData->count()
+                   || jo_bias.size() == 0, cout<<layerName<<"读取bias个数和model定义不一致"<<endl);
 
             for(int i = 0; i < jo_weights.size(); ++i)
             {
