@@ -41,7 +41,7 @@ void NetModelLMDB::testFromABmp(string& fileName)
     _loss_layer->getTopData()->print();
 
     LossLayer* lossLayer = (LossLayer*)_loss_layer.get();
-    cout<< "识别结果:"<<lossLayer->getForecastLabels()<<endl;
+    //cout<< "识别结果:"<<lossLayer->getForecastLabels()<<endl;
     outputBmp();
 }
 
