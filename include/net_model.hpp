@@ -45,6 +45,8 @@ protected:
     int _max_iter_count;
     string _model_define_file_path;
     string _model_data_file_path;
+    string _train_data_file_path;
+    string _test_data_file_path;
     Mode _mode;
     DISABLE_COPY_AND_ASSIGN(NetModel);
 };

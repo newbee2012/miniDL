@@ -260,6 +260,14 @@ void NetModel::load_model()
     ASSERT(!jo_modelDataFilePath.isNull(), cout<<"节点modelDataFilePath不存在！"<<endl);
     this->_model_data_file_path = jo_modelDataFilePath.asString();
 
+    Json::Value jo_trainDataFilePath = modelDefineRoot["trainDataFilePath"];
+    ASSERT(!jo_trainDataFilePath.isNull(), cout<<"节点trainDataFilePath不存在！"<<endl);
+    this->_train_data_file_path = jo_trainDataFilePath.asString();
+
+    Json::Value jo_testDataFilePath = modelDefineRoot["testDataFilePath"];
+    ASSERT(!jo_testDataFilePath.isNull(), cout<<"节点testDataFilePath不存在！"<<endl);
+    this->_test_data_file_path = jo_testDataFilePath.asString();
+
     Json::Value jo_initModelByExistentData = modelDefineRoot["initModelByExistentData"];
     ASSERT(!jo_initModelByExistentData.isNull(), cout<<"节点initModelByExistentData不存在！"<<endl);
     bool  initModelByExistentData = jo_initModelByExistentData.asBool();

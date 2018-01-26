@@ -1,9 +1,11 @@
 {
     "mode":"TRAIN",
-    "modelDataFilePath": "/home/chendejia/workspace/github/miniDL/mnist_data_1218_1035.json",
+    "modelDataFilePath": "/home/chendejia/workspace/github/miniDL/null_model_data.json",
+    "trainDataFilePath": "/home/chendejia/workspace/github/miniDL/bin/Release/mnist_train_lmdb",
+    "testDataFilePath": "/home/chendejia/workspace/github/miniDL/bin/Release/mnist_test_lmdb",
     "initModelByExistentData": false,
     "hyperParameters": {
-        "MAX_ITER_COUNT": 10,
+        "MAX_ITER_COUNT": 10000,
         "BATCH_SIZE": 64,
         "BASE_LEARNING_RATE": 0.01,
         "LEARNING_RATE_POLICY": "INV",

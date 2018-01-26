@@ -58,7 +58,7 @@ void NetModelLMDB::test()
 
     /////////////////////////////////////////////////////
     db::DB* mydb = db::GetDB("lmdb");
-    mydb->Open("./data/mnist_test_lmdb", db::READ);
+    mydb->Open(this->_test_data_file_path, db::READ);
     db::Cursor* cursor = mydb->NewCursor();
     cursor->SeekToFirst();
 
@@ -145,7 +145,7 @@ void NetModelLMDB::train()
 
     /////////////////////////////////////////////////////
     db::DB* mydb = db::GetDB("lmdb");
-    mydb->Open("./data/mnist_train_lmdb", db::READ);
+    mydb->Open(this->_test_data_file_path, db::READ);
     db::Cursor* cursor = mydb->NewCursor();
     cursor->SeekToFirst();
     Data batchDatas(_batch_size, channels, height, width, Data::CONSTANT);

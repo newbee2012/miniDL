@@ -45,6 +45,7 @@
 			<Add library="libpthread" />
 			<Add library="libmysqlclient" />
 			<Add library="libjsoncpp" />
+			<Add library="libcblas" />
 		</Linker>
 		<Unit filename="include/common.hpp" />
 		<Unit filename="include/conv_layer.hpp" />
