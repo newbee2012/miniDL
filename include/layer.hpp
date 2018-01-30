@@ -49,7 +49,7 @@ public:
         _sum_backward_time = 0.0D;
     }
     virtual ~Layer(){};
-    virtual void init(int (&params)[4]) = 0;
+    virtual void init(int (&params)[6]) = 0;
     virtual void forward_cpu() = 0;
     virtual void forward();
     virtual void backward_cpu() = 0;

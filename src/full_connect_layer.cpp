@@ -45,7 +45,7 @@ void FullConnectLayer::backward_cpu()
     Layer::backwardBase();
 }
 
-void FullConnectLayer::init(int (&params)[4])
+void FullConnectLayer::init(int (&params)[6])
 {
     this->_output_count = params[0];
 }

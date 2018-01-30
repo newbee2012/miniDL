@@ -17,7 +17,7 @@ public:
     {
         return CONVOLUTION_LAYER;
     }
-    virtual void init(int (&params)[4]);
+    virtual void init(int (&params)[6]);
     //virtual void init(int num_output, int kernel_h, int kernel_w);
     virtual void setUp(const boost::shared_ptr<Data>& data);
     virtual void forward_cpu();
@@ -26,6 +26,9 @@ private:
     int _num_output;
     int _kernel_h;
     int _kernel_w;
+    int _pad_h;
+    int _pad_w;
+    int _stride;
     bool _need_init_weight;
 
     DISABLE_COPY_AND_ASSIGN(ConvLayer);

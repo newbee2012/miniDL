@@ -346,7 +346,7 @@ void NetModel::load_model()
         Json::Value init_params = jo_layer["initParams"];
 
         int params_size = init_params.size();
-        int params[4] = {0};
+        int params[6] = {0};
         for(int j = 0; j < params_size; ++j)
         {
             params[j] = init_params[j].asInt();
@@ -391,16 +391,14 @@ void NetModel::load_model()
             layer->setBottomLayer(bottom_layer);
         }
 
-        if(layer->getType() == CONVOLUTION_LAYER || layer->getType() == FULL_CONNECT_LAYER)
+        if(initModelByExistentData && (layer->getType() == CONVOLUTION_LAYER || layer->getType() == FULL_CONNECT_LAYER))
         {
             Json::Value jo_weights = modelDataRoot[layerName]["weight"];
             Json::Value jo_bias = modelDataRoot[layerName]["bias"];
             boost::shared_ptr<Data>& weightData = layer->getWeightData();
             boost::shared_ptr<Data>& biasData = layer->getBiasData();
-            ASSERT(jo_weights.size() == weightData->count()
-                   || jo_weights.size() == 0, cout<<layerName<<"读取weights个数和model定义不一致"<<endl);
-            ASSERT(jo_bias.size() == biasData->count()
-                   || jo_bias.size() == 0, cout<<layerName<<"读取bias个数和model定义不一致"<<endl);
+            ASSERT(jo_weights.size() == weightData->count(), cout<<layerName<<"读取weights个数和model定义不一致"<<endl);
+            ASSERT(jo_bias.size() == biasData->count(), cout<<layerName<<"读取bias个数和model定义不一致"<<endl);
 
             for(int i = 0; i < jo_weights.size(); ++i)
             {

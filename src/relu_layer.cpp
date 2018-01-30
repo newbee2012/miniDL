@@ -12,7 +12,6 @@ void ReluLayer::setUp(const boost::shared_ptr<Data>& data)
     Layer::setUp(data);
     _top_data.reset(new Data(_bottom_data->num(), _bottom_data->channels(), _bottom_data->height(), _bottom_data->width(), Data::CONSTANT));
     _weight_data.reset(new Data(_bottom_data->num(), _bottom_data->channels(), _bottom_data->height(), _bottom_data->width(), Data::CONSTANT));
-
     for (int i = 0; i < _bottom_data->count(); ++i) {
         Neuron* b_neuron = _bottom_data->get(i);
         Neuron* t_neuron = _top_data->get(i);
@@ -44,7 +43,7 @@ void ReluLayer::backward_cpu()
     Layer::backwardBase();
 }
 
-void ReluLayer::init(int (&params)[4])
+void ReluLayer::init(int (&params)[6])
 {
 }
 }

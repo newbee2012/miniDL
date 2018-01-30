@@ -73,7 +73,7 @@ void PoolLayer::backward_cpu()
     Layer::backwardBase();
 }
 
-void PoolLayer::init(int (&params)[4])
+void PoolLayer::init(int (&params)[6])
 {
     this->_kernel_h = params[0];
     this->_kernel_w = params[1];

@@ -88,7 +88,7 @@ void NetModelLMDB::test()
                 {
                     for (int h = 0; h < height; h++)
                     {
-                        batchDatas.get(i, c, w, h)->_value = (BYTE)(datum.data()[w * height + h]);
+                        batchDatas.get(i, c, w, h)->_value = (BYTE)(datum.data()[c * width * height + w * height + h]);
                         labels[i] = datum.label();
                     }
                 }
@@ -145,7 +145,7 @@ void NetModelLMDB::train()
 
     /////////////////////////////////////////////////////
     db::DB* mydb = db::GetDB("lmdb");
-    mydb->Open(this->_test_data_file_path, db::READ);
+    mydb->Open(this->_train_data_file_path, db::READ);
     db::Cursor* cursor = mydb->NewCursor();
     cursor->SeekToFirst();
     Data batchDatas(_batch_size, channels, height, width, Data::CONSTANT);
@@ -169,7 +169,7 @@ void NetModelLMDB::train()
                 {
                     for (int h = 0; h < height; h++)
                     {
-                        batchDatas.get(i, c, w, h)->_value = (BYTE)(datum.data()[w * height + h]);
+                        batchDatas.get(i, c, w, h)->_value = (BYTE)(datum.data()[c * width * height + w * height + h]);
                         labels[i] = datum.label();
                     }
                 }

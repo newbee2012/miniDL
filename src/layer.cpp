@@ -18,6 +18,17 @@ void Layer::setTopLayer(boost::shared_ptr<Layer>& layer)
 {
     _top_layer = layer;
     _top_layer->setUp(this->getTopData());
+    cout<<_top_layer->getName()<<"->bottom:";
+    cout<<_top_layer->getBottomData()->num()<<",";
+    cout<<_top_layer->getBottomData()->channels()<<",";
+    cout<<_top_layer->getBottomData()->height()<<",";
+    cout<<_top_layer->getBottomData()->width()<<endl;
+
+    cout<<_top_layer->getName()<<"->top:";
+    cout<<_top_layer->getTopData()->num()<<",";
+    cout<<_top_layer->getTopData()->channels()<<",";
+    cout<<_top_layer->getTopData()->height()<<",";
+    cout<<_top_layer->getTopData()->width()<<endl;
 }
 
 boost::shared_ptr<Layer>& Layer::getBottomLayer()

@@ -17,7 +17,7 @@ public:
     {
         return RELU_LAYER;
     }
-    virtual void init(int (&params)[4]);
+    virtual void init(int (&params)[6]);
     virtual void setUp(const boost::shared_ptr<Data>& data);
     virtual void forward_cpu();
     virtual void backward_cpu();

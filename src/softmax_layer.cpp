@@ -94,7 +94,7 @@ void SoftmaxLayer::setLabels(boost::shared_array<int>& labels)
     _labels = labels;
 }
 
-void SoftmaxLayer::init(int (&params)[4])
+void SoftmaxLayer::init(int (&params)[6])
 {
 }
 

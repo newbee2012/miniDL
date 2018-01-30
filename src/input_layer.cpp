@@ -5,7 +5,7 @@ using namespace std;
 namespace dong
 {
 
-void InputLayer::init(int (&params)[4])
+void InputLayer::init(int (&params)[6])
 {
 }
 
