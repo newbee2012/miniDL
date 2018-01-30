@@ -1,0 +1,109 @@
+{
+    "mode":"TRAIN",
+    "modelDataFilePath": "/home/chendejia/workspace/github/miniDL/cifar10_model_data.json",
+    "trainDataFilePath": "/home/chendejia/workspace/github/miniDL/bin/Release/cifar10_train_lmdb",
+    "testDataFilePath": "/home/chendejia/workspace/github/miniDL/bin/Release/cifar10_test_lmdb",
+    "initModelByExistentData": false,
+    "hyperParameters": {
+        "MAX_ITER_COUNT": 30000,
+        "BATCH_SIZE": 100,
+        "BASE_LEARNING_RATE": 0.01,
+        "LEARNING_RATE_POLICY": "INV",
+        "GAMMA": 0.0001,
+        "MOMENTUM": 0.9,
+        "POWER": 0.75,
+        "WEIGHT_DECAY": 0.004,
+        "STEPSIZE": 100,
+	"FORWARD_THREAD_COUNT": 10,
+	"BACKWARD_THREAD_COUNT": 10
+    },
+    "inputShape": {
+        "channels": 3,
+        "height": 32,
+        "width": 32
+    },
+    "layersModel": {
+	"inputLayer": {
+            "implClass": "InputLayer",
+            "initParams": null,
+            "topLayer": "convLayer",
+	    "scale": 1
+        },
+        "convLayer": {
+            "implClass": "ConvLayer",
+            "initParams": [32,5,5,2,2,1],
+            "topLayer": "poolLayer",
+	    "lr_mult_weight": 1,
+	    "lr_mult_bias": 2
+        },
+	"poolLayer": {
+            "implClass": "PoolLayer",
+            "initParams": [3,3,2,2],
+            "topLayer": "reluLayer",
+	    "lr_mult_weight": 1,
+	    "lr_mult_bias": 2
+        },
+	"reluLayer": {
+            "implClass": "ReluLayer",
+            "initParams": [],
+            "topLayer": "convLayer2"
+        },
+	"convLayer2": {
+            "implClass": "ConvLayer",
+            "initParams": [32,5,5,2,2,1],
+            "topLayer": "reluLayer2",
+	    "lr_mult_weight": 1,
+	    "lr_mult_bias": 2
+        },
+	"reluLayer2": {
+            "implClass": "ReluLayer",
+            "initParams": [],
+            "topLayer": "poolLayer2"
+        },
+	"poolLayer2": {
+            "implClass": "PoolLayer",
+            "initParams": [3,3,2,2],
+            "topLayer": "convLayer3",
+	    "lr_mult_weight": 1,
+	    "lr_mult_bias": 2
+        },
+	"convLayer3": {
+            "implClass": "ConvLayer",
+            "initParams": [64,5,5,2,2,1],
+            "topLayer": "reluLayer3",
+	    "lr_mult_weight": 1,
+	    "lr_mult_bias": 2
+        },
+	"reluLayer3": {
+            "implClass": "ReluLayer",
+            "initParams": [],
+            "topLayer": "poolLayer3"
+        },
+	"poolLayer3": {
+            "implClass": "PoolLayer",
+            "initParams": [3,3,2,2],
+            "topLayer": "fullConnectLayer",
+	    "lr_mult_weight": 1,
+	    "lr_mult_bias": 2
+        },
+        "fullConnectLayer": {
+            "implClass": "FullConnectLayer",
+            "initParams": [64],
+            "topLayer": "fullConnectLayer2",
+	    "lr_mult_weight": 1,
+	    "lr_mult_bias": 2
+        },
+	"fullConnectLayer2": {
+            "implClass": "FullConnectLayer",
+            "initParams": [10],
+            "topLayer": "lossLayer",
+	    "lr_mult_weight": 1,
+	    "lr_mult_bias": 2
+        },
+        "lossLayer": {
+            "implClass": "SoftmaxLayer",
+            "initParams": [],
+            "topLayer": null
+        }
+    }
+}
