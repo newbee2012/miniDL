@@ -46,11 +46,13 @@ void NetModel::outputBmp()
     boost::shared_ptr<Layer> layer = _input_layer;
     while(layer.get())
     {
-        if(layer->getName() == "convLayer")
+        if(layer->getName() == "inputLayer")
         {
+
             string filepath("/home/chendejia/workspace/github/miniDL/bin/Release/");
             filepath.append(layer->getName()).append("_weight");
             layer->getWeightData()->genBmp(filepath);
+
 
             filepath = "/home/chendejia/workspace/github/miniDL/bin/Release/";
             filepath.append(layer->getName()).append("_topdata");
@@ -220,7 +222,6 @@ void NetModel::save_model()
     Json::StyledWriter writer;
     std::string strWrite = writer.write(dataRoot);
     std::ofstream ofs;
-    cout<<this->_model_data_file_path<<endl;
     ofs.open(this->_model_data_file_path.c_str());
     ofs << strWrite;
     ofs.close();

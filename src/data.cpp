@@ -35,7 +35,6 @@ Data::Data(int num, int channels, int height, int width, InitType type): _num(nu
         }
 
         _neurons[i]._diff = 0.0F;
-        _neurons[i]._batch_diff = 0.0F;
     }
 
     delete[] t;
@@ -46,14 +45,6 @@ void Data::clearDiff()
     int c = count();
     for (int i = 0; i < c; ++i) {
         _neurons[i]._diff = 0.0F;
-    }
-}
-
-void Data::clearBatchDiff()
-{
-    int c = count();
-    for (int i = 0; i < c; ++i) {
-        _neurons[i]._batch_diff = 0.0F;
     }
 }
 
@@ -128,7 +119,7 @@ void Data::printDiff()
         }
     }
 }
-
+/*
 void Data::genBmp(string& filePathBase)
 {
     filePathBase.append("_%d_%d.bmp");
@@ -143,7 +134,7 @@ void Data::genBmp(string& filePathBase)
             for (int h = 0; h < _height; h++) {
                 for (int w = 0; w < _width; w++) {
                     BYTE gray = this->get(n, c, h, w)->_value > 1 ? this->get(n, c, h, w)->_value : (this->get(n, c, h,
-                                w)->_value) * 0xFF * 10;
+                                w)->_value) * 0xFF;
                     if (w == 0 || w == _width - 1 || h == 0 || h == _height - 1) {
                         pRGB[(_height - h - 1)*_width + w].r = 0xFF;
                         pRGB[(_height - h - 1)*_width + w].g = 0xFF;
@@ -158,6 +149,44 @@ void Data::genBmp(string& filePathBase)
 
             BmpTool::generateBMP((BYTE*)pRGB, _width, _height, filePath);
         }
+    }
+}*/
+
+void Data::genBmp(string& filePathBase)
+{
+    filePathBase.append("_%d.bmp");
+    for (int n = 0; n < _num; n++) {
+            char filePath[128]={0};
+            sprintf(filePath,filePathBase.c_str(),n);
+            cout<<"genBmp : " << filePath<<endl;
+            RGB* pRGB = new RGB[_width * _height];
+            memset(pRGB, 0x0, sizeof(RGB) * _width * _height); // 设置背景为黑色
+
+            for (int h = 0; h < _height; h++) {
+                for (int w = 0; w < _width; w++) {
+                    if (w == 0 || w == _width - 1 || h == 0 || h == _height - 1) {
+                        pRGB[(_height - h - 1)*_width + w].r = 0xFF;
+                        pRGB[(_height - h - 1)*_width + w].g = 0xFF;
+                        pRGB[(_height - h - 1)*_width + w].b = 0xFF;
+                    } else {
+                        if(this->_channels == 1)
+                        {
+                            pRGB[(_height - h - 1)*_width + w].r = this->get(n, 0, h, w)->_value;
+                            pRGB[(_height - h - 1)*_width + w].g = this->get(n, 0, h, w)->_value;
+                            pRGB[(_height - h - 1)*_width + w].b = this->get(n, 0, h, w)->_value;
+                        }
+                        else if(this->_channels == 3)
+                        {
+                            pRGB[(_height - h - 1)*_width + w].r = this->get(n, 0, h, w)->_value;
+                            pRGB[(_height - h - 1)*_width + w].g = this->get(n, 1, h, w)->_value;
+                            pRGB[(_height - h - 1)*_width + w].b = this->get(n, 2, h, w)->_value;
+                        }
+
+                    }
+                }
+            }
+
+            BmpTool::generateBMP((BYTE*)pRGB, _width, _height, filePath);
     }
 }
 

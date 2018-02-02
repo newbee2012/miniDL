@@ -14,10 +14,7 @@ public:
     {
         _value = 0.0F;
         _diff = 0.0F;
-        _batch_diff = 0.0F;
         _history_diff = 0.0F;
-        _forward_neuron_count = 0;
-        _backward_neuron_count = 0;
     }
 
     ~Neuron() {}
@@ -26,15 +23,10 @@ public:
     void backward();
     float _value;
     float _diff;
-    float _batch_diff;
     float _history_diff;
-
     vector< Neuron* > _forward_neuron;
     vector< Neuron* > _weight_neuron;
     Neuron* _bias = NULL;
-    int _forward_neuron_count;
-    int _backward_neuron_count;
-
 };
 
 }

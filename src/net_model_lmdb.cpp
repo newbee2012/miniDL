@@ -18,31 +18,34 @@ namespace dong
 
 void NetModelLMDB::testFromABmp(string& fileName)
 {
-    Data batchDatas(1, 1, 28, 28, Data::CONSTANT);
+    int channels = this->_input_shape_channels;
+    int height = this->_input_shape_height;
+    int width = this->_input_shape_width;
+    Data batchDatas(this->_batch_size, channels, height, width, Data::CONSTANT);
     BYTE* pBmpBuf = BmpTool::readBmp(fileName.c_str());
 
-    for(int h=0; h < 28; ++h)
+    for(int h=0; h < height; ++h)
     {
-        for(int w=0; w< 28; ++w)
+        for(int w=0; w< width; ++w)
         {
-            batchDatas.get(0,0,h,w)->_value = pBmpBuf[((28 - h - 1)*28 + w)*3];
-            batchDatas.get(0,0,h,w)->_value /= 255;
+            for(int c=0; c <channels; ++c)
+            {
+                batchDatas.get(0,c,h,w)->_value = pBmpBuf[((height - h - 1) * width + w) * 3 + channels - c - 1];
+            }
+
         }
     }
 
-    batchDatas.print();
-
-    //int label = 5;
-    Neuron* neuron = batchDatas.get(0, 0, 0, 0);
-
-    //this->fillDataForOnceTrainForward(neuron, batchDatas.offset(1, 0, 0, 0), label);
+    string path = "./test";
+    batchDatas.genBmp(path);
+    boost::shared_array<int> labels(new int[this->_batch_size]{0});
+    this->fillDataToModel(batchDatas.get(0, 0, 0, 0), batchDatas.count(),labels);
     this->forward();
 
     _loss_layer->getTopData()->print();
 
     LossLayer* lossLayer = (LossLayer*)_loss_layer.get();
-    //cout<< "识别结果:"<<lossLayer->getForecastLabels()<<endl;
-    outputBmp();
+    cout<< "识别结果:"<<lossLayer->getForecastLabels()[0]<<endl;
 }
 
 
@@ -178,6 +181,13 @@ void NetModelLMDB::train()
             cursor->Next();
         }
 
+        /*
+        string path = "./cifar10_pics/";
+        path.append(toString(iter));
+        path.append("_");
+        path.append(toString(labels[0]));
+        batchDatas.genBmp(path);
+        */
         /////////////////////////////////训练一批数据///////////////////////////////////
         this->fillDataToModel(batchDatas.get(0, 0, 0, 0), batchDatas.count(), labels);
         this->forward();

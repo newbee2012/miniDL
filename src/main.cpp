@@ -39,23 +39,36 @@ void forecastBmp(string modelFilePath, string picFilePath)
 
 int main(int argc, char* argv[])
 {
+    RandomGenerator::rnd_seed = (int)time(0);
     if (argc >= 2)
     {
         string modelDefileName = argv[1];
-        RandomGenerator::rnd_seed = (int)time(0);
-        if (argc == 3)
+        if (argc >= 3)
         {
-            RandomGenerator::rnd_seed = atoi(argv[2]);
+            string model = argv[2];
+            if(model == "-i")
+            {
+                string bmpFilePath = argv[3];
+                forecastBmp(modelDefileName, bmpFilePath);
+            }
+            else
+            {
+                RandomGenerator::rnd_seed = atoi(argv[2]);
+                srand(RandomGenerator::rnd_seed);
+                runModel(modelDefileName);
+            }
         }
-
-        srand(RandomGenerator::rnd_seed);
-
-        runModel(modelDefileName);
+        else
+        {
+            srand(RandomGenerator::rnd_seed);
+            runModel(modelDefileName);
+        }
     }
     else
     {
-        cout<<"Error! Need modelDefileName parameter!"<<endl;
+        cout<<"Error! Need parameters!"<<endl;
     }
+
 
     return 0;
 }
