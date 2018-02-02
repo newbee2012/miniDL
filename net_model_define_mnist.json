@@ -5,8 +5,8 @@
     "testDataFilePath": "./mnist_test_lmdb",
     "initModelByExistentData": false,
     "hyperParameters": {
-        "MAX_ITER_COUNT": 100,
-        "BATCH_SIZE": 1,
+        "MAX_ITER_COUNT": 10000,
+        "BATCH_SIZE": 64,
         "BASE_LEARNING_RATE": 0.01,
         "LEARNING_RATE_POLICY": "INV",
         "GAMMA": 0.0001,
