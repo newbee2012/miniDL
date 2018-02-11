@@ -356,18 +356,74 @@ void NetModel::load_model()
         boost::shared_ptr<Layer> layer(generateLayerByClassName(impl_class.c_str()));
         layer->setName(layerName);
         layer->init(params);
-        Json::Value lr_mult_weight = jo_layer["lr_mult_weight"];
-        Json::Value lr_mult_bias = jo_layer["lr_mult_bias"];
-        if(!lr_mult_weight.isNull())
+        Json::Value jo_lr_mult_weight = jo_layer["lr_mult_weight"];
+        Json::Value jo_lr_mult_bias = jo_layer["lr_mult_bias"];
+        if(!jo_lr_mult_weight.isNull())
         {
-            layer->setLrMultWeight(lr_mult_weight.asFloat());
+            layer->setLrMultWeight(jo_lr_mult_weight.asFloat());
         }
 
-        if(!lr_mult_bias.isNull())
+        if(!jo_lr_mult_bias.isNull())
         {
-            layer->setLrMultBias(lr_mult_bias.asFloat());
+            layer->setLrMultBias(jo_lr_mult_bias.asFloat());
         }
 
+
+        boost::shared_ptr<InitDataParam> initWeightParam(new InitDataParam());
+        Json::Value jo_weight_init = jo_layer["weight_init"];
+        if(!jo_weight_init.isNull())
+        {
+            Json::Value jo_type = jo_weight_init["type"];
+            DataInitType type = STRING_TO_Data_INIT_TYPE(jo_type.asString().c_str());
+            ASSERT(type >= 0 && type < DATA_INIT_TYPE_SIZE, cout<<"weight_init.type 未定义或取值非法！"<<endl);
+            initWeightParam->_initType = type;
+
+            Json::Value jo_gaussian_std = jo_weight_init["gaussian_std"];
+            if(!jo_gaussian_std.isNull())
+            {
+                initWeightParam->_gaussian_std = jo_gaussian_std.asFloat();
+            }
+
+            Json::Value jo_gaussian_mean = jo_weight_init["gaussian_mean "];
+            if(!jo_gaussian_mean .isNull())
+            {
+                initWeightParam->_gaussian_mean  = jo_gaussian_mean .asFloat();
+            }
+
+            Json::Value jo_constant_value = jo_weight_init["constant_value "];
+            if(!jo_constant_value .isNull())
+            {
+                initWeightParam->_constant_value  = jo_constant_value .asFloat();
+            }
+        }
+
+        boost::shared_ptr<InitDataParam> initBiasParam(new InitDataParam());
+        Json::Value jo_bias_init = jo_layer["bias_init"];
+        if(!jo_bias_init.isNull())
+        {
+            Json::Value jo_type = jo_bias_init["type"];
+            DataInitType type = STRING_TO_Data_INIT_TYPE(jo_type.asString().c_str());
+            ASSERT(type >= 0 && type < DATA_INIT_TYPE_SIZE, cout<<"bias_init.type 未定义或取值非法！"<<endl);
+            initBiasParam->_initType = type;
+
+            Json::Value jo_gaussian_std = jo_bias_init["gaussian_std"];
+            if(!jo_gaussian_std.isNull())
+            {
+                initBiasParam->_gaussian_std = jo_gaussian_std.asFloat();
+            }
+
+            Json::Value jo_gaussian_mean = jo_bias_init["gaussian_mean "];
+            if(!jo_gaussian_mean .isNull())
+            {
+                initBiasParam->_gaussian_mean  = jo_gaussian_mean .asFloat();
+            }
+
+            Json::Value jo_constant_value = jo_bias_init["constant_value "];
+            if(!jo_constant_value .isNull())
+            {
+                initBiasParam->_constant_value  = jo_constant_value .asFloat();
+            }
+        }
 
         if(layer->getType() == INPUT_LAYER)
         {

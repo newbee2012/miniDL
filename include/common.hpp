@@ -44,7 +44,8 @@ using namespace boost;
 namespace dong
 {
 
-
+enum DataInitType_ {CONSTANT, RANDOM, XAVIER, GAUSSIAN, DATA_INIT_TYPE_SIZE};
+static const char* DataInitNames[] = {"CONSTANT", "RANDOM", "XAVIER", "GAUSSIAN"};
 
 enum LayerType_ {INPUT_LAYER, CONVOLUTION_LAYER, POOL_LAYER, FULL_CONNECT_LAYER, RELU_LAYER, LOSS_LAYER, LayerTypeSize};
 static const char* LayerTypeNames[] = {"INPUT_LAYER", "CONVOLUTION_LAYER", "POOL_LAYER", "FULL_CONNECT_LAYER", "RELU_LAYER", "LOSS_LAYER"};
@@ -57,6 +58,7 @@ static const char* ModeNames[] = {"TRAIN", "TEST"};
 
 typedef LayerType_ LayerType;
 typedef LR_Policy_ LR_Policy;
+typedef DataInitType_ DataInitType;
 
 
 
@@ -103,6 +105,20 @@ static Mode STRING_TO_MODE(const char* name)
 
     return (Mode)-1;
 }
+
+static DataInitType STRING_TO_Data_INIT_TYPE(const char* name)
+{
+    for(int i=0; i<DATA_INIT_TYPE_SIZE; ++i)
+    {
+        if(0==strcmp(DataInitNames[i],name))
+        {
+            return (DataInitType)i;
+        }
+    }
+
+    return (DataInitType)-1;
+}
+
 
 template<typename T> static string toString(const T& t)
 {

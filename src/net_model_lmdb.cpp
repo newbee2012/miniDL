@@ -21,7 +21,7 @@ void NetModelLMDB::testFromABmp(string& fileName)
     int channels = this->_input_shape_channels;
     int height = this->_input_shape_height;
     int width = this->_input_shape_width;
-    Data batchDatas(this->_batch_size, channels, height, width, Data::CONSTANT);
+    Data batchDatas(this->_batch_size, channels, height, width, CONSTANT);
     BYTE* pBmpBuf = BmpTool::readBmp(fileName.c_str());
 
     for(int h=0; h < height; ++h)
@@ -65,7 +65,7 @@ void NetModelLMDB::test()
     db::Cursor* cursor = mydb->NewCursor();
     cursor->SeekToFirst();
 
-    Data batchDatas(_batch_size, channels, height, width, Data::CONSTANT);
+    Data batchDatas(_batch_size, channels, height, width, CONSTANT);
     boost::shared_array<int> labels(new int[_batch_size]);
     cout <<setprecision(6)<< fixed;
 
@@ -151,7 +151,7 @@ void NetModelLMDB::train()
     mydb->Open(this->_train_data_file_path, db::READ);
     db::Cursor* cursor = mydb->NewCursor();
     cursor->SeekToFirst();
-    Data batchDatas(_batch_size, channels, height, width, Data::CONSTANT);
+    Data batchDatas(_batch_size, channels, height, width, CONSTANT);
     boost::shared_array<int> labels(new int[_batch_size]);
     for (int iter = 0; iter < _max_iter_count; ++iter)
     {

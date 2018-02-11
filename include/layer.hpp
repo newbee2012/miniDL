@@ -111,6 +111,16 @@ public:
         return _sum_backward_time;
     }
 
+    inline virtual void setInitWeightParam(boost::shared_ptr<InitDataParam>& param)
+    {
+        this->_initWeightParam = param;
+    }
+
+    inline virtual void setInitBiasParam(boost::shared_ptr<InitDataParam>& param)
+    {
+        this->_initBiasParam = param;
+    }
+
 protected:
     virtual void forwardBase();
     virtual void backwardBase();
@@ -130,6 +140,9 @@ protected:
     float _lr_mult_bias;
     double _sum_forward_time;
     double _sum_backward_time;
+
+    boost::shared_ptr<InitDataParam> _initWeightParam;
+    boost::shared_ptr<InitDataParam> _initBiasParam;
     DISABLE_COPY_AND_ASSIGN(Layer);
 };
 

@@ -12,6 +12,7 @@ namespace dong
 class PoolLayer: public Layer
 {
 public:
+    enum InitType {MAX,AVE};
     PoolLayer() {};
     virtual ~PoolLayer() {};
     inline virtual LayerType getType()
@@ -26,6 +27,7 @@ public:
 protected:
     int _kernel_h, _kernel_w;
     int _stride_h, _stride_w;
+    InitType _type;
 
     //DISABLE_COPY_AND_ASSIGN(PoolLayer);
 };

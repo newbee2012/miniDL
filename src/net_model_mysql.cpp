@@ -34,7 +34,7 @@ void NetModelMysql::train()
     mysql_real_connect(&mysql, host, user, pass, db, 0, NULL, 0);
     mysql_set_character_set(&mysql, "utf8");
     MYSQL_RES* result = NULL;
-    Data batchDatas(_batch_size, 1, height, width, Data::CONSTANT);
+    Data batchDatas(_batch_size, 1, height, width, CONSTANT);
     boost::shared_array<int> labels(new int[_batch_size]);
     cout <<setprecision(6)<< fixed;
     //训练batch_count批数据
@@ -120,7 +120,7 @@ void NetModelMysql::test()
     mysql_real_connect(&mysql, host, user, pass, db, 0, NULL, 0);
     mysql_set_character_set(&mysql, "utf8");
     MYSQL_RES* result = NULL;
-    Data batchDatas(_batch_size, 1, height, width, Data::CONSTANT);
+    Data batchDatas(_batch_size, 1, height, width, CONSTANT);
     boost::shared_array<int> labels(new int[_batch_size]);
     cout <<setprecision(6)<< fixed;
     //训练batch_count批数据
