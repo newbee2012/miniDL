@@ -12,7 +12,7 @@ void InputLayer::init(int (&params)[6])
 void InputLayer::setUp(const boost::shared_ptr<Data>& data)
 {
     Layer::setUp(data);
-    _top_data.reset(new Data(_bottom_data->num(), _bottom_data->channels(), _bottom_data->height(), _bottom_data->width(), CONSTANT));
+    _top_data.reset(new Data(_bottom_data->num(), _bottom_data->channels(), _bottom_data->height(), _bottom_data->width(), Layer::default_init_data_param));
 }
 
 void InputLayer::forward_cpu()

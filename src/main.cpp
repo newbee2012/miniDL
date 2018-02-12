@@ -18,7 +18,9 @@ float Layer::CURRENT_LEARNING_RATE;
 int Layer::STEPSIZE;
 int Layer::FORWARD_THREAD_COUNT;
 int Layer::BACKWARD_THREAD_COUNT;
+boost::shared_ptr<InitDataParam> Layer::default_init_data_param;
 boost::shared_ptr<rng_t> RandomGenerator::engine;
+
 void runModel(string modelFilePath)
 {
     NetModelLMDB* netMode = new NetModelLMDB(modelFilePath);

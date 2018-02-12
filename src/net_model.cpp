@@ -230,6 +230,7 @@ void NetModel::save_model()
 void NetModel::load_model()
 {
     cout<<"loading model from file: "<<this->_model_define_file_path<<endl;
+    Layer::default_init_data_param.reset(new InitDataParam());
     Layer::BASE_LEARNING_RATE = 0.01F;
     Layer::LEARNING_RATE_POLICY = INV;
     Layer::GAMMA = 0.0001F;
@@ -397,6 +398,8 @@ void NetModel::load_model()
             }
         }
 
+        layer->setInitWeightParam(initWeightParam);
+
         boost::shared_ptr<InitDataParam> initBiasParam(new InitDataParam());
         Json::Value jo_bias_init = jo_layer["bias_init"];
         if(!jo_bias_init.isNull())
@@ -424,6 +427,8 @@ void NetModel::load_model()
                 initBiasParam->_constant_value  = jo_constant_value .asFloat();
             }
         }
+
+        layer->setInitBiasParam(initBiasParam);
 
         if(layer->getType() == INPUT_LAYER)
         {

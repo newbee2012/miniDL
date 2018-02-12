@@ -12,7 +12,7 @@ Data::Data(int num, int channels, int height, int width): _num(num), _channels(c
     _width(width) {};
 
 
-Data::Data(int num, int channels, int height, int width, DataInitType type): _num(num), _channels(channels),
+Data::Data(int num, int channels, int height, int width, boost::shared_ptr<InitDataParam>& param): _num(num), _channels(channels),
     _height(height), _width(width)
 {
     _neurons.reset(new Neuron[count()]);
@@ -26,21 +26,21 @@ Data::Data(int num, int channels, int height, int width, DataInitType type): _nu
 
     for (int i = 0; i < count(); ++i)
     {
-        if (type == CONSTANT)
+        if (param->_initType == CONSTANT)
         {
             _neurons[i]._value = 0.0F;
         }
-        else if (type == RANDOM)
+        else if (param->_initType == RANDOM)
         {
             _neurons[i]._value = ((float)random(2) - 0.5);
             _neurons[i]._value /= 1000;
         }
-        else if (type == XAVIER)
+        else if (param->_initType == XAVIER)
         {
             RandomGenerator::rng_uniform(count(), -scale, scale, t);
             _neurons[i]._value = t[i];
         }
-        else if(type == GAUSSIAN)
+        else if(param->_initType == GAUSSIAN)
         {
              RandomGenerator::rng_gaussian(count(), 0.0F, 0.0001F, t);
             _neurons[i]._value = t[i];

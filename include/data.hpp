@@ -22,7 +22,7 @@ public:
 class Data
 {
 public:
-    explicit Data(int num, int channels, int height, int width, DataInitType type);
+    explicit Data(int num, int channels, int height, int width, boost::shared_ptr<InitDataParam>& param);
     explicit Data(int num, int channels, int height, int width);
     void setUp(const boost::shared_array<Neuron>& neurons);
     void print();

@@ -43,7 +43,6 @@ using namespace boost;
 
 namespace dong
 {
-
 enum DataInitType_ {CONSTANT, RANDOM, XAVIER, GAUSSIAN, DATA_INIT_TYPE_SIZE};
 static const char* DataInitNames[] = {"CONSTANT", "RANDOM", "XAVIER", "GAUSSIAN"};
 
