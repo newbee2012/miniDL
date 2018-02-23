@@ -34,7 +34,15 @@
             "initParams": [20,5,5,0,0,1],
             "topLayer": "poolLayer",
 	    "lr_mult_weight": 1,
-	    "lr_mult_bias": 2
+	    "lr_mult_bias": 2,
+	    "weight_init": {
+		"type":"XAVIER",
+		"gaussian_std":1
+	    },
+	    "bias_init": {
+		"type":"XAVIER",
+		"gaussian_std":1
+	    }
         },
 	"poolLayer": {
             "implClass": "PoolLayer",
@@ -55,8 +63,8 @@
 	    },
 	    "bias_init": {
 		"type":"XAVIER",
-		"std":1
-	    },
+		"gaussian_std":1
+	    }
         },
 	"poolLayer2": {
             "implClass": "PoolLayer",
@@ -70,7 +78,15 @@
             "initParams": [500],
             "topLayer": "reluLayer",
 	    "lr_mult_weight": 1,
-	    "lr_mult_bias": 2
+	    "lr_mult_bias": 2,
+	    "weight_init": {
+		"type":"XAVIER",
+		"gaussian_std":1
+	    },
+	    "bias_init": {
+		"type":"XAVIER",
+		"gaussian_std":1
+	    }
         },
         "reluLayer": {
             "implClass": "ReluLayer",
@@ -82,7 +98,15 @@
             "initParams": [10],
             "topLayer": "lossLayer",
 	    "lr_mult_weight": 1,
-	    "lr_mult_bias": 2
+	    "lr_mult_bias": 2,
+	    "weight_init": {
+		"type":"XAVIER",
+		"gaussian_std":1
+	    },
+	    "bias_init": {
+		"type":"XAVIER",
+		"gaussian_std":1
+	    }
         },
         "lossLayer": {
             "implClass": "SoftmaxLayer",

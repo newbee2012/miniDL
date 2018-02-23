@@ -23,6 +23,18 @@ Data::Data(int num, int channels, int height, int width, boost::shared_ptr<InitD
     float scale = sqrt(float(3) / n);
     float* t = new float[count()];
 
+    if (param->_initType == XAVIER)
+    {
+        cout<<"XAVIER"<<endl;
+        RandomGenerator::rng_uniform(count(), -scale, scale, t);
+    }
+    else if(param->_initType == GAUSSIAN)
+    {
+        cout<<"param->_gaussian_mean:"<<param->_gaussian_mean<<endl;
+        cout<<"param->_gaussian_std:"<<param->_gaussian_std<<endl;
+        RandomGenerator::rng_gaussian(count(), param->_gaussian_mean, param->_gaussian_std, t);
+    }
+
 
     for (int i = 0; i < count(); ++i)
     {
@@ -34,20 +46,16 @@ Data::Data(int num, int channels, int height, int width, boost::shared_ptr<InitD
         {
             _neurons[i]._value = ((float)random(2) - 0.5);
             _neurons[i]._value /= 1000;
-        }
-        else if (param->_initType == XAVIER)
+        }else
         {
-            RandomGenerator::rng_uniform(count(), -scale, scale, t);
-            _neurons[i]._value = t[i];
-        }
-        else if(param->_initType == GAUSSIAN)
-        {
-             RandomGenerator::rng_gaussian(count(), 0.0F, 0.0001F, t);
+            //cout<<t[i]<<",";
             _neurons[i]._value = t[i];
         }
 
         _neurons[i]._diff = 0.0F;
     }
+
+   //cout<<endl;
 
     delete[] t;
 }

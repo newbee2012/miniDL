@@ -385,13 +385,13 @@ void NetModel::load_model()
                 initWeightParam->_gaussian_std = jo_gaussian_std.asFloat();
             }
 
-            Json::Value jo_gaussian_mean = jo_weight_init["gaussian_mean "];
+            Json::Value jo_gaussian_mean = jo_weight_init["gaussian_mean"];
             if(!jo_gaussian_mean .isNull())
             {
                 initWeightParam->_gaussian_mean  = jo_gaussian_mean .asFloat();
             }
 
-            Json::Value jo_constant_value = jo_weight_init["constant_value "];
+            Json::Value jo_constant_value = jo_weight_init["constant_value"];
             if(!jo_constant_value .isNull())
             {
                 initWeightParam->_constant_value  = jo_constant_value .asFloat();
@@ -415,13 +415,13 @@ void NetModel::load_model()
                 initBiasParam->_gaussian_std = jo_gaussian_std.asFloat();
             }
 
-            Json::Value jo_gaussian_mean = jo_bias_init["gaussian_mean "];
+            Json::Value jo_gaussian_mean = jo_bias_init["gaussian_mean"];
             if(!jo_gaussian_mean .isNull())
             {
                 initBiasParam->_gaussian_mean  = jo_gaussian_mean .asFloat();
             }
 
-            Json::Value jo_constant_value = jo_bias_init["constant_value "];
+            Json::Value jo_constant_value = jo_bias_init["constant_value"];
             if(!jo_constant_value .isNull())
             {
                 initBiasParam->_constant_value  = jo_constant_value .asFloat();

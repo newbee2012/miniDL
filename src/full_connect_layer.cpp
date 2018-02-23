@@ -9,9 +9,12 @@ void FullConnectLayer::setUp(const boost::shared_ptr<Data>& data)
 {
     Layer::setUp(data);
     _top_data.reset(new Data(_bottom_data->num(), _output_count, 1, 1, default_init_data_param));
+    cout<<this->_name<<"::setUp1"<<endl;
     _bias_data.reset(new Data(_output_count, 1, 1, 1, this->_initBiasParam));
+    cout<<this->_name<<"::setUp2"<<endl;
     int _input_count = _bottom_data->channels()*_bottom_data->height()*_bottom_data->width();
     _weight_data.reset(new Data(_output_count, _input_count, 1, 1, this->_initWeightParam));
+    cout<<this->_name<<"::setUp3"<<endl;
     for (int t_n = 0; t_n < _top_data->num(); ++t_n)
     {
         for (int t_c = 0; t_c < _output_count; ++t_c)
