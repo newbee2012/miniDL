@@ -37,7 +37,30 @@ void PoolLayer::setUp(const boost::shared_ptr<Data>& data)
     }
 }
 
-void PoolLayer::forward_cpu()
+void PoolLayer::backward_cpu()
+{
+    Layer::backwardBase();
+}
+
+void PoolLayer::init(int (&params)[6])
+{
+    this->_kernel_h = params[0];
+    this->_kernel_w = params[1];
+    this->_stride_h = params[2];
+    this->_stride_w = params[3];
+}
+
+LayerType MaxPoolLayer::getType()
+{
+    return MAXPOOL_LAYER;
+}
+
+LayerType AvePoolLayer::getType()
+{
+    return AVEPOOL_LAYER;
+}
+
+void MaxPoolLayer::forward_cpu()
 {
     int t_n = _top_data->num();
     int t_c = _top_data->channels();
@@ -68,17 +91,32 @@ void PoolLayer::forward_cpu()
     }
 }
 
-void PoolLayer::backward_cpu()
+void AvePoolLayer::forward_cpu()
 {
-    Layer::backwardBase();
+    int t_n = _top_data->num();
+    int t_c = _top_data->channels();
+    int t_h = _top_data->height();
+    int t_w = _top_data->width();
+    for (int n = 0; n < t_n; n++) {
+        for (int c = 0; c < t_c; ++c) {
+            for (int h = 0; h < t_h; h++) {
+                for (int w = 0; w < t_w; w++) {
+                    Neuron* t_neuron = _top_data->get(n, c, h, w);
+                    float sum_value = 0.0F;
+                    for (int offset_h = 0; offset_h < _kernel_h; offset_h++) {
+                        for (int offset_w = 0; offset_w < _kernel_w; offset_w++) {
+                            Neuron* b_neuron = _bottom_data->get(n, c, h * _stride_h + offset_h, w * _stride_w + offset_w);
+                            sum_value += b_neuron->_value;
+                        }
+                    }
+
+                    t_neuron->_value = sum_value / (_kernel_h*_kernel_w);
+                    //_weight_data->get(max_index)->_value = 1.0F / (_kernel_h*_kernel_w);
+                }
+            }
+        }
+    }
 }
 
-void PoolLayer::init(int (&params)[6])
-{
-    this->_kernel_h = params[0];
-    this->_kernel_w = params[1];
-    this->_stride_h = params[2];
-    this->_stride_w = params[3];
-}
+};
 
-}

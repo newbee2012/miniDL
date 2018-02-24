@@ -22,10 +22,8 @@ Data::Data(int num, int channels, int height, int width, boost::shared_ptr<InitD
     float n = fan_in;
     float scale = sqrt(float(3) / n);
     float* t = new float[count()];
-
     if (param->_initType == XAVIER)
     {
-        cout<<"XAVIER"<<endl;
         RandomGenerator::rng_uniform(count(), -scale, scale, t);
     }
     else if(param->_initType == GAUSSIAN)
@@ -34,7 +32,6 @@ Data::Data(int num, int channels, int height, int width, boost::shared_ptr<InitD
         cout<<"param->_gaussian_std:"<<param->_gaussian_std<<endl;
         RandomGenerator::rng_gaussian(count(), param->_gaussian_mean, param->_gaussian_std, t);
     }
-
 
     for (int i = 0; i < count(); ++i)
     {
@@ -48,14 +45,11 @@ Data::Data(int num, int channels, int height, int width, boost::shared_ptr<InitD
             _neurons[i]._value /= 1000;
         }else
         {
-            //cout<<t[i]<<",";
             _neurons[i]._value = t[i];
         }
 
         _neurons[i]._diff = 0.0F;
     }
-
-   //cout<<endl;
 
     delete[] t;
 }

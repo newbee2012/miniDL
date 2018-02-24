@@ -32,7 +32,7 @@
         "convLayer": {
             "implClass": "ConvLayer",
             "initParams": [20,5,5,0,0,1],
-            "topLayer": "poolLayer",
+            "topLayer": "maxPoolLayer",
 	    "lr_mult_weight": 1,
 	    "lr_mult_bias": 2,
 	    "weight_init": {
@@ -44,8 +44,8 @@
 		"gaussian_std":1
 	    }
         },
-	"poolLayer": {
-            "implClass": "PoolLayer",
+	"maxPoolLayer": {
+            "implClass": "MaxPoolLayer",
             "initParams": [2,2,2,2],
             "topLayer": "convLayer2",
 	    "lr_mult_weight": 1,
@@ -54,7 +54,7 @@
 	"convLayer2": {
             "implClass": "ConvLayer",
             "initParams": [50,5,5,0,0,1],
-            "topLayer": "poolLayer2",
+            "topLayer": "maxPoolLayer2",
 	    "lr_mult_weight": 1,
 	    "lr_mult_bias": 2,
 	    "weight_init": {
@@ -66,8 +66,8 @@
 		"gaussian_std":1
 	    }
         },
-	"poolLayer2": {
-            "implClass": "PoolLayer",
+	"maxPoolLayer2": {
+            "implClass": "MaxPoolLayer",
             "initParams": [2,2,2,2],
             "topLayer": "fullConnectLayer",
 	    "lr_mult_weight": 1,

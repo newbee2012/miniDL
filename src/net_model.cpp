@@ -173,9 +173,13 @@ Layer* NetModel::generateLayerByClassName(const char* className)
     {
         return new ReluLayer();
     }
-    else if(0==strcmp(className,"PoolLayer"))
+    else if(0==strcmp(className,"MaxPoolLayer"))
     {
-        return new PoolLayer();
+        return new MaxPoolLayer();
+    }
+    else if(0==strcmp(className,"AvePoolLayer"))
+    {
+        return new AvePoolLayer();
     }
     else if(0==strcmp(className,"SoftmaxLayer"))
     {
