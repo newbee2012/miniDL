@@ -5,8 +5,8 @@
     "testDataFilePath": "./mnist_test_lmdb",
     "initModelByExistentData": false,
     "hyperParameters": {
-        "MAX_ITER_COUNT": 10000,
-        "BATCH_SIZE": 64,
+        "MAX_ITER_COUNT": 1,
+        "BATCH_SIZE": 1,
         "BASE_LEARNING_RATE": 0.01,
         "LEARNING_RATE_POLICY": "INV",
         "GAMMA": 0.0001,
@@ -14,8 +14,8 @@
         "POWER": 0.75,
         "WEIGHT_DECAY": 0.0005,
         "STEPSIZE": 100,
-	"FORWARD_THREAD_COUNT": 4,
-	"BACKWARD_THREAD_COUNT": 4
+	"FORWARD_THREAD_COUNT": 1,
+	"BACKWARD_THREAD_COUNT": 1
     },
     "inputShape": {
         "channels": 1,
@@ -27,7 +27,7 @@
             "implClass": "InputLayer",
             "initParams": null,
             "topLayer": "convLayer",
-	    "scale": 0.00390625
+	    "scale": 1
         },
         "convLayer": {
             "implClass": "ConvLayer",
@@ -36,16 +36,16 @@
 	    "lr_mult_weight": 1,
 	    "lr_mult_bias": 2,
 	    "weight_init": {
-		"type":"XAVIER",
-		"gaussian_std":1
+		"type":"CONSTANT",
+		"constant_value":1
 	    },
 	    "bias_init": {
-		"type":"XAVIER",
-		"gaussian_std":1
+		"type":"CONSTANT",
+		"constant_value":0
 	    }
         },
 	"maxPoolLayer": {
-            "implClass": "MaxPoolLayer",
+            "implClass": "AvePoolLayer",
             "initParams": [2,2,2,2],
             "topLayer": "convLayer2",
 	    "lr_mult_weight": 1,
@@ -58,12 +58,11 @@
 	    "lr_mult_weight": 1,
 	    "lr_mult_bias": 2,
 	    "weight_init": {
-		"type":"XAVIER",
-		"gaussian_std":1
+		"type":"XAVIER"
 	    },
 	    "bias_init": {
-		"type":"XAVIER",
-		"gaussian_std":1
+		"type":"CONSTANT",
+		"constant_value":0
 	    }
         },
 	"maxPoolLayer2": {
@@ -80,12 +79,11 @@
 	    "lr_mult_weight": 1,
 	    "lr_mult_bias": 2,
 	    "weight_init": {
-		"type":"XAVIER",
-		"gaussian_std":1
+		"type":"XAVIER"
 	    },
 	    "bias_init": {
-		"type":"XAVIER",
-		"gaussian_std":1
+		"type":"CONSTANT",
+		"constant_value":0
 	    }
         },
         "reluLayer": {
@@ -100,12 +98,11 @@
 	    "lr_mult_weight": 1,
 	    "lr_mult_bias": 2,
 	    "weight_init": {
-		"type":"XAVIER",
-		"gaussian_std":1
+		"type":"XAVIER"
 	    },
 	    "bias_init": {
-		"type":"XAVIER",
-		"gaussian_std":1
+		"type":"CONSTANT",
+		"constant_value":0
 	    }
         },
         "lossLayer": {

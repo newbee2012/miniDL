@@ -5,8 +5,8 @@
     "testDataFilePath": "/home/chendejia/workspace/github/miniDL/bin/Release/cifar10_test_lmdb",
     "initModelByExistentData": true,
     "hyperParameters": {
-        "MAX_ITER_COUNT": 1000,
-        "BATCH_SIZE": 1,
+        "MAX_ITER_COUNT": 8000,
+        "BATCH_SIZE": 50,
         "BASE_LEARNING_RATE": 0.001,
         "LEARNING_RATE_POLICY": "FIXED",
         "GAMMA": 0.0001,
@@ -14,8 +14,8 @@
         "POWER": 0.75,
         "WEIGHT_DECAY": 0.004,
         "STEPSIZE": 100,
-	"FORWARD_THREAD_COUNT": 10,
-	"BACKWARD_THREAD_COUNT": 10
+	"FORWARD_THREAD_COUNT": 4,
+	"BACKWARD_THREAD_COUNT": 4
     },
     "inputShape": {
         "channels": 3,
@@ -34,10 +34,18 @@
             "initParams": [32,5,5,2,2,1],
             "topLayer": "poolLayer",
 	    "lr_mult_weight": 1,
-	    "lr_mult_bias": 2
+	    "lr_mult_bias": 2,
+	    "weight_init": {
+		"type":"GAUSSIAN",
+		"gaussian_std":0.0001
+	    },
+	    "bias_init": {
+		"type":"CONSTANT",
+		"constant_value":0
+	    }
         },
 	"poolLayer": {
-            "implClass": "PoolLayer",
+            "implClass": "MaxPoolLayer",
             "initParams": [3,3,2,2],
             "topLayer": "reluLayer",
 	    "lr_mult_weight": 1,
@@ -53,7 +61,15 @@
             "initParams": [32,5,5,2,2,1],
             "topLayer": "reluLayer2",
 	    "lr_mult_weight": 1,
-	    "lr_mult_bias": 2
+	    "lr_mult_bias": 2,
+	    "weight_init": {
+		"type":"GAUSSIAN",
+		"gaussian_std":0.01
+	    },
+	    "bias_init": {
+		"type":"CONSTANT",
+		"constant_value":0
+	    }
         },
 	"reluLayer2": {
             "implClass": "ReluLayer",
@@ -61,7 +77,7 @@
             "topLayer": "poolLayer2"
         },
 	"poolLayer2": {
-            "implClass": "PoolLayer",
+            "implClass": "AvePoolLayer",
             "initParams": [3,3,2,2],
             "topLayer": "convLayer3",
 	    "lr_mult_weight": 1,
@@ -72,7 +88,15 @@
             "initParams": [64,5,5,2,2,1],
             "topLayer": "reluLayer3",
 	    "lr_mult_weight": 1,
-	    "lr_mult_bias": 2
+	    "lr_mult_bias": 2,
+	    "weight_init": {
+		"type":"GAUSSIAN",
+		"gaussian_std":0.01
+	    },
+	    "bias_init": {
+		"type":"CONSTANT",
+		"constant_value":0
+	    }
         },
 	"reluLayer3": {
             "implClass": "ReluLayer",
@@ -80,7 +104,7 @@
             "topLayer": "poolLayer3"
         },
 	"poolLayer3": {
-            "implClass": "PoolLayer",
+            "implClass": "AvePoolLayer",
             "initParams": [3,3,2,2],
             "topLayer": "fullConnectLayer",
 	    "lr_mult_weight": 1,
@@ -91,14 +115,30 @@
             "initParams": [64],
             "topLayer": "fullConnectLayer2",
 	    "lr_mult_weight": 1,
-	    "lr_mult_bias": 2
+	    "lr_mult_bias": 2,
+	    "weight_init": {
+		"type":"GAUSSIAN",
+		"gaussian_std":0.1
+	    },
+	    "bias_init": {
+		"type":"CONSTANT",
+		"constant_value":0
+	    }
         },
 	"fullConnectLayer2": {
             "implClass": "FullConnectLayer",
             "initParams": [10],
             "topLayer": "lossLayer",
 	    "lr_mult_weight": 1,
-	    "lr_mult_bias": 2
+	    "lr_mult_bias": 2,
+	    "weight_init": {
+		"type":"GAUSSIAN",
+		"gaussian_std":0.1
+	    },
+	    "bias_init": {
+		"type":"CONSTANT",
+		"constant_value":0
+	    }
         },
         "lossLayer": {
             "implClass": "SoftmaxLayer",

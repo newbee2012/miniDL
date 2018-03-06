@@ -28,8 +28,6 @@ Data::Data(int num, int channels, int height, int width, boost::shared_ptr<InitD
     }
     else if(param->_initType == GAUSSIAN)
     {
-        cout<<"param->_gaussian_mean:"<<param->_gaussian_mean<<endl;
-        cout<<"param->_gaussian_std:"<<param->_gaussian_std<<endl;
         RandomGenerator::rng_gaussian(count(), param->_gaussian_mean, param->_gaussian_std, t);
     }
 
@@ -37,7 +35,7 @@ Data::Data(int num, int channels, int height, int width, boost::shared_ptr<InitD
     {
         if (param->_initType == CONSTANT)
         {
-            _neurons[i]._value = 0.0F;
+            _neurons[i]._value = param->_constant_value;
         }
         else if (param->_initType == RANDOM)
         {
@@ -83,7 +81,7 @@ void Data::print()
 
     for (int n = 0; n < _num; n++)
     {
-        for (int c = 0; c < _channels; c++)
+        for (int c = 0; c < 1; c++)
         {
             for (int h = 0; h < _height; h++)
             {

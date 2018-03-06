@@ -68,6 +68,5 @@ int main(int argc, char* argv[])
         cout<<"Error! Need parameters!"<<endl;
     }
 
-
     return 0;
 }

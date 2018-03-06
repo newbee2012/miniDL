@@ -106,12 +106,13 @@ void AvePoolLayer::forward_cpu()
                     for (int offset_h = 0; offset_h < _kernel_h; offset_h++) {
                         for (int offset_w = 0; offset_w < _kernel_w; offset_w++) {
                             Neuron* b_neuron = _bottom_data->get(n, c, h * _stride_h + offset_h, w * _stride_w + offset_w);
+                            Neuron* w_neuron = _weight_data->get(n, c, h * _kernel_h + offset_h, w * _kernel_w + offset_w);
+                            w_neuron->_value = 1.0F / (_kernel_h * _kernel_w);
                             sum_value += b_neuron->_value;
                         }
                     }
 
-                    t_neuron->_value = sum_value / (_kernel_h*_kernel_w);
-                    //_weight_data->get(max_index)->_value = 1.0F / (_kernel_h*_kernel_w);
+                    t_neuron->_value = sum_value / (_kernel_h * _kernel_w);
                 }
             }
         }
