@@ -38,7 +38,7 @@ void NetModelLMDB::testFromABmp(string& fileName)
 
     string path = "./test";
     batchDatas.genBmp(path);
-    boost::shared_array<int> labels(new int[this->_batch_size]{0});
+    boost::shared_array<int> labels(new int[this->_batch_size] {0});
     this->fillDataToModel(batchDatas.get(0, 0, 0, 0), batchDatas.count(),labels);
     this->forward();
 
@@ -113,7 +113,8 @@ void NetModelLMDB::test()
             {
                 ++correct;
                 ++correct_sum;
-            }else
+            }
+            else
             {
                 ++error_sum;
                 //cout<<"index :"<<iter*_batch_size+i<<" error!"<<endl;
@@ -121,13 +122,15 @@ void NetModelLMDB::test()
         }
 
         float accuracy = (float)correct / _batch_size;
-        cout << "iter:" << iter<< ", correct / count : " <<correct<<"/"<< _batch_size<< " , accuracy : "<< setprecision(6) << accuracy <<endl;
+        cout << "iter:" << iter<< ", correct / count : " <<correct<<"/"<< _batch_size<< " , accuracy : "<< setprecision(
+                 6) << accuracy <<endl;
         ////////////////////////////////////////////////////////////////////////////////
     }
 
     int count = _batch_size * _max_iter_count;
     float accuracy = (float)correct_sum / count;
-    cout<< "all iters: correct_sum, error_sum, count_sum :" <<correct_sum<<","<<error_sum<<","<< count<< ",accuracy : "<< setprecision(6) << accuracy <<endl;
+    cout<< "all iters: correct_sum, error_sum, count_sum :" <<correct_sum<<","<<error_sum<<","<< count<< ",accuracy : "<<
+        setprecision(6) << accuracy <<endl;
 
     delete cursor;
     mydb->Close();
@@ -166,6 +169,9 @@ void NetModelLMDB::train()
             const string& value = cursor->value();
             Datum datum;
             datum.ParseFromString(value);
+
+            cout<<"datum.data().size()="<<datum.data().size()<<endl;
+            cout<<"datum.float_data_size()="<<datum.float_data_size()<<endl;
             for (int c = 0; c < channels; c++)
             {
                 for (int w = 0; w < width; w++)
@@ -187,9 +193,10 @@ void NetModelLMDB::train()
         path.append("_");
         path.append(toString(labels[0]));
         batchDatas.genBmp(path);
+
         */
         /////////////////////////////////训练一批数据///////////////////////////////////
-        this->fillDataToModel(batchDatas.get(0, 0, 0, 0), batchDatas.count(), labels);
+        /*this->fillDataToModel(batchDatas.get(0, 0, 0, 0), batchDatas.count(), labels);
         this->forward();
         this->backward();
         this->update();
@@ -200,7 +207,85 @@ void NetModelLMDB::train()
         {
             this->save_model();
         }
+        */
+    }
 
+    delete cursor;
+    mydb->Close();
+    delete mydb;
+
+    time_t t2 = time(NULL);
+    cout <<"总共耗时:"<< t2 -t1<<"秒, 训练速度:" << (float)(_batch_size * _max_iter_count) /
+         (t2 - t1 + 1) << " pic / s" << endl;
+}
+
+
+void NetModelLMDB::comput_mean()
+{
+    time_t t1 = time(NULL);
+    int channels = _input_shape_channels;
+    int height = _input_shape_height;
+    int width = _input_shape_width;
+    ///////////////////////////////////////////////////////////////////////////
+
+    /////////////////////////////////////////////////////
+    db::DB* mydb = db::GetDB("lmdb");
+    mydb->Open(this->_train_data_file_path, db::READ);
+    db::Cursor* cursor = mydb->NewCursor();
+    cursor->SeekToFirst();
+    _mean_data.reset(new Data(1, channels, height, width, Layer::default_init_data_param));
+
+    const int data_size = datum.channels() * datum.height() * datum.width();
+    int size_in_datum = std::max<int>(datum.data().size(),
+                                      datum.float_data_size());
+    for (int i = 0; i < size_in_datum; ++i)
+    {
+        sum_blob.add_data(0.);
+    }
+    LOG(INFO) << "Starting Iteration";
+    while (cursor->valid())
+    {
+        Datum datum;
+        datum.ParseFromString(cursor->value());
+        DecodeDatumNative(&datum);
+
+        const std::string& data = datum.data();
+        size_in_datum = std::max<int>(datum.data().size(),
+                                      datum.float_data_size());
+        CHECK_EQ(size_in_datum, data_size) << "Incorrect data field size " <<
+                                           size_in_datum;
+        if (data.size() != 0)
+        {
+            CHECK_EQ(data.size(), size_in_datum);
+            for (int i = 0; i < size_in_datum; ++i)
+            {
+                sum_blob.set_data(i, sum_blob.data(i) + (uint8_t)data[i]);
+            }
+        }
+        else
+        {
+            CHECK_EQ(datum.float_data_size(), size_in_datum);
+            for (int i = 0; i < size_in_datum; ++i)
+            {
+                sum_blob.set_data(i, sum_blob.data(i) +
+                                  static_cast<float>(datum.float_data(i)));
+            }
+        }
+        ++count;
+        if (count % 10000 == 0)
+        {
+            LOG(INFO) << "Processed " << count << " files.";
+        }
+        cursor->Next();
+    }
+
+    if (count % 10000 != 0)
+    {
+        LOG(INFO) << "Processed " << count << " files.";
+    }
+    for (int i = 0; i < sum_blob.data_size(); ++i)
+    {
+        sum_blob.set_data(i, sum_blob.data(i) / count);
     }
 
     delete cursor;

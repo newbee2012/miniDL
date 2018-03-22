@@ -21,6 +21,7 @@ public:
     virtual void run();
     virtual void train()=0;
     virtual void test()=0;
+    virtual void comput_mean()=0;
     virtual void load_model();
     virtual void save_model();
     virtual void outputBmp();
@@ -37,7 +38,7 @@ protected:
     boost::shared_ptr<Data> _input_data;
     boost::shared_ptr<Layer> _input_layer;
     boost::shared_ptr<Layer> _loss_layer;
-
+    boost::shared_ptr<Data> _mean_data;
     int _batch_size;
     int _input_shape_channels;
     int _input_shape_height;

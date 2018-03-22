@@ -39,7 +39,7 @@ Data::Data(int num, int channels, int height, int width, boost::shared_ptr<InitD
         }
         else if (param->_initType == RANDOM)
         {
-            _neurons[i]._value = ((float)random(2) - 0.5);
+            _neurons[i]._value = (float)random(2) - 0.5F;
             _neurons[i]._value /= 1000;
         }else
         {

@@ -95,6 +95,7 @@ void NetModel::forward()
     while(layer.get())
     {
         layer->forward();
+        /*
         if(layer->getName() == "inputLayer" || layer->getName()=="convLayer" || layer->getName() == "maxPoolLayer")
         {
             layer->getTopData()->print();
@@ -104,7 +105,7 @@ void NetModel::forward()
         {
             layer->getWeightData()->print();
         }
-
+        */
 
         layer = layer->getTopLayer();
     }
