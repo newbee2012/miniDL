@@ -21,7 +21,7 @@ public:
     virtual void run();
     virtual void train()=0;
     virtual void test()=0;
-    virtual void comput_mean()=0;
+    virtual void compute_mean()=0;
     virtual void load_model();
     virtual void save_model();
     virtual void outputBmp();

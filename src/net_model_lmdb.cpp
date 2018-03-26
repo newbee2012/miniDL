@@ -220,12 +220,10 @@ void NetModelLMDB::train()
 }
 
 
-void NetModelLMDB::comput_mean()
+void NetModelLMDB::compute_mean()
 {
     time_t t1 = time(NULL);
-    int channels = _input_shape_channels;
-    int height = _input_shape_height;
-    int width = _input_shape_width;
+
     ///////////////////////////////////////////////////////////////////////////
 
     /////////////////////////////////////////////////////
@@ -233,33 +231,28 @@ void NetModelLMDB::comput_mean()
     mydb->Open(this->_train_data_file_path, db::READ);
     db::Cursor* cursor = mydb->NewCursor();
     cursor->SeekToFirst();
-    _mean_data.reset(new Data(1, channels, height, width, Layer::default_init_data_param));
+    Datum datum;
+    datum.ParseFromString(cursor->value());
+    int channels = datum.channels();
+    int height = datum.height();
+    int width = datum.width();
 
-    const int data_size = datum.channels() * datum.height() * datum.width();
-    int size_in_datum = std::max<int>(datum.data().size(),
-                                      datum.float_data_size());
-    for (int i = 0; i < size_in_datum; ++i)
-    {
-        sum_blob.add_data(0.);
-    }
+    _mean_data.reset(new Data(1, channels, height, width, Layer::default_init_data_param));
     LOG(INFO) << "Starting Iteration";
+    int count = 0;
     while (cursor->valid())
     {
-        Datum datum;
         datum.ParseFromString(cursor->value());
-        DecodeDatumNative(&datum);
-
         const std::string& data = datum.data();
-        size_in_datum = std::max<int>(datum.data().size(),
+        int size_in_datum = std::max<int>(datum.data().size(),
                                       datum.float_data_size());
-        CHECK_EQ(size_in_datum, data_size) << "Incorrect data field size " <<
-                                           size_in_datum;
         if (data.size() != 0)
         {
             CHECK_EQ(data.size(), size_in_datum);
             for (int i = 0; i < size_in_datum; ++i)
             {
-                sum_blob.set_data(i, sum_blob.data(i) + (uint8_t)data[i]);
+                Neuron* neuron = _mean_data->get(i);
+                neuron->_value += (uint8_t)data[i];
             }
         }
         else
@@ -267,10 +260,11 @@ void NetModelLMDB::comput_mean()
             CHECK_EQ(datum.float_data_size(), size_in_datum);
             for (int i = 0; i < size_in_datum; ++i)
             {
-                sum_blob.set_data(i, sum_blob.data(i) +
-                                  static_cast<float>(datum.float_data(i)));
+                Neuron* neuron = _mean_data->get(i);
+                neuron->_value += static_cast<float>(datum.float_data(i));
             }
         }
+
         ++count;
         if (count % 10000 == 0)
         {
@@ -283,11 +277,14 @@ void NetModelLMDB::comput_mean()
     {
         LOG(INFO) << "Processed " << count << " files.";
     }
-    for (int i = 0; i < sum_blob.data_size(); ++i)
+
+    for (int i = 0; i < _mean_data->count(); ++i)
     {
-        sum_blob.set_data(i, sum_blob.data(i) / count);
+        Neuron* neuron = _mean_data->get(i);
+        neuron->_value = neuron->_value / count;
     }
 
+    _mean_data->print();
     delete cursor;
     mydb->Close();
     delete mydb;

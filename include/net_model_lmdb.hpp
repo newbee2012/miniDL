@@ -15,7 +15,7 @@ public:
     virtual void train();
     virtual void test();
     virtual void testFromABmp(string& fileName);
-    virtual void comput_mean();
+    virtual void compute_mean();
 };
 
 }
