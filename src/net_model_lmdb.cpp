@@ -169,9 +169,6 @@ void NetModelLMDB::train()
             const string& value = cursor->value();
             Datum datum;
             datum.ParseFromString(value);
-
-            cout<<"datum.data().size()="<<datum.data().size()<<endl;
-            cout<<"datum.float_data_size()="<<datum.float_data_size()<<endl;
             for (int c = 0; c < channels; c++)
             {
                 for (int w = 0; w < width; w++)
@@ -179,6 +176,9 @@ void NetModelLMDB::train()
                     for (int h = 0; h < height; h++)
                     {
                         batchDatas.get(i, c, w, h)->_value = (BYTE)(datum.data()[c * width * height + w * height + h]);
+                        //cout<<batchDatas.get(i, c, w, h)->_value<<"-"<<_mean_data->get(0, c, w, h)->_value<<"=";
+                        batchDatas.get(i, c, w, h)->_value -= _mean_data->get(0, c, w, h)->_value;
+                        //cout<<batchDatas.get(i, c, w, h)->_value<<endl;
                         labels[i] = datum.label();
                     }
                 }
@@ -196,7 +196,7 @@ void NetModelLMDB::train()
 
         */
         /////////////////////////////////训练一批数据///////////////////////////////////
-        /*this->fillDataToModel(batchDatas.get(0, 0, 0, 0), batchDatas.count(), labels);
+        this->fillDataToModel(batchDatas.get(0, 0, 0, 0), batchDatas.count(), labels);
         this->forward();
         this->backward();
         this->update();
@@ -207,7 +207,7 @@ void NetModelLMDB::train()
         {
             this->save_model();
         }
-        */
+
     }
 
     delete cursor;
@@ -270,6 +270,7 @@ void NetModelLMDB::compute_mean()
         {
             LOG(INFO) << "Processed " << count << " files.";
         }
+
         cursor->Next();
     }
 
@@ -284,13 +285,12 @@ void NetModelLMDB::compute_mean()
         neuron->_value = neuron->_value / count;
     }
 
-    _mean_data->print();
     delete cursor;
     mydb->Close();
     delete mydb;
 
     time_t t2 = time(NULL);
-    cout <<"总共耗时:"<< t2 -t1<<"秒, 训练速度:" << (float)(_batch_size * _max_iter_count) /
+    cout <<"总共耗时:"<< t2 -t1<<"秒, jisuan速度:" << (float)(_batch_size * _max_iter_count) /
          (t2 - t1 + 1) << " pic / s" << endl;
 }
 

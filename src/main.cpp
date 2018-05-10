@@ -26,6 +26,7 @@ void runModel(string modelFilePath)
     NetModelLMDB* netMode = new NetModelLMDB(modelFilePath);
     netMode->load_model();
     netMode->run();
+    //netMode->compute_mean();
     delete netMode;
 }
 
@@ -60,7 +61,6 @@ int main(int argc, char* argv[])
         }
 
         RandomGenerator::init_engine(rnd_seed);
-        //srand(RandomGenerator::rnd_seed);
         runModel(modelDefileName);
     }
     else

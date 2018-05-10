@@ -23,6 +23,7 @@ void NetModel::run()
     if(_mode == TRAIN)
     {
         cout<<"------------train start--------------"<<endl;
+        compute_mean();
         train();
         stop_cpu_ = boost::posix_time::microsec_clock::local_time();
         cout<< "Train time:"<< (stop_cpu_ - start_cpu_).total_milliseconds() << " ms."<<endl;

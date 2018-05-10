@@ -81,7 +81,7 @@ void Data::print()
 
     for (int n = 0; n < _num; n++)
     {
-        for (int c = 0; c < 1; c++)
+        for (int c = 0; c < _channels; c++)
         {
             for (int h = 0; h < _height; h++)
             {
