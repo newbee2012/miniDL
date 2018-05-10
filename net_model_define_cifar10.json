@@ -1,11 +1,11 @@
 {
-    "mode":"TRAIN",
+    "mode":"TEST",
     "modelDataFilePath": "/home/chendejia/workspace/github/miniDL/bin/Release/cifar10_model_data.json",
     "trainDataFilePath": "/home/chendejia/workspace/github/miniDL/bin/Release/cifar10_train_lmdb",
     "testDataFilePath": "/home/chendejia/workspace/github/miniDL/bin/Release/cifar10_test_lmdb",
-    "initModelByExistentData": false,
+    "initModelByExistentData": true,
     "hyperParameters": {
-        "MAX_ITER_COUNT": 10000,
+        "MAX_ITER_COUNT": 5000,
         "BATCH_SIZE": 10,
         "BASE_LEARNING_RATE": 0.001,
         "LEARNING_RATE_POLICY": "FIXED",

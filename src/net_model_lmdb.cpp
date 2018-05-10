@@ -92,6 +92,7 @@ void NetModelLMDB::test()
                     for (int h = 0; h < height; h++)
                     {
                         batchDatas.get(i, c, w, h)->_value = (BYTE)(datum.data()[c * width * height + w * height + h]);
+                        batchDatas.get(i, c, w, h)->_value -= _mean_data->get(0, c, w, h)->_value;
                         labels[i] = datum.label();
                     }
                 }
@@ -176,9 +177,7 @@ void NetModelLMDB::train()
                     for (int h = 0; h < height; h++)
                     {
                         batchDatas.get(i, c, w, h)->_value = (BYTE)(datum.data()[c * width * height + w * height + h]);
-                        //cout<<batchDatas.get(i, c, w, h)->_value<<"-"<<_mean_data->get(0, c, w, h)->_value<<"=";
                         batchDatas.get(i, c, w, h)->_value -= _mean_data->get(0, c, w, h)->_value;
-                        //cout<<batchDatas.get(i, c, w, h)->_value<<endl;
                         labels[i] = datum.label();
                     }
                 }

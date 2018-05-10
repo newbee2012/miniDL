@@ -35,6 +35,7 @@ void NetModel::run()
     else if(_mode == TEST)
     {
         cout<<"------------test start--------------"<<endl;
+        compute_mean();
         test();
         stop_cpu_ = boost::posix_time::microsec_clock::local_time();
         cout<< "Test time:"<< (stop_cpu_ - start_cpu_).total_milliseconds() << " ms."<<endl;
