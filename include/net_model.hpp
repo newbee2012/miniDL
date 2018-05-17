@@ -15,12 +15,15 @@ class NetModel
 {
 public:
     explicit NetModel(string& modelDefineFilePath):_batch_size(0),_input_shape_channels(0),_input_shape_height(0),
-        _input_shape_width(0),_max_iter_count(0),_model_define_file_path(modelDefineFilePath)
-    {};
+        _input_shape_width(0),_max_iter_count(0),_model_define_file_path(modelDefineFilePath),_compute_mean_data(false)
+    {
+
+    };
     virtual ~NetModel() {};
     virtual void run();
     virtual void train()=0;
     virtual void test()=0;
+    virtual void compute_mean()=0;
     virtual void load_model();
     virtual void save_model();
     virtual void outputBmp();
@@ -37,7 +40,7 @@ protected:
     boost::shared_ptr<Data> _input_data;
     boost::shared_ptr<Layer> _input_layer;
     boost::shared_ptr<Layer> _loss_layer;
-
+    boost::shared_ptr<Data> _mean_data;
     int _batch_size;
     int _input_shape_channels;
     int _input_shape_height;
@@ -47,6 +50,7 @@ protected:
     string _model_data_file_path;
     string _train_data_file_path;
     string _test_data_file_path;
+    bool _compute_mean_data;;
     Mode _mode;
     DISABLE_COPY_AND_ASSIGN(NetModel);
 };

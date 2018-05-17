@@ -1,6 +1,7 @@
 #include <iostream>
 #include "conv_layer.hpp"
 #include "neuron.hpp"
+#include "common.hpp"
 using namespace std;
 
 namespace dong
@@ -22,10 +23,9 @@ void ConvLayer::setUp(const boost::shared_ptr<Data>& data)
 
     int top_height=(_bottom_data->height() + 2 * _pad_h - _kernel_h) /_stride + 1;
     int top_width=(_bottom_data->width() + 2 * _pad_w - _kernel_w) /_stride + 1;
-
-    _top_data.reset(new Data(_bottom_data->num(), _num_output, top_height, top_width, Data::CONSTANT));
-    _bias_data.reset(new Data(_num_output,  _top_data->height(), _top_data->width(), 1, Data::CONSTANT));
-    _weight_data.reset(new Data(_num_output, _bottom_data->channels(), _kernel_h, _kernel_w, Data::XAVIER));
+    _top_data.reset(new Data(_bottom_data->num(), _num_output, top_height, top_width, Layer::default_init_data_param));
+    _bias_data.reset(new Data(_num_output,  _top_data->height(), _top_data->width(), 1, this->_initBiasParam));
+    _weight_data.reset(new Data(_num_output, _bottom_data->channels(), _kernel_h, _kernel_w, this->_initWeightParam));
 
     for (int t_n = 0; t_n < _top_data->num(); ++t_n)
     {

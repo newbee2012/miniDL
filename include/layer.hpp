@@ -8,7 +8,6 @@
 
 namespace dong
 {
-
 class ThreadParam
 {
 public:
@@ -30,6 +29,7 @@ public:
 class Layer
 {
 public:
+    static boost::shared_ptr<InitDataParam> default_init_data_param;
     static float BASE_LEARNING_RATE;        //基准学习速率
     static LR_Policy LEARNING_RATE_POLICY;  //学习速率衰减策略
     static float GAMMA;                     //学习速率衰减常数
@@ -111,6 +111,16 @@ public:
         return _sum_backward_time;
     }
 
+    inline virtual void setInitWeightParam(boost::shared_ptr<InitDataParam>& param)
+    {
+        this->_initWeightParam = param;
+    }
+
+    inline virtual void setInitBiasParam(boost::shared_ptr<InitDataParam>& param)
+    {
+        this->_initBiasParam = param;
+    }
+
 protected:
     virtual void forwardBase();
     virtual void backwardBase();
@@ -130,6 +140,9 @@ protected:
     float _lr_mult_bias;
     double _sum_forward_time;
     double _sum_backward_time;
+
+    boost::shared_ptr<InitDataParam> _initWeightParam;
+    boost::shared_ptr<InitDataParam> _initBiasParam;
     DISABLE_COPY_AND_ASSIGN(Layer);
 };
 

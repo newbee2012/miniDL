@@ -59,7 +59,8 @@ void Layer::forward()
 
         switch (getType())
         {
-        case POOL_LAYER:
+        case MAXPOOL_LAYER:
+        case AVEPOOL_LAYER:
         case RELU_LAYER:
         case LOSS_LAYER:
             _weight_data->clearValue();

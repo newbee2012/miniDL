@@ -20,6 +20,11 @@ void NetModel::run()
     boost::posix_time::ptime start_cpu_;
     boost::posix_time::ptime stop_cpu_;
     start_cpu_ = boost::posix_time::microsec_clock::local_time();
+    if(this->_compute_mean_data)
+    {
+        compute_mean();
+    }
+
     if(_mode == TRAIN)
     {
         cout<<"------------train start--------------"<<endl;
@@ -95,6 +100,18 @@ void NetModel::forward()
     while(layer.get())
     {
         layer->forward();
+        /*
+        if(layer->getName() == "inputLayer" || layer->getName()=="convLayer" || layer->getName() == "maxPoolLayer")
+        {
+            layer->getTopData()->print();
+        }
+
+        if(layer->getName() == "maxPoolLayer")
+        {
+            layer->getWeightData()->print();
+        }
+        */
+
         layer = layer->getTopLayer();
     }
 }
@@ -173,9 +190,13 @@ Layer* NetModel::generateLayerByClassName(const char* className)
     {
         return new ReluLayer();
     }
-    else if(0==strcmp(className,"PoolLayer"))
+    else if(0==strcmp(className,"MaxPoolLayer"))
     {
-        return new PoolLayer();
+        return new MaxPoolLayer();
+    }
+    else if(0==strcmp(className,"AvePoolLayer"))
+    {
+        return new AvePoolLayer();
     }
     else if(0==strcmp(className,"SoftmaxLayer"))
     {
@@ -230,6 +251,7 @@ void NetModel::save_model()
 void NetModel::load_model()
 {
     cout<<"loading model from file: "<<this->_model_define_file_path<<endl;
+    Layer::default_init_data_param.reset(new InitDataParam());
     Layer::BASE_LEARNING_RATE = 0.01F;
     Layer::LEARNING_RATE_POLICY = INV;
     Layer::GAMMA = 0.0001F;
@@ -273,6 +295,12 @@ void NetModel::load_model()
     ASSERT(!jo_initModelByExistentData.isNull(), cout<<"节点initModelByExistentData不存在！"<<endl);
     bool  initModelByExistentData = jo_initModelByExistentData.asBool();
 
+    _batch_size = modelDefineRoot["batch_size"].asInt();
+    ASSERT(_batch_size>0, cout<<"batch_size 未定义或取值非法！"<<endl);
+
+    _max_iter_count = modelDefineRoot["max_iter_count"].asInt();
+    ASSERT(_max_iter_count>0, cout<<"max_iter_count 未定义或取值非法！"<<endl);
+
     if(initModelByExistentData)
     {
         is.open (_model_data_file_path.c_str(), std::ios::binary );
@@ -286,12 +314,6 @@ void NetModel::load_model()
     //读取超参数
     Json::Value jo_hyperParameters = modelDefineRoot["hyperParameters"];
     ASSERT(!jo_hyperParameters.isNull(), cout<<"节点hyperParameters不存在！"<<endl);
-
-    _batch_size = jo_hyperParameters["BATCH_SIZE"].asInt();
-    ASSERT(_batch_size>0, cout<<"BATCH_SIZE 未定义或取值非法！"<<endl);
-
-    _max_iter_count = jo_hyperParameters["MAX_ITER_COUNT"].asInt();
-    ASSERT(_max_iter_count>0, cout<<"MAX_ITER_COUNT 未定义或取值非法！"<<endl);
 
     Layer::BASE_LEARNING_RATE = jo_hyperParameters["BASE_LEARNING_RATE"].asFloat();
     ASSERT(Layer::BASE_LEARNING_RATE > 0, cout<<"BASE_LEARNING_RATE 未定义或取值非法！"<<endl);
@@ -320,6 +342,12 @@ void NetModel::load_model()
 
     Layer::BACKWARD_THREAD_COUNT = jo_hyperParameters["BACKWARD_THREAD_COUNT"].asInt();
     ASSERT(Layer::BACKWARD_THREAD_COUNT > 0, cout<<"BACKWARD_THREAD_COUNT 未定义或取值非法！"<<endl);
+
+    Json::Value jo_computeMeanData = jo_hyperParameters["COMPUTE_MEAN_DATA"];
+    if(!jo_computeMeanData.isNull())
+    {
+        this->_compute_mean_data = jo_computeMeanData.asBool();
+    }
 
     //读取输入数据尺寸
     Json::Value jo_input_shape = modelDefineRoot["inputShape"];
@@ -356,18 +384,78 @@ void NetModel::load_model()
         boost::shared_ptr<Layer> layer(generateLayerByClassName(impl_class.c_str()));
         layer->setName(layerName);
         layer->init(params);
-        Json::Value lr_mult_weight = jo_layer["lr_mult_weight"];
-        Json::Value lr_mult_bias = jo_layer["lr_mult_bias"];
-        if(!lr_mult_weight.isNull())
+        Json::Value jo_lr_mult_weight = jo_layer["lr_mult_weight"];
+        Json::Value jo_lr_mult_bias = jo_layer["lr_mult_bias"];
+        if(!jo_lr_mult_weight.isNull())
         {
-            layer->setLrMultWeight(lr_mult_weight.asFloat());
+            layer->setLrMultWeight(jo_lr_mult_weight.asFloat());
         }
 
-        if(!lr_mult_bias.isNull())
+        if(!jo_lr_mult_bias.isNull())
         {
-            layer->setLrMultBias(lr_mult_bias.asFloat());
+            layer->setLrMultBias(jo_lr_mult_bias.asFloat());
         }
 
+
+        boost::shared_ptr<InitDataParam> initWeightParam(new InitDataParam());
+        Json::Value jo_weight_init = jo_layer["weight_init"];
+        if(!jo_weight_init.isNull())
+        {
+            Json::Value jo_type = jo_weight_init["type"];
+            DataInitType type = STRING_TO_Data_INIT_TYPE(jo_type.asString().c_str());
+            ASSERT(type >= 0 && type < DATA_INIT_TYPE_SIZE, cout<<"weight_init.type 未定义或取值非法！"<<endl);
+            initWeightParam->_initType = type;
+
+            Json::Value jo_gaussian_std = jo_weight_init["gaussian_std"];
+            if(!jo_gaussian_std.isNull())
+            {
+                initWeightParam->_gaussian_std = jo_gaussian_std.asFloat();
+            }
+
+            Json::Value jo_gaussian_mean = jo_weight_init["gaussian_mean"];
+            if(!jo_gaussian_mean .isNull())
+            {
+                initWeightParam->_gaussian_mean  = jo_gaussian_mean .asFloat();
+            }
+
+            Json::Value jo_constant_value = jo_weight_init["constant_value"];
+            if(!jo_constant_value .isNull())
+            {
+                initWeightParam->_constant_value  = jo_constant_value .asFloat();
+            }
+        }
+
+        layer->setInitWeightParam(initWeightParam);
+
+        boost::shared_ptr<InitDataParam> initBiasParam(new InitDataParam());
+        Json::Value jo_bias_init = jo_layer["bias_init"];
+        if(!jo_bias_init.isNull())
+        {
+            Json::Value jo_type = jo_bias_init["type"];
+            DataInitType type = STRING_TO_Data_INIT_TYPE(jo_type.asString().c_str());
+            ASSERT(type >= 0 && type < DATA_INIT_TYPE_SIZE, cout<<"bias_init.type 未定义或取值非法！"<<endl);
+            initBiasParam->_initType = type;
+
+            Json::Value jo_gaussian_std = jo_bias_init["gaussian_std"];
+            if(!jo_gaussian_std.isNull())
+            {
+                initBiasParam->_gaussian_std = jo_gaussian_std.asFloat();
+            }
+
+            Json::Value jo_gaussian_mean = jo_bias_init["gaussian_mean"];
+            if(!jo_gaussian_mean .isNull())
+            {
+                initBiasParam->_gaussian_mean  = jo_gaussian_mean .asFloat();
+            }
+
+            Json::Value jo_constant_value = jo_bias_init["constant_value"];
+            if(!jo_constant_value .isNull())
+            {
+                initBiasParam->_constant_value  = jo_constant_value .asFloat();
+            }
+        }
+
+        layer->setInitBiasParam(initBiasParam);
 
         if(layer->getType() == INPUT_LAYER)
         {

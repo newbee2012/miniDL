@@ -18,13 +18,15 @@ float Layer::CURRENT_LEARNING_RATE;
 int Layer::STEPSIZE;
 int Layer::FORWARD_THREAD_COUNT;
 int Layer::BACKWARD_THREAD_COUNT;
-int RandomGenerator::rnd_seed;          //随机种子，-1表示使用time(0)做种子
+boost::shared_ptr<InitDataParam> Layer::default_init_data_param;
+boost::shared_ptr<rng_t> RandomGenerator::engine;
 
 void runModel(string modelFilePath)
 {
     NetModelLMDB* netMode = new NetModelLMDB(modelFilePath);
     netMode->load_model();
     netMode->run();
+    //netMode->compute_mean();
     delete netMode;
 }
 
@@ -39,7 +41,7 @@ void forecastBmp(string modelFilePath, string picFilePath)
 
 int main(int argc, char* argv[])
 {
-    RandomGenerator::rnd_seed = (int)time(0);
+    int rnd_seed = (int)time(0);
     if (argc >= 2)
     {
         string modelDefileName = argv[1];
@@ -50,25 +52,26 @@ int main(int argc, char* argv[])
             {
                 string bmpFilePath = argv[3];
                 forecastBmp(modelDefileName, bmpFilePath);
+                return 0;
             }
             else
             {
-                RandomGenerator::rnd_seed = atoi(argv[2]);
-                srand(RandomGenerator::rnd_seed);
-                runModel(modelDefileName);
+                rnd_seed = atoi(argv[2]);
             }
         }
-        else
-        {
-            srand(RandomGenerator::rnd_seed);
-            runModel(modelDefileName);
-        }
+
+        RandomGenerator::init_engine(rnd_seed);
+        runModel(modelDefileName);
     }
     else
     {
         cout<<"Error! Need parameters!"<<endl;
     }
 
-
     return 0;
 }
+
+struct Node
+{
+    Node* next;
+};

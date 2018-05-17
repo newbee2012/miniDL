@@ -27,8 +27,12 @@ private:
 class RandomGenerator
 {
 public:
-    static int rnd_seed;
     static boost::shared_ptr<RNG> random_generator_;
+    static boost::shared_ptr<rng_t> engine;
+    static void init_engine(int seed)
+    {
+        engine.reset(new rng_t(seed));
+    }
 
     static RNG& rng_stream()
     {
@@ -48,10 +52,18 @@ public:
 
     static void rng_uniform(const int n, const float a, const float b, float* r)
     {
-        rng_t engine(RandomGenerator::rnd_seed);
         boost::uniform_real<float> random_distribution(a, nextafter(b));
-        boost::variate_generator<dong::rng_t*, boost::uniform_real<float> > my_generator(&engine, random_distribution);
+        boost::variate_generator<dong::rng_t*, boost::uniform_real<float> > my_generator(engine.get(), random_distribution);
+        for (int i = 0; i < n; ++i)
+        {
+            r[i] = my_generator();
+        }
+    }
 
+    static void rng_gaussian(const int n, const float a,const float sigma, float* r)
+    {
+        boost::normal_distribution<float> random_distribution(a, sigma);
+        boost::variate_generator<dong::rng_t*, boost::normal_distribution<float> > my_generator(engine.get(), random_distribution);
         for (int i = 0; i < n; ++i)
         {
             r[i] = my_generator();
@@ -73,10 +85,6 @@ public:
                     ldb, beta, C, N);
     }
 };
-
-
-
-
 
 }
 

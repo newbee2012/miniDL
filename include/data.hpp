@@ -8,11 +8,21 @@
 namespace dong
 {
 
+class InitDataParam
+{
+public:
+    InitDataParam():_initType(dong::CONSTANT),_constant_value(0.0F),_gaussian_std(1.0F),_gaussian_mean(0.0F){}
+
+    DataInitType _initType;
+    float _constant_value;
+    float _gaussian_std;
+    float _gaussian_mean;
+};
+
 class Data
 {
 public:
-    enum InitType {CONSTANT, RANDOM, XAVIER};
-    explicit Data(int num, int channels, int height, int width, InitType type);
+    explicit Data(int num, int channels, int height, int width, boost::shared_ptr<InitDataParam>& param);
     explicit Data(int num, int channels, int height, int width);
     void setUp(const boost::shared_array<Neuron>& neurons);
     void print();

@@ -14,7 +14,7 @@ void SoftmaxLayer::setUp(const boost::shared_ptr<Data>& data)
     _num = _bottom_data->num();
     _forecast_labels.reset(new int[_num]{-1});
     int input_count = _bottom_data->channels() *_bottom_data->height() * _bottom_data->width();
-    _top_data.reset(new Data(_num, input_count, 1, 1, Data::CONSTANT));
+    _top_data.reset(new Data(_num, input_count, 1, 1, Layer::default_init_data_param));
 }
 
 void SoftmaxLayer::forward_cpu()
