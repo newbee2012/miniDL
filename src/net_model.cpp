@@ -20,10 +20,14 @@ void NetModel::run()
     boost::posix_time::ptime start_cpu_;
     boost::posix_time::ptime stop_cpu_;
     start_cpu_ = boost::posix_time::microsec_clock::local_time();
+    if(this->_compute_mean_data)
+    {
+        compute_mean();
+    }
+
     if(_mode == TRAIN)
     {
         cout<<"------------train start--------------"<<endl;
-        compute_mean();
         train();
         stop_cpu_ = boost::posix_time::microsec_clock::local_time();
         cout<< "Train time:"<< (stop_cpu_ - start_cpu_).total_milliseconds() << " ms."<<endl;
@@ -291,6 +295,12 @@ void NetModel::load_model()
     ASSERT(!jo_initModelByExistentData.isNull(), cout<<"节点initModelByExistentData不存在！"<<endl);
     bool  initModelByExistentData = jo_initModelByExistentData.asBool();
 
+    _batch_size = modelDefineRoot["batch_size"].asInt();
+    ASSERT(_batch_size>0, cout<<"batch_size 未定义或取值非法！"<<endl);
+
+    _max_iter_count = modelDefineRoot["max_iter_count"].asInt();
+    ASSERT(_max_iter_count>0, cout<<"max_iter_count 未定义或取值非法！"<<endl);
+
     if(initModelByExistentData)
     {
         is.open (_model_data_file_path.c_str(), std::ios::binary );
@@ -304,12 +314,6 @@ void NetModel::load_model()
     //读取超参数
     Json::Value jo_hyperParameters = modelDefineRoot["hyperParameters"];
     ASSERT(!jo_hyperParameters.isNull(), cout<<"节点hyperParameters不存在！"<<endl);
-
-    _batch_size = jo_hyperParameters["BATCH_SIZE"].asInt();
-    ASSERT(_batch_size>0, cout<<"BATCH_SIZE 未定义或取值非法！"<<endl);
-
-    _max_iter_count = jo_hyperParameters["MAX_ITER_COUNT"].asInt();
-    ASSERT(_max_iter_count>0, cout<<"MAX_ITER_COUNT 未定义或取值非法！"<<endl);
 
     Layer::BASE_LEARNING_RATE = jo_hyperParameters["BASE_LEARNING_RATE"].asFloat();
     ASSERT(Layer::BASE_LEARNING_RATE > 0, cout<<"BASE_LEARNING_RATE 未定义或取值非法！"<<endl);
@@ -338,6 +342,12 @@ void NetModel::load_model()
 
     Layer::BACKWARD_THREAD_COUNT = jo_hyperParameters["BACKWARD_THREAD_COUNT"].asInt();
     ASSERT(Layer::BACKWARD_THREAD_COUNT > 0, cout<<"BACKWARD_THREAD_COUNT 未定义或取值非法！"<<endl);
+
+    Json::Value jo_computeMeanData = jo_hyperParameters["COMPUTE_MEAN_DATA"];
+    if(!jo_computeMeanData.isNull())
+    {
+        this->_compute_mean_data = jo_computeMeanData.asBool();
+    }
 
     //读取输入数据尺寸
     Json::Value jo_input_shape = modelDefineRoot["inputShape"];

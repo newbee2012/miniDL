@@ -31,6 +31,13 @@ void NetModelLMDB::testFromABmp(string& fileName)
             for(int c=0; c <channels; ++c)
             {
                 batchDatas.get(0,c,h,w)->_value = pBmpBuf[((height - h - 1) * width + w) * 3 + channels - c - 1];
+                //减去图像均值
+                if(this->_compute_mean_data)
+                {
+                    //cout<<batchDatas.get(0, c, w, h)->_value<<"-"<<_mean_data->get(0, c, w, h)->_value<<"=";
+                    batchDatas.get(0, c, w, h)->_value -= _mean_data->get(0, c, w, h)->_value;
+                    //cout<<batchDatas.get(0, c, w, h)->_value<<endl;
+                }
             }
 
         }
@@ -92,6 +99,14 @@ void NetModelLMDB::test()
                     for (int h = 0; h < height; h++)
                     {
                         batchDatas.get(i, c, w, h)->_value = (BYTE)(datum.data()[c * width * height + w * height + h]);
+                        //减去图像均值
+                        if(this->_compute_mean_data)
+                        {
+                            //cout<<batchDatas.get(i, c, w, h)->_value<<"-"<<_mean_data->get(0, c, w, h)->_value<<"=";
+                            batchDatas.get(i, c, w, h)->_value -= _mean_data->get(0, c, w, h)->_value;
+                            //cout<<batchDatas.get(i, c, w, h)->_value<<endl;
+                        }
+
                         labels[i] = datum.label();
                     }
                 }
@@ -176,9 +191,14 @@ void NetModelLMDB::train()
                     for (int h = 0; h < height; h++)
                     {
                         batchDatas.get(i, c, w, h)->_value = (BYTE)(datum.data()[c * width * height + w * height + h]);
-                        //cout<<batchDatas.get(i, c, w, h)->_value<<"-"<<_mean_data->get(0, c, w, h)->_value<<"=";
-                        batchDatas.get(i, c, w, h)->_value -= _mean_data->get(0, c, w, h)->_value;
-                        //cout<<batchDatas.get(i, c, w, h)->_value<<endl;
+                        //减去图像均值
+                        if(this->_compute_mean_data)
+                        {
+                            //cout<<batchDatas.get(i, c, w, h)->_value<<"-"<<_mean_data->get(0, c, w, h)->_value<<"=";
+                            batchDatas.get(i, c, w, h)->_value -= _mean_data->get(0, c, w, h)->_value;
+                            //cout<<batchDatas.get(i, c, w, h)->_value<<endl;
+                        }
+
                         labels[i] = datum.label();
                     }
                 }
@@ -187,14 +207,6 @@ void NetModelLMDB::train()
             cursor->Next();
         }
 
-        /*
-        string path = "./cifar10_pics/";
-        path.append(toString(iter));
-        path.append("_");
-        path.append(toString(labels[0]));
-        batchDatas.genBmp(path);
-
-        */
         /////////////////////////////////训练一批数据///////////////////////////////////
         this->fillDataToModel(batchDatas.get(0, 0, 0, 0), batchDatas.count(), labels);
         this->forward();
@@ -238,7 +250,7 @@ void NetModelLMDB::compute_mean()
     int width = datum.width();
 
     _mean_data.reset(new Data(1, channels, height, width, Layer::default_init_data_param));
-    LOG(INFO) << "Starting Iteration";
+    cout << "Starting compute data mean!" << endl;
     int count = 0;
     while (cursor->valid())
     {
@@ -268,7 +280,7 @@ void NetModelLMDB::compute_mean()
         ++count;
         if (count % 10000 == 0)
         {
-            LOG(INFO) << "Processed " << count << " files.";
+            cout << "Processed " << count << " files." << endl;
         }
 
         cursor->Next();
@@ -276,7 +288,7 @@ void NetModelLMDB::compute_mean()
 
     if (count % 10000 != 0)
     {
-        LOG(INFO) << "Processed " << count << " files.";
+        cout << "Processed " << count << " files." << endl;
     }
 
     for (int i = 0; i < _mean_data->count(); ++i)
@@ -290,8 +302,6 @@ void NetModelLMDB::compute_mean()
     delete mydb;
 
     time_t t2 = time(NULL);
-    cout <<"总共耗时:"<< t2 -t1<<"秒, jisuan速度:" << (float)(_batch_size * _max_iter_count) /
-         (t2 - t1 + 1) << " pic / s" << endl;
 }
 
 }
