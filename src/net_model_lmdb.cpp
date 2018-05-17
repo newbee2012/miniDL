@@ -106,7 +106,6 @@ void NetModelLMDB::test()
                             batchDatas.get(i, c, w, h)->_value -= _mean_data->get(0, c, w, h)->_value;
                             //cout<<batchDatas.get(i, c, w, h)->_value<<endl;
                         }
-
                         labels[i] = datum.label();
                     }
                 }
@@ -198,7 +197,6 @@ void NetModelLMDB::train()
                             batchDatas.get(i, c, w, h)->_value -= _mean_data->get(0, c, w, h)->_value;
                             //cout<<batchDatas.get(i, c, w, h)->_value<<endl;
                         }
-
                         labels[i] = datum.label();
                     }
                 }
