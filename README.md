@@ -11,5 +11,7 @@ sh ./build.sh
 For exsample : net_model_define_mnist.json
 
 3.How to run & train a model?
+./bin/Release/miniDL net_model_define_mnist.json
 
 4.How to run & test a model?
+./bin/Release/miniDL net_model_define_mnist.json
