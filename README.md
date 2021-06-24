@@ -1,5 +1,6 @@
 # MiniDL
 # A minimalist C++ Deep-Learning framework
+# 一个简单的C++深度学习框架
 
 1. A simple neural network model can be quickly defined by JSON, and the model can be trained and verified. For example: MNIST, cifar-10.
 2. The implementation of the code is very simple. There is no reference to any mathematical library, or even matrix operation and differential derivation operation. Beginners only need to understand the idea of back propagation, and even do not need to understand the mathematical formula derivation of back propagation algorithm.
