@@ -7,7 +7,7 @@
 
 1.How to define a model?
 
-For exsample : mnist JSON model definition
+For exsample : net_model_define_mnist.json
 
 2.How to run & train a model?
 
