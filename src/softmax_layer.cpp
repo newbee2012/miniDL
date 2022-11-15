@@ -48,9 +48,12 @@ void SoftmaxLayer::forward_cpu()
         }
 
         _loss -= log(std::max(_top_data->get(n, _labels[n], 0, 0)->_value, FLT_MIN));
+        //cout<<"_loss = " << _loss << ", _labels["<< n << "] = "<< _labels[n] << ", value = "<< _top_data->get(n, _labels[n], 0, 0)->_value << endl;
     }
 
     _loss /= _top_data->num();
+    //cout<<"_loss = " << _loss << endl;
+
 }
 
 void SoftmaxLayer::backward_cpu()

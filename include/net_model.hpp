@@ -48,8 +48,10 @@ protected:
     int _max_iter_count;
     string _model_define_file_path;
     string _model_data_file_path;
-    string _train_data_file_path;
-    string _test_data_file_path;
+    string _train_data_images_file_path;
+    string _train_data_labels_file_path;
+    string _test_data_images_file_path;
+    string _test_data_labels_file_path;
     bool _compute_mean_data;;
     Mode _mode;
     DISABLE_COPY_AND_ASSIGN(NetModel);

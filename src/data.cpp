@@ -88,8 +88,7 @@ void Data::print()
                 for (int w = 0; w < _width; w++)
                 {
                     float value = this->get(n, c, h, w)->_value;
-                    cout << value;
-
+                    cout << (int)value;
                     //cout << setprecision(2)<<fixed<< value;
                     if (value < 10)
                     {
@@ -188,46 +187,54 @@ void Data::genBmp(string& filePathBase)
 
 void Data::genBmp(string& filePathBase)
 {
-    filePathBase.append("_%d.bmp");
+    filePathBase.append("_%d_%d.bmp");
+    RGB* pRGB = new RGB[_width * _height];
     for (int n = 0; n < _num; n++)
     {
-        char filePath[128]= {0};
-        sprintf(filePath,filePathBase.c_str(),n);
-        cout<<"genBmp : " << filePath<<endl;
-        RGB* pRGB = new RGB[_width * _height];
-        memset(pRGB, 0x0, sizeof(RGB) * _width * _height); // 设置背景为黑色
-
-        for (int h = 0; h < _height; h++)
+        for (int c = 0; c < _channels; c++)
         {
-            for (int w = 0; w < _width; w++)
+            char filePath[128]= {0};
+            sprintf(filePath,filePathBase.c_str(),n,c);
+            cout<<"genBmp : " << filePath<<endl;
+            memset(pRGB, 0x0, sizeof(RGB) * _width * _height); // 设置背景为黑色
+            for (int h = 0; h < _height; h++)
             {
-                if (w == 0 || w == _width - 1 || h == 0 || h == _height - 1)
+                for (int w = 0; w < _width; w++)
                 {
-                    pRGB[(_height - h - 1)*_width + w].r = 0xFF;
-                    pRGB[(_height - h - 1)*_width + w].g = 0xFF;
-                    pRGB[(_height - h - 1)*_width + w].b = 0xFF;
-                }
-                else
-                {
-                    if(this->_channels == 1)
+                    /*
+                    if (w == 0 || w == _width - 1 || h == 0 || h == _height - 1)
                     {
-                        pRGB[(_height - h - 1)*_width + w].r = this->get(n, 0, h, w)->_value;
-                        pRGB[(_height - h - 1)*_width + w].g = this->get(n, 0, h, w)->_value;
-                        pRGB[(_height - h - 1)*_width + w].b = this->get(n, 0, h, w)->_value;
+                        pRGB[(_height - h - 1)*_width + w].r = 0xFF;
+                        pRGB[(_height - h - 1)*_width + w].g = 0xFF;
+                        pRGB[(_height - h - 1)*_width + w].b = 0xFF;
                     }
-                    else if(this->_channels == 3)
+                    else
                     {
-                        pRGB[(_height - h - 1)*_width + w].r = this->get(n, 0, h, w)->_value;
-                        pRGB[(_height - h - 1)*_width + w].g = this->get(n, 1, h, w)->_value;
-                        pRGB[(_height - h - 1)*_width + w].b = this->get(n, 2, h, w)->_value;
-                    }
+                        if(this->_channels == 1)
+                        {
+                            pRGB[(_height - h - 1)*_width + w].r = this->get(n, 0, h, w)->_value;
+                            pRGB[(_height - h - 1)*_width + w].g = this->get(n, 0, h, w)->_value;
+                            pRGB[(_height - h - 1)*_width + w].b = this->get(n, 0, h, w)->_value;
+                        }
+                        else if(this->_channels == 3)
+                        {
+                            pRGB[(_height - h - 1)*_width + w].r = this->get(n, 0, h, w)->_value;
+                            pRGB[(_height - h - 1)*_width + w].g = this->get(n, 1, h, w)->_value;
+                            pRGB[(_height - h - 1)*_width + w].b = this->get(n, 2, h, w)->_value;
+                        }
+                    }*/
+
+                    pRGB[(_height - h - 1)*_width + w].r = this->get(n, c, h, w)->_value;
+                    pRGB[(_height - h - 1)*_width + w].g = this->get(n, c, h, w)->_value;
+                    pRGB[(_height - h - 1)*_width + w].b = this->get(n, c, h, w)->_value;
 
                 }
             }
+            BmpTool::generateBMP(pRGB, _width, _height, filePath);
         }
-
-        BmpTool::generateBMP((BYTE*)pRGB, _width, _height, filePath);
     }
+
+    delete[] pRGB;
 }
 
 

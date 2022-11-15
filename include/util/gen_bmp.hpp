@@ -64,16 +64,15 @@ public:
         int bmpheight = infoHead.biHeight;
         int linebyte = (bmpwidth*24/8+3)/4*4; //计算每行的字节数，24：该图片是24位的bmp图，3：确保不丢失像素
 
-        //cout<<bmpwidth<<" "<<bmpheight<<endl;
-        BYTE* pBmpBuf = new unsigned char[linebyte*bmpheight];
+        BYTE* pBmpBuf = new BYTE[linebyte*bmpheight];
         fread(pBmpBuf,sizeof(char),linebyte*bmpheight,fp);
         fclose(fp);   //关闭文件
         return pBmpBuf;
     }
 
-    static void generateBMP( BYTE* pData, int width, int height, const char* filename )
+    static void generateBMP(RGB* pData, int width, int height, const char* filename)
     {
-        int size = width * height * 3; // 每个像素点3个字节
+        int size = width * height * sizeof(RGB); // 每个像素点3个字节
         // 位图第一部分，文件信息
         BITMAPFILEHEADER bfh;
         bfh.bfType = 0x4d42;//bm
@@ -106,7 +105,7 @@ public:
 
         fwrite( &bfh, 1, sizeof(BITMAPFILEHEADER), fp );
         fwrite( &bih, 1, sizeof(BITMAPINFOHEADER), fp );
-        fwrite( pData, 1, size, fp );
+        fwrite( pData, sizeof(RGB), width * height, fp );
         fclose( fp );
     }
 

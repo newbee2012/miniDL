@@ -11,8 +11,8 @@ private:\
   classname(const classname&);\
   classname& operator=(const classname&)
 
-#include <gflags/gflags.h>
-#include <glog/logging.h>
+//#include <gflags/gflags.h>
+//#include <glog/logging.h>
 #include <math.h>
 #include <algorithm>
 #include <float.h>
@@ -24,7 +24,7 @@ private:\
 #include <iostream>
 #include <string>
 #include <assert.h>
-#include "json/json.h"
+#include <json/json.h>
 
 #define MIN(a,b) (((a)<(b))?(a):(b))
 #define MAX(a,b) (((a)>(b))?(a):(b))

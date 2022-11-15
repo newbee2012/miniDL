@@ -11,6 +11,7 @@
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
+				<Option parameters="./net_model_define_mnist.json" />
 				<Compiler>
 					<Add option="-g" />
 				</Compiler>
@@ -34,18 +35,16 @@
 			<Add option="-fexceptions" />
 			<Add option="-DUSE_LMDB" />
 			<Add directory="include" />
-			<Add directory="/usr/include/jsoncpp" />
+			<Add directory="extern/include" />
 		</Compiler>
 		<Linker>
-			<Add library="libprotobuf" />
-			<Add library="libglog" />
-			<Add library="liblmdb" />
-			<Add library="libgflags" />
+			<Add option="-O3" />
+			<Add option="-static-libstdc++" />
+			<Add option="-static" />
 			<Add library="libboost_system" />
 			<Add library="libpthread" />
-			<Add library="libmysqlclient" />
 			<Add library="libjsoncpp" />
-			<Add library="libcblas" />
+			<Add directory="/home/chendejia/workspace/github/miniDL/extern/lib" />
 		</Linker>
 		<Unit filename="include/common.hpp" />
 		<Unit filename="include/conv_layer.hpp" />
@@ -54,17 +53,14 @@
 		<Unit filename="include/input_layer.hpp" />
 		<Unit filename="include/layer.hpp" />
 		<Unit filename="include/net_model.hpp" />
-		<Unit filename="include/net_model_lmdb.hpp" />
-		<Unit filename="include/net_model_mysql.hpp" />
+		<Unit filename="include/net_model_binary.hpp" />
 		<Unit filename="include/neuron.hpp" />
 		<Unit filename="include/pool_layer.hpp" />
-		<Unit filename="include/proto/caffe.pb.h" />
 		<Unit filename="include/relu_layer.hpp" />
 		<Unit filename="include/softmax_layer.hpp" />
-		<Unit filename="include/util/db.hpp" />
-		<Unit filename="include/util/db_lmdb.hpp" />
 		<Unit filename="include/util/gen_bmp.hpp" />
 		<Unit filename="include/util/math_utils.hpp" />
+		<Unit filename="include/util/mnist_utils.hpp" />
 		<Unit filename="src/conv_layer.cpp" />
 		<Unit filename="src/data.cpp" />
 		<Unit filename="src/full_connect_layer.cpp" />
@@ -72,20 +68,19 @@
 		<Unit filename="src/layer.cpp" />
 		<Unit filename="src/main.cpp" />
 		<Unit filename="src/net_model.cpp" />
-		<Unit filename="src/net_model_lmdb.cpp" />
-		<Unit filename="src/net_model_mysql.cpp" />
+		<Unit filename="src/net_model_binary.cpp" />
 		<Unit filename="src/neuron.cpp" />
 		<Unit filename="src/pool_layer.cpp" />
-		<Unit filename="src/proto/caffe.pb.cc" />
 		<Unit filename="src/relu_layer.cpp" />
 		<Unit filename="src/softmax_layer.cpp" />
-		<Unit filename="src/util/db.cpp" />
-		<Unit filename="src/util/db_lmdb.cpp" />
 		<Extensions>
-			<code_completion />
-			<envvars />
+			<AutoVersioning>
+				<Scheme minor_max="10" build_max="0" rev_max="0" rev_rand_max="10" build_times_to_increment_minor="100" />
+				<Settings autoincrement="1" date_declarations="1" use_define="0" update_manifest="1" do_auto_increment="0" ask_to_increment="0" language="C++" svn="0" svn_directory="" header_path="version.h" />
+				<Changes_Log show_changes_editor="0" app_title="released version %M.%m.%b of %p" changeslog_path="ChangesLog.txt" />
+				<Code header_guard="VERSION_H" namespace="AutoVersion" prefix="" />
+			</AutoVersioning>
 			<lib_finder disable_auto="1" />
-			<debugger />
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>

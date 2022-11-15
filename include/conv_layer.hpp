@@ -18,7 +18,6 @@ public:
         return CONVOLUTION_LAYER;
     }
     virtual void init(int (&params)[6]);
-    //virtual void init(int num_output, int kernel_h, int kernel_w);
     virtual void setUp(const boost::shared_ptr<Data>& data);
     virtual void forward_cpu();
     virtual void backward_cpu();

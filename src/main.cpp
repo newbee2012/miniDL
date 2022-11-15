@@ -1,8 +1,7 @@
 #include <iostream>
 #include "util/math_utils.hpp"
-#include "net_model_mysql.hpp"
-#include "net_model_lmdb.hpp"
-#include "net_model.hpp"
+#include "util/mnist_utils.hpp"
+#include "net_model_binary.hpp"
 
 using namespace std;
 using namespace dong;
@@ -23,7 +22,7 @@ boost::shared_ptr<rng_t> RandomGenerator::engine;
 
 void runModel(string modelFilePath)
 {
-    NetModelLMDB* netMode = new NetModelLMDB(modelFilePath);
+    NetModelBinary* netMode = new NetModelBinary(modelFilePath);
     netMode->load_model();
     netMode->run();
     //netMode->compute_mean();
@@ -32,7 +31,7 @@ void runModel(string modelFilePath)
 
 void forecastBmp(string modelFilePath, string picFilePath)
 {
-    NetModelLMDB* netMode = new NetModelLMDB(modelFilePath);
+    NetModelBinary* netMode = new NetModelBinary(modelFilePath);
     netMode->load_model();
     netMode->testFromABmp(picFilePath);
     delete netMode;
@@ -41,6 +40,7 @@ void forecastBmp(string modelFilePath, string picFilePath)
 
 int main(int argc, char* argv[])
 {
+
     int rnd_seed = (int)time(0);
     if (argc >= 2)
     {

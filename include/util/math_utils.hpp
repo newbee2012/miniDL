@@ -1,11 +1,7 @@
 #ifndef MATH_UTILS_HPP_
 #define MATH_UTILS_HPP_
 
-#include <boost/math/special_functions/next.hpp>
-#include <boost/random.hpp>
-#include <boost/shared_ptr.hpp>
-#include <cblas.h>
-
+#include "common.hpp"
 namespace dong
 {
 typedef boost::mt19937 rng_t;
@@ -70,23 +66,7 @@ public:
         }
     }
 };
-
-class Blas
-{
-public:
-    static void caffe_cpu_gemm (const CBLAS_TRANSPOSE TransA,
-                                const CBLAS_TRANSPOSE TransB, const int M, const int N, const int K,
-                                const float alpha, const float* A, const float* B, const float beta,
-                                float* C)
-    {
-        int lda = (TransA == CblasNoTrans) ? K : M;
-        int ldb = (TransB == CblasNoTrans) ? N : K;
-        cblas_sgemm(CblasRowMajor, TransA, TransB, M, N, K, alpha, A, lda, B,
-                    ldb, beta, C, N);
-    }
-};
-
 }
 
 
-#endif  // DONG_GEN_BMP_HPP_
+#endif

@@ -51,15 +51,9 @@ void NetModel::outputBmp()
     boost::shared_ptr<Layer> layer = _input_layer;
     while(layer.get())
     {
-        if(layer->getName() == "inputLayer")
+        if(layer->getName() == "convLayer" || layer->getName() == "convLayer2" || layer->getName() == "inputLayer")
         {
-
-            string filepath("/home/chendejia/workspace/github/miniDL/bin/Release/");
-            filepath.append(layer->getName()).append("_weight");
-            layer->getWeightData()->genBmp(filepath);
-
-
-            filepath = "/home/chendejia/workspace/github/miniDL/bin/Release/";
+            string filepath("./pic/");
             filepath.append(layer->getName()).append("_topdata");
             layer->getTopData()->genBmp(filepath);
         }
@@ -100,18 +94,6 @@ void NetModel::forward()
     while(layer.get())
     {
         layer->forward();
-        /*
-        if(layer->getName() == "inputLayer" || layer->getName()=="convLayer" || layer->getName() == "maxPoolLayer")
-        {
-            layer->getTopData()->print();
-        }
-
-        if(layer->getName() == "maxPoolLayer")
-        {
-            layer->getWeightData()->print();
-        }
-        */
-
         layer = layer->getTopLayer();
     }
 }
@@ -169,7 +151,6 @@ void NetModel::fillDataToModel(Neuron* datas, int size, boost::shared_array<int>
     {
         _loss_layer->setLabels(labels);
     }
-
 }
 
 Layer* NetModel::generateLayerByClassName(const char* className)
@@ -283,13 +264,21 @@ void NetModel::load_model()
     ASSERT(!jo_modelDataFilePath.isNull(), cout<<"节点modelDataFilePath不存在！"<<endl);
     this->_model_data_file_path = jo_modelDataFilePath.asString();
 
-    Json::Value jo_trainDataFilePath = modelDefineRoot["trainDataFilePath"];
-    ASSERT(!jo_trainDataFilePath.isNull(), cout<<"节点trainDataFilePath不存在！"<<endl);
-    this->_train_data_file_path = jo_trainDataFilePath.asString();
+    Json::Value jo_trainDataImagesFilePath = modelDefineRoot["trainDataImagesFilePath"];
+    ASSERT(!jo_trainDataImagesFilePath.isNull(), cout<<"节点trainDataImagesFilePath不存在！"<<endl);
+    this->_train_data_images_file_path = jo_trainDataImagesFilePath.asString();
 
-    Json::Value jo_testDataFilePath = modelDefineRoot["testDataFilePath"];
-    ASSERT(!jo_testDataFilePath.isNull(), cout<<"节点testDataFilePath不存在！"<<endl);
-    this->_test_data_file_path = jo_testDataFilePath.asString();
+    Json::Value jo_trainDataLabelsFilePath = modelDefineRoot["trainDataLabelsFilePath"];
+    ASSERT(!jo_trainDataLabelsFilePath.isNull(), cout<<"节点trainDataLabelsFilePath不存在！"<<endl);
+    this->_train_data_labels_file_path = jo_trainDataLabelsFilePath.asString();
+
+    Json::Value jo_testDataImagesFilePath = modelDefineRoot["testDataImagesFilePath"];
+    ASSERT(!jo_testDataImagesFilePath.isNull(), cout<<"节点testDataImagesFilePath不存在！"<<endl);
+    this->_test_data_images_file_path = jo_testDataImagesFilePath.asString();
+
+    Json::Value jo_testDataLabelsFilePath = modelDefineRoot["testDataLabelsFilePath"];
+    ASSERT(!jo_testDataLabelsFilePath.isNull(), cout<<"节点testDataLabelsFilePath不存在！"<<endl);
+    this->_test_data_labels_file_path = jo_testDataLabelsFilePath.asString();
 
     Json::Value jo_initModelByExistentData = modelDefineRoot["initModelByExistentData"];
     ASSERT(!jo_initModelByExistentData.isNull(), cout<<"节点initModelByExistentData不存在！"<<endl);
