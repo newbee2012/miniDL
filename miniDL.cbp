@@ -33,7 +33,6 @@
 			<Add option="-Winline" />
 			<Add option="-Wfatal-errors" />
 			<Add option="-fexceptions" />
-			<Add option="-DUSE_LMDB" />
 			<Add directory="include" />
 			<Add directory="extern/include" />
 		</Compiler>
@@ -44,7 +43,7 @@
 			<Add library="libboost_system" />
 			<Add library="libpthread" />
 			<Add library="libjsoncpp" />
-			<Add directory="/home/chendejia/workspace/github/miniDL/extern/lib" />
+			<Add directory="extern/lib" />
 		</Linker>
 		<Unit filename="include/common.hpp" />
 		<Unit filename="include/conv_layer.hpp" />
