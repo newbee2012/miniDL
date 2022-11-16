@@ -29,7 +29,7 @@ ___
   - *Modify the value of the "model" field in the model definition JSON file to "test"*
   - *./bin/Release/miniDL net_model_define_mnist.json*
   
-  + How to test a picture with a trained model?
++ How to test a picture with a trained model?
   - *Modify the value of the "batch_size" field in the model definition JSON file to 1*
   - *Modify the value of the "max_iter_count" field in the model definition JSON file to 1*
   - *Run a trained model by the param： "-i {picture_path}" 
