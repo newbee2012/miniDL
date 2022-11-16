@@ -1,5 +1,5 @@
 {
-    "mode":"TRAIN",
+    "mode":"TEST",
     "modelDataFilePath": "./mnist_model_data.json",
     "trainDataImagesFilePath": "../../data/train-images.idx3-ubyte",
     "trainDataLabelsFilePath": "../../data/train-labels.idx1-ubyte",
