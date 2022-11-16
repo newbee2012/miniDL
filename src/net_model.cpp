@@ -293,11 +293,17 @@ void NetModel::load_model()
     if(initModelByExistentData)
     {
         is.open (_model_data_file_path.c_str(), std::ios::binary );
-        if (!reader.parse(is, modelDataRoot))
+        if(is.is_open()){
+            if (!reader.parse(is, modelDataRoot))
+            {
+                ASSERT(false, cout<<this->_model_data_file_path<< " 解析失败！"<<endl);
+            }
+            is.close();
+        }else
         {
-            ASSERT(false, cout<<this->_model_data_file_path<< " 解析失败！"<<endl);
+            cout<<"[WARNING]Open modelDataFilePath error!"<<endl;
+            initModelByExistentData = false;
         }
-        is.close();
     }
 
     //读取超参数

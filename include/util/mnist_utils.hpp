@@ -109,7 +109,7 @@ namespace dong
                         rgb[row][col].b = value;
                     }
                 }
-
+                cout<<"generateBMP:"<<path.c_str()<<endl;
                 BmpTool::generateBMP(&rgb[0][0],28,28,path.c_str());
             }
         }

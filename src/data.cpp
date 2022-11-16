@@ -88,8 +88,7 @@ void Data::print()
                 for (int w = 0; w < _width; w++)
                 {
                     float value = this->get(n, c, h, w)->_value;
-                    cout << (int)value;
-                    //cout << setprecision(2)<<fixed<< value;
+                    cout << setprecision(3)<<fixed<< value;
                     if (value < 10)
                     {
                         cout << "   ";

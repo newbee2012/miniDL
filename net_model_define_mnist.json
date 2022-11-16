@@ -1,23 +1,23 @@
 {
     "mode":"TEST",
-    "modelDataFilePath": "./mnist_model_data.json",
-    "trainDataImagesFilePath": "../../data/train-images.idx3-ubyte",
-    "trainDataLabelsFilePath": "../../data/train-labels.idx1-ubyte",
-    "testDataImagesFilePath": "../../data/t10k-images.idx3-ubyte",
-    "testDataLabelsFilePath": "../../data/t10k-labels.idx1-ubyte",
+    "modelDataFilePath": "./mnist_model_data2.json",
+    "trainDataImagesFilePath": "./data/train-images.idx3-ubyte",
+    "trainDataLabelsFilePath": "./data/train-labels.idx1-ubyte",
+    "testDataImagesFilePath": "./data/t10k-images.idx3-ubyte",
+    "testDataLabelsFilePath": "./data/t10k-labels.idx1-ubyte",
     "initModelByExistentData": true,
-    "batch_size":100,
-    "max_iter_count":100,
+    "batch_size":1,
+    "max_iter_count":1,
     "hyperParameters": {
         "BASE_LEARNING_RATE": 0.01,
         "LEARNING_RATE_POLICY": "INV",
-        "GAMMA": 0.1,
+        "GAMMA": 0.0001,
         "MOMENTUM": 0.9,
         "POWER": 0.75,
         "WEIGHT_DECAY": 0.0005,
         "STEPSIZE": 100,
 	"FORWARD_THREAD_COUNT": 16,
-	"BACKWARD_THREAD_COUNT": 16
+	"BACKWARD_THREAD_COUNT": 1
     },
     "inputShape": {
         "channels": 1,

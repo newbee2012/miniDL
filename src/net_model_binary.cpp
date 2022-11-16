@@ -42,8 +42,6 @@ void NetModelBinary::testFromABmp(string& fileName)
         }
     }
 
-    string path = "./test";
-    batchDatas.genBmp(path);
     boost::shared_array<int> labels(new int[this->_batch_size] {0});
     this->fillDataToModel(batchDatas.get(0, 0, 0, 0), batchDatas.count(),labels);
     this->forward();
@@ -51,7 +49,7 @@ void NetModelBinary::testFromABmp(string& fileName)
     _loss_layer->getTopData()->print();
 
     LossLayer* lossLayer = (LossLayer*)_loss_layer.get();
-    cout<< "识别结果:"<<lossLayer->getForecastLabels()[0]<<endl;
+    cout<< "result:"<<lossLayer->getForecastLabels()[0]<<endl;
 }
 
 

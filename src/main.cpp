@@ -40,7 +40,6 @@ void forecastBmp(string modelFilePath, string picFilePath)
 
 int main(int argc, char* argv[])
 {
-
     int rnd_seed = (int)time(0);
     if (argc >= 2)
     {
@@ -51,6 +50,7 @@ int main(int argc, char* argv[])
             if(model == "-i")
             {
                 string bmpFilePath = argv[3];
+                RandomGenerator::init_engine(rnd_seed);
                 forecastBmp(modelDefileName, bmpFilePath);
                 return 0;
             }
