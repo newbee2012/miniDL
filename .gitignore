@@ -11,5 +11,8 @@ bin/
 *.mdb
 *~
 *.json
-*.depend
-*.layout
+miniDL.depend
+miniDL.layout
+miniDL.cbp
+miniDL.cscope_file_list
+
