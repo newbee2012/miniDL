@@ -28,14 +28,13 @@ void runModel(string modelFilePath)
     NetModelBinary* netMode = new NetModelBinary(modelFilePath);
     netMode->load_model();
     netMode->run();
-    //netMode->compute_mean();
     delete netMode;
 }
 
 void forecastBmp(string modelFilePath, string picFilePath)
 {
     NetModelBinary* netMode = new NetModelBinary(modelFilePath);
-    netMode->load_model();
+    netMode->load_model(true);
     netMode->testFromABmp(picFilePath);
     delete netMode;
 }

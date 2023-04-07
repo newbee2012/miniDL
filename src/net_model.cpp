@@ -229,7 +229,7 @@ void NetModel::save_model()
     ofs.close();
 }
 
-void NetModel::load_model()
+void NetModel::load_model(bool is_test_single_image)
 {
     cout<<"loading model from file: "<<this->_model_define_file_path<<endl;
     Layer::default_init_data_param.reset(new InitDataParam());
@@ -284,11 +284,18 @@ void NetModel::load_model()
     ASSERT(!jo_saveModelDataFilePath.isNull(), cout<<"节点saveModelDataFilePath不存在！"<<endl);
     this->_save_model_data_file_path = jo_saveModelDataFilePath.asString();
 
-    _batch_size = modelDefineRoot["batch_size"].asInt();
-    ASSERT(_batch_size>0, cout<<"batch_size 未定义或取值非法！"<<endl);
+    if(is_test_single_image)
+    {
+        _batch_size = 1;
+        _max_iter_count = 1;
+    }else
+    {
+        _batch_size = modelDefineRoot["batch_size"].asInt();
+        ASSERT(_batch_size>0, cout<<"batch_size 未定义或取值非法！"<<endl);
 
-    _max_iter_count = modelDefineRoot["max_iter_count"].asInt();
-    ASSERT(_max_iter_count>0, cout<<"max_iter_count 未定义或取值非法！"<<endl);
+        _max_iter_count = modelDefineRoot["max_iter_count"].asInt();
+        ASSERT(_max_iter_count>0, cout<<"max_iter_count 未定义或取值非法！"<<endl);
+    }
 
     bool initModelByExistentData = false;
     is.open (this->_load_model_data_file_path.c_str(), std::ios::binary );

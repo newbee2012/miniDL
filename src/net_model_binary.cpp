@@ -46,10 +46,8 @@ void NetModelBinary::testFromABmp(string& fileName)
     this->fillDataToModel(batchDatas.get(0, 0, 0, 0), batchDatas.count(),labels);
     this->forward();
 
-    _loss_layer->getTopData()->print();
-
     LossLayer* lossLayer = (LossLayer*)_loss_layer.get();
-    cout<< "result:"<<lossLayer->getForecastLabels()[0]<<endl;
+    cout<< "Result:"<<lossLayer->getForecastLabels()[0]<<endl;
 }
 
 

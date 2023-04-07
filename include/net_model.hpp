@@ -24,7 +24,8 @@ public:
     virtual void train()=0;
     virtual void test()=0;
     virtual void compute_mean()=0;
-    virtual void load_model();
+    virtual void load_model(){load_model(false);};
+    virtual void load_model(bool is_test_single_image);
     virtual void save_model();
     virtual void outputBmp();
     virtual void outputTime();
