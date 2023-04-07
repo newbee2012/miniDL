@@ -37,4 +37,4 @@ ___
   - Run a trained model by the param： "-i {image_path}" 
   - For exsample: 
   - cd ./examples/mnist
-  - ./miniDL -m ./model/mnist_model_define.json -i ./test.bmp*
+  - ./miniDL -m ./model/mnist_model_define.json -i ./pic/9_9.bmp*
