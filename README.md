@@ -16,7 +16,7 @@ ___
 
 ___
 + How to build the project?
-  + sh ./build.sh*
+  + make clean && make -j4
 
 + How to define a model?
   + For exsample : ./examples/mnist/model/mnist_model_define.json
