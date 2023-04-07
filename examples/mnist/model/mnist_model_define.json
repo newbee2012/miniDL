@@ -1,0 +1,116 @@
+{
+    "mode":"TRAIN",
+    "loadModelDataFilePath": "./model/mnist_model_data_accuracy_9903.json", 
+    "saveModelDataFilePath": "./model/mnist_model_data.json",
+    "trainDataImagesFilePath": "./data/train-images.idx3-ubyte",
+    "trainDataLabelsFilePath": "./data/train-labels.idx1-ubyte",
+    "testDataImagesFilePath": "./data/t10k-images.idx3-ubyte",
+    "testDataLabelsFilePath": "./data/t10k-labels.idx1-ubyte",
+    "batch_size":60,
+    "max_iter_count":1000,
+    "hyperParameters": {
+        "BASE_LEARNING_RATE": 0.01,
+        "LEARNING_RATE_POLICY": "INV",
+        "GAMMA": 0.0001,
+        "MOMENTUM": 0.9,
+        "POWER": 0.75,
+        "WEIGHT_DECAY": 0.0005,
+        "STEPSIZE": 100,
+	"FORWARD_THREAD_COUNT": 16,
+	"BACKWARD_THREAD_COUNT":1
+    },
+    "inputShape": {
+        "channels": 1,
+        "height": 28,
+        "width": 28
+    },
+    "layersModel": {
+	"inputLayer": {
+            "implClass": "InputLayer",
+            "initParams": null,
+            "topLayer": "convLayer",
+	    "scale": 0.00390625
+        },
+        "convLayer": {
+            "implClass": "ConvLayer",
+            "initParams": [20,5,5,0,0,1],
+            "topLayer": "maxPoolLayer",
+	    "lr_mult_weight": 1,
+	    "lr_mult_bias": 2,
+	    "weight_init": {
+		"type":"XAVIER",
+		"constant_value":1
+	    },
+	    "bias_init": {
+		"type":"CONSTANT",
+		"constant_value":0
+	    }
+        },
+	"maxPoolLayer": {
+            "implClass": "AvePoolLayer",
+            "initParams": [2,2,2,2],
+            "topLayer": "convLayer2",
+	    "lr_mult_weight": 1,
+	    "lr_mult_bias": 2
+        },
+	"convLayer2": {
+            "implClass": "ConvLayer",
+            "initParams": [50,5,5,0,0,1],
+            "topLayer": "maxPoolLayer2",
+	    "lr_mult_weight": 1,
+	    "lr_mult_bias": 2,
+	    "weight_init": {
+		"type":"XAVIER"
+	    },
+	    "bias_init": {
+		"type":"CONSTANT",
+		"constant_value":0
+	    }
+        },
+	"maxPoolLayer2": {
+            "implClass": "MaxPoolLayer",
+            "initParams": [2,2,2,2],
+            "topLayer": "fullConnectLayer",
+	    "lr_mult_weight": 1,
+	    "lr_mult_bias": 2
+        },
+        "fullConnectLayer": {
+            "implClass": "FullConnectLayer",
+            "initParams": [500],
+            "topLayer": "reluLayer",
+	    "lr_mult_weight": 1,
+	    "lr_mult_bias": 2,
+	    "weight_init": {
+		"type":"XAVIER"
+	    },
+	    "bias_init": {
+		"type":"CONSTANT",
+		"constant_value":0
+	    }
+        },
+        "reluLayer": {
+            "implClass": "ReluLayer",
+            "initParams": [],
+            "topLayer": "fullConnectLayer2"
+        },
+	"fullConnectLayer2": {
+            "implClass": "FullConnectLayer",
+            "initParams": [10],
+            "topLayer": "lossLayer",
+	    "lr_mult_weight": 1,
+	    "lr_mult_bias": 2,
+	    "weight_init": {
+		"type":"XAVIER"
+	    },
+	    "bias_init": {
+		"type":"CONSTANT",
+		"constant_value":0
+	    }
+        },
+        "lossLayer": {
+            "implClass": "SoftmaxLayer",
+            "initParams": [],
+            "topLayer": null
+        }
+    }
+}
