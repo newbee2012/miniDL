@@ -22,7 +22,7 @@ ___
   + For exsample : ./examples/mnist/model/mnist_model_define.json
 
 + How to run & train a model?
-  - *Modify the value of the "model" field in the model definition JSON file to "TRAIN"
+  - Modify the value of the "model" field in the model definition JSON file to "TRAIN"
   - cd ./examples/mnist
   - ./miniDL -m ./model/mnist_model_define.json
 
