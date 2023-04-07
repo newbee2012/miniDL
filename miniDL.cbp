@@ -11,7 +11,7 @@
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="./net_model_define_mnist.json" />
+				<Option parameters="-m /home/chendejia/workspace/github/miniDL/examples/mnist/model/mnist_model_define.json" />
 				<Compiler>
 					<Add option="-g" />
 				</Compiler>

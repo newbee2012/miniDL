@@ -189,7 +189,7 @@ Layer* NetModel::generateLayerByClassName(const char* className)
 
 void NetModel::save_model()
 {
-    cout<<"saving model to file: "<<this->_model_data_file_path<<endl;
+    cout<<"saving model to file: "<<this->_save_model_data_file_path<<endl;
     Json::Reader reader;
     Json::Value dataRoot;
     boost::shared_ptr<Layer> layer = _input_layer;
@@ -224,7 +224,7 @@ void NetModel::save_model()
     Json::StyledWriter writer;
     std::string strWrite = writer.write(dataRoot);
     std::ofstream ofs;
-    ofs.open(this->_model_data_file_path.c_str());
+    ofs.open(this->_save_model_data_file_path.c_str());
     ofs << strWrite;
     ofs.close();
 }
@@ -260,10 +260,6 @@ void NetModel::load_model()
     _mode = STRING_TO_MODE(jo_mode.asString().c_str());
     ASSERT(_mode >= 0 && _mode < MODE_SIZE, cout<<"mode 未定义或取值非法！"<<endl);
 
-    Json::Value jo_modelDataFilePath = modelDefineRoot["modelDataFilePath"];
-    ASSERT(!jo_modelDataFilePath.isNull(), cout<<"节点modelDataFilePath不存在！"<<endl);
-    this->_model_data_file_path = jo_modelDataFilePath.asString();
-
     Json::Value jo_trainDataImagesFilePath = modelDefineRoot["trainDataImagesFilePath"];
     ASSERT(!jo_trainDataImagesFilePath.isNull(), cout<<"节点trainDataImagesFilePath不存在！"<<endl);
     this->_train_data_images_file_path = jo_trainDataImagesFilePath.asString();
@@ -280,9 +276,13 @@ void NetModel::load_model()
     ASSERT(!jo_testDataLabelsFilePath.isNull(), cout<<"节点testDataLabelsFilePath不存在！"<<endl);
     this->_test_data_labels_file_path = jo_testDataLabelsFilePath.asString();
 
-    Json::Value jo_initModelByExistentData = modelDefineRoot["initModelByExistentData"];
-    ASSERT(!jo_initModelByExistentData.isNull(), cout<<"节点initModelByExistentData不存在！"<<endl);
-    bool  initModelByExistentData = jo_initModelByExistentData.asBool();
+    Json::Value jo_loadModelDataFilePath= modelDefineRoot["loadModelDataFilePath"];
+    ASSERT(!jo_loadModelDataFilePath.isNull(), cout<<"节点loadModelDataFilePath不存在！"<<endl);
+    this->_load_model_data_file_path = jo_loadModelDataFilePath.asString();
+
+    Json::Value jo_saveModelDataFilePath= modelDefineRoot["saveModelDataFilePath"];
+    ASSERT(!jo_saveModelDataFilePath.isNull(), cout<<"节点saveModelDataFilePath不存在！"<<endl);
+    this->_save_model_data_file_path = jo_saveModelDataFilePath.asString();
 
     _batch_size = modelDefineRoot["batch_size"].asInt();
     ASSERT(_batch_size>0, cout<<"batch_size 未定义或取值非法！"<<endl);
@@ -290,20 +290,20 @@ void NetModel::load_model()
     _max_iter_count = modelDefineRoot["max_iter_count"].asInt();
     ASSERT(_max_iter_count>0, cout<<"max_iter_count 未定义或取值非法！"<<endl);
 
-    if(initModelByExistentData)
-    {
-        is.open (_model_data_file_path.c_str(), std::ios::binary );
-        if(is.is_open()){
-            if (!reader.parse(is, modelDataRoot))
-            {
-                ASSERT(false, cout<<this->_model_data_file_path<< " 解析失败！"<<endl);
-            }
-            is.close();
-        }else
+    bool initModelByExistentData = false;
+    is.open (this->_load_model_data_file_path.c_str(), std::ios::binary );
+    if(is.is_open()){
+        if (!reader.parse(is, modelDataRoot))
         {
-            cout<<"[WARNING]Open modelDataFilePath error!"<<endl;
-            initModelByExistentData = false;
+            ASSERT(false, cout<<this->_load_model_data_file_path<< " 解析失败！"<<endl);
+        }else{
+            initModelByExistentData = true;
         }
+        is.close();
+    }else
+    {
+        cout<<"[WARNING] loadModelDataFilePath is not exsit!!"<<endl;
+        cout<<"[WARNING] And so a newly initialized model will be used!!"<<endl;
     }
 
     //读取超参数
@@ -483,7 +483,7 @@ void NetModel::load_model()
             boost::shared_ptr<Data>& biasData = layer->getBiasData();
             ASSERT(jo_weights.size() == weightData->count(), cout<<layerName<<"读取weights个数和model定义不一致"<<endl);
             ASSERT(jo_bias.size() == biasData->count(), cout<<layerName<<"读取bias个数和model定义不一致"<<endl);
-
+            cout<<"[load data] LayerName: "<< layer->getName() << ", weights_count:" << jo_weights.size() << ", bias_count:" << jo_bias.size()<<endl;
             for(int i = 0; i < jo_weights.size(); ++i)
             {
                 Neuron* neuron = weightData->get(i);

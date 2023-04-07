@@ -2,7 +2,10 @@
 #include "util/math_utils.hpp"
 #include "util/mnist_utils.hpp"
 #include "net_model_binary.hpp"
-
+#include <unistd.h>
+#include <cstdlib>
+#include <string>
+#include <getopt.h>
 using namespace std;
 using namespace dong;
 
@@ -37,35 +40,79 @@ void forecastBmp(string modelFilePath, string picFilePath)
     delete netMode;
 }
 
+void display_help() {
+    std::cout << "Usage: miniDL -m {model_define_file_path} [-i {test_image_file_path}] [-r {rnd_seed}]\n\n";
+    std::cout << "  -m, --model_define: path to the model definition file (required)\n";
+    std::cout << "  -i, --test_image_path: path to the test image file (optional)\n";
+    std::cout << "  -r, --rnd_seed: random seed for initialization (optional)\n";
+    std::cout << "  --help: display this help message\n";
+}
 
 int main(int argc, char* argv[])
 {
-    int rnd_seed = (int)time(0);
-    if (argc >= 2)
-    {
-        string modelDefileName = argv[1];
-        if (argc >= 3)
-        {
-            string model = argv[2];
-            if(model == "-i")
-            {
-                string bmpFilePath = argv[3];
-                RandomGenerator::init_engine(rnd_seed);
-                forecastBmp(modelDefileName, bmpFilePath);
-                return 0;
-            }
-            else
-            {
-                rnd_seed = atoi(argv[2]);
-            }
-        }
+std::string model_define_file_path, test_image_file_path;
+    int rnd_seed = -1;
+    int c;
 
-        RandomGenerator::init_engine(rnd_seed);
-        runModel(modelDefileName);
+    if (argc < 2) {
+        display_help();
+        return 1;
     }
-    else
+
+    while (true) {
+        int option_index = 0;
+        static struct option long_options[] = {
+            {"model_define", required_argument, 0, 'm'},
+            {"test_image_path", optional_argument, 0, 'i'},
+            {"rnd_seed", optional_argument, 0, 'r'},
+            {"help", no_argument, 0, 'h'},
+            {0, 0, 0, 0}
+        };
+
+        c = getopt_long(argc, argv, "m:i:r:h", long_options, &option_index);
+        if (c == -1)
+            break;
+
+        switch (c) {
+        case 'm':
+            model_define_file_path = optarg;
+            break;
+
+        case 'i':
+            test_image_file_path = optarg;
+            break;
+
+        case 'r':
+            rnd_seed = atoi(optarg);
+            break;
+
+        case 'h':
+        case '?':
+        default:
+            display_help();
+            return 1;
+        }
+    }
+
+    if (model_define_file_path.empty()) {
+        std::cerr << "Error: Model definition file path is required!\n";
+        display_help();
+        return 1;
+    }
+
+
+    // Initialize random seed (if provided)
+    RandomGenerator::init_engine(rnd_seed);
+
+    std::cout << "Model define file path: " << model_define_file_path << std::endl;
+
+    // Process model definition file and test image file (if provided)
+    if (test_image_file_path != "") {
+        std::cout << "Test image file path: " << test_image_file_path << std::endl;
+        forecastBmp(model_define_file_path, test_image_file_path);
+    }else
     {
-        cout<<"Error! Need parameters!"<<endl;
+        runModel(model_define_file_path);
     }
 
     return 0;

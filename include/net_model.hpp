@@ -47,7 +47,8 @@ protected:
     int _input_shape_width;
     int _max_iter_count;
     string _model_define_file_path;
-    string _model_data_file_path;
+    string _load_model_data_file_path;
+    string _save_model_data_file_path;
     string _train_data_images_file_path;
     string _train_data_labels_file_path;
     string _test_data_images_file_path;

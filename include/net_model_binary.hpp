@@ -1,5 +1,5 @@
-#ifndef DONG_NET_MODEL_LMDB_HPP_
-#define DONG_NET_MODEL_LMDB_HPP_
+#ifndef DONG_NET_MODEL_BINARY_HPP_
+#define DONG_NET_MODEL_BINARY_HPP_
 #include "net_model.hpp"
 
 using namespace std;
@@ -21,4 +21,4 @@ public:
 }
 
 
-#endif  // DONG_NET_MODEL_LMDB_HPP_
+#endif  // DONG_NET_MODEL_BINARY_HPP_
