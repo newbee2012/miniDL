@@ -19,22 +19,22 @@ ___
   + sh ./build.sh*
 
 + How to define a model?
-  + For exsample : ./examples/mnist/model/mnist_model_define.json*
+  + For exsample : ./examples/mnist/model/mnist_model_define.json
 
 + How to run & train a model?
-  - Modify the value of the "model" field in the model definition JSON file to "TRAIN"*
+  - *Modify the value of the "model" field in the model definition JSON file to "TRAIN"
   - cd ./examples/mnist
   - ./miniDL -m ./model/mnist_model_define.json
 
 + How to run & test a model?
-  - Modify the value of the "model" field in the model definition JSON file to "TEST"*
+  - Modify the value of the "model" field in the model definition JSON file to "TEST"
   - cd ./examples/mnist
   - ./miniDL -m ./model/mnist_model_define.json
   
 + How do I use trained model test an image (only supported in BMP format)?
-  - Modify the value of the "batch_size" field in the model definition JSON file to 1*
-  - Modify the value of the "max_iter_count" field in the model definition JSON file to 1*
+  - Modify the value of the "batch_size" field in the model definition JSON file to 1
+  - Modify the value of the "max_iter_count" field in the model definition JSON file to 1
   - Run a trained model by the param： "-i {image_path}" 
   - For exsample: 
   - cd ./examples/mnist
-  - ./miniDL -m ./model/mnist_model_define.json -i ./pic/9_9.bmp*
+  - ./miniDL -m ./model/mnist_model_define.json -i ./pic/9_9.bmp
