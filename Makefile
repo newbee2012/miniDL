@@ -1,11 +1,19 @@
 # Compiler settings
 CXX = g++
-CXXFLAGS = -Winline -Wfatal-errors -fexceptions -O3 -Iinclude -Iextern/include
+CXXFLAGS = -Winline -Wfatal-errors -fexceptions -Iinclude -Iextern/include
 
 # Project settings
 SRCDIR = src
-OBJDIR = obj/Release
-BINDIR = bin/Release
+OBJDIR = obj/Debug
+BINDIR = bin/Debug
+
+ifeq ($(DEBUG), 1)
+    CXXFLAGS += -g -O0
+else
+    CXXFLAGS += -O3
+	OBJDIR = obj/Release
+	BINDIR = bin/Release
+endif
 
 # Files and folders
 SRCS = $(wildcard $(SRCDIR)/*.cpp)
