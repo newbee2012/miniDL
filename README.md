@@ -31,7 +31,7 @@ ___
   - cd ./examples/mnist
   - ./miniDL -m ./model/mnist_model_define.json
   
-+ How do I use trained model test an image (only supported in BMP format)?
++ How to test an image by a model trained  (only supported in BMP format)?
   - Run a trained model by the param： "-i {image_path}" 
   - For exsample: 
   - cd ./examples/mnist
